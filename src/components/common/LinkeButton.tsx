@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import { decrypt } from "tanmayo7lock";
-import Changelog from "./Changelog";
+import Changelog from "./_Changelog";
 
 interface LikeButtonProps {
   hearts?: string[]; // Array of heart emojis or icons
