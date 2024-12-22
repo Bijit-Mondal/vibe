@@ -352,11 +352,11 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <Avatar>
+                            <Avatar className=" rounded-none h-auto w-full">
                               <AvatarImage
                                 src={message?.message}
                                 alt="User sent image"
-                                className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
+                                className="self-start rounded-lg rounded-tl-none h-full object-cover w-full"
                               />
                             </Avatar>
                           </Link>
@@ -390,12 +390,13 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <Avatar>
+                            <Avatar className=" rounded-none  h-auto  w-full">
                               <AvatarImage
                                 src={message?.message}
                                 alt="User sent image"
-                                className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
+                                className="self-end rounded-lg rounded-tr-none h-full object-cover w-full"
                               />
+                              <AvatarFallback>SX</AvatarFallback>
                             </Avatar>
                           </Link>
                         ) : (
@@ -559,7 +560,7 @@ const MessageComponent = ({
         <div
           title={linkPreview.requestUrl}
           key={linkPreview.title + index}
-          className={` border bg-white/5  overflow-hidden rounded-md ${
+          className={` border bg-white/5  overflow-hidden rounded-lg ${
             me ? "rounded-tr-none" : "rounded-tl-none"
           }`}
         >
@@ -590,7 +591,7 @@ const MessageComponent = ({
           <p
             className={` w-fit  break-words bg-white/5 border  ${
               containsOnlyEmojis(message) ? "text-5xl" : "text-sm"
-            } px-2 py-1 rounded-md ${
+            } px-2 py-1 rounded-lg ${
               me ? "rounded-tr-none" : "rounded-tl-none"
             }`}
           >
