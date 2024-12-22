@@ -185,11 +185,24 @@ function Chat({
     fetchGifs(gifQuery);
   }, [gifQuery]);
 
+  // for gif input
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
-
     setQuery(searchTerm);
   };
+  // const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // for message input
+  // const handleTyping = () => {
+  //   emitMessage("typing", { u: user?._id, status: true });
+  //   if (typingTimeoutRef.current) {
+  //     clearTimeout(typingTimeoutRef.current);
+  //   }
+
+  //   typingTimeoutRef.current = setTimeout(() => {
+  //     emitMessage("typing", { u: user?._id, status: false });
+  //   }, 1000);
+  // };
 
   return (
     <>
@@ -339,11 +352,13 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <img
-                              src={message?.message}
-                              alt="User sent image"
-                              className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
-                            />
+                            <Avatar>
+                              <AvatarImage
+                                src={message?.message}
+                                alt="User sent image"
+                                className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
+                              />
+                            </Avatar>
                           </Link>
                         ) : (
                           <MessageComponent
@@ -375,11 +390,13 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <img
-                              src={message?.message}
-                              alt="User sent image"
-                              className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
-                            />
+                            <Avatar>
+                              <AvatarImage
+                                src={message?.message}
+                                alt="User sent image"
+                                className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
+                              />
+                            </Avatar>
                           </Link>
                         ) : (
                           <MessageComponent message={message.message} />
@@ -415,6 +432,7 @@ function Chat({
             ref={inputRef}
             onChange={(e) => setMessage(e.target.value)}
             value={message}
+            // onInput={handleTyping}
             onPaste={handlePaste}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
