@@ -352,11 +352,11 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <Avatar className=" rounded-none h-auto w-full">
+                            <Avatar className=" rounded-none h-auto max-h-72 w-full">
                               <AvatarImage
                                 src={message?.message}
                                 alt="User sent image"
-                                className="self-start rounded-lg rounded-tl-none h-full object-cover w-full"
+                                className="self-start rounded-lg rounded-tl-none h-full max-h-72 object-cover w-full"
                               />
                             </Avatar>
                           </Link>
@@ -390,11 +390,11 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <Avatar className=" rounded-none  h-auto  w-full">
+                            <Avatar className=" rounded-none  h-auto max-h-72 w-full">
                               <AvatarImage
                                 src={message?.message}
                                 alt="User sent image"
-                                className="self-end rounded-lg rounded-tr-none h-full object-cover w-full"
+                                className="self-end rounded-lg rounded-tr-none h-full max-h-72 object-cover w-full"
                               />
                               <AvatarFallback>SX</AvatarFallback>
                             </Avatar>
