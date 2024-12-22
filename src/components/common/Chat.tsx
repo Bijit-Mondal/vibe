@@ -352,7 +352,7 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <Avatar className=" rounded-none h-auto max-h-72 w-full">
+                            <Avatar className=" rounded-none h-auto max-h-72 w-fit">
                               <AvatarImage
                                 src={message?.message}
                                 alt="User sent image"
@@ -390,7 +390,7 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <Avatar className=" rounded-none  h-auto max-h-72 w-full">
+                            <Avatar className=" rounded-none h-auto max-h-72 w-fit">
                               <AvatarImage
                                 src={message?.message}
                                 alt="User sent image"
