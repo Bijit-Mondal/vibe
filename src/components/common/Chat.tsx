@@ -330,7 +330,7 @@ function Chat({
                       height={50}
                       width={50}
                       className=" h-full object-cover  w-full"
-                      src={message?.user.imageUrl || "/bg.webp"}
+                      src={message?.user?.imageUrl || "/bg.webp"}
                     />
                     <AvatarFallback>SX</AvatarFallback>
                   </Avatar>
@@ -338,7 +338,7 @@ function Chat({
                     <p className="truncate -mt-0.5 border-white w-5/12 font-semibold mb-1.5">
                       {message?.user?.name}
                     </p>
-                    {isVideoUrl(message.message) ? (
+                    {isVideoUrl(message?.message) ? (
                       <Link href={message?.message} target="_blank">
                         <video
                           src={message?.message}
@@ -363,7 +363,7 @@ function Chat({
                         ) : (
                           <MessageComponent
                             me={false}
-                            message={message.message}
+                            message={message?.message}
                           />
                         )}
                       </>
@@ -400,7 +400,7 @@ function Chat({
                             </Avatar>
                           </Link>
                         ) : (
-                          <MessageComponent message={message.message} />
+                          <MessageComponent message={message?.message} />
                         )}
                       </>
                     )}
@@ -558,13 +558,13 @@ const MessageComponent = ({
     <div className=" space-y-1">
       {linkPreviews?.map((linkPreview, index) => (
         <div
-          title={linkPreview.requestUrl}
-          key={linkPreview.title + index}
+          title={linkPreview?.requestUrl}
+          key={linkPreview?.title + index}
           className={` border bg-white/5  overflow-hidden rounded-lg ${
             me ? "rounded-tr-none" : "rounded-tl-none"
           }`}
         >
-          <Link href={linkPreview.requestUrl} target="_blank">
+          <Link href={linkPreview?.requestUrl} target="_blank">
             <Avatar className=" rounded-none aspect-video h-auto  w-full">
               <AvatarImage
                 loading="lazy"
