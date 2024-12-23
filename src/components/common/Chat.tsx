@@ -352,13 +352,11 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <Avatar className=" rounded-none h-auto max-h-72 w-fit">
-                              <AvatarImage
-                                src={message?.message}
-                                alt="User sent image"
-                                className="self-start rounded-lg rounded-tl-none h-full max-h-72 object-cover w-full"
-                              />
-                            </Avatar>
+                            <img
+                              src={message?.message}
+                              alt="User sent image"
+                              className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
+                            />
                           </Link>
                         ) : (
                           <MessageComponent
@@ -390,14 +388,11 @@ function Chat({
                       <>
                         {isImageUrl(message?.message) ? (
                           <Link href={message?.message} target="_blank">
-                            <Avatar className=" rounded-none h-auto max-h-72 w-fit">
-                              <AvatarImage
-                                src={message?.message}
-                                alt="User sent image"
-                                className="self-end rounded-lg rounded-tr-none h-full max-h-72 object-cover w-full"
-                              />
-                              <AvatarFallback>SX</AvatarFallback>
-                            </Avatar>
+                            <img
+                              src={message?.message}
+                              alt="User sent image"
+                              className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
+                            />
                           </Link>
                         ) : (
                           <MessageComponent message={message?.message} />
