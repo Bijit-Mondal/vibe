@@ -50,14 +50,14 @@ function QueueListComp({
   const { addSong } = useAddSong();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const upVote = useCallback(
+  const handleUpVote = useCallback(
     (song: searchResults) => {
-      emitMessage("upvote", { queueId: song?.queueId });
+      emitMessage("upvote", {
+        queueId: song.isVoted ? "del" + song?.queueId : song?.queueId,
+      });
     },
     [emitMessage]
   );
-
-  const handleUpVote = useDebounce(upVote);
 
   const triggerUpVote = useCallback(
     (e: React.MouseEvent, song: searchResults) => {
@@ -69,6 +69,7 @@ function QueueListComp({
       }
       try {
         handleUpVote(song);
+        if (song.isVoted) return;
         setQueue((prevQueue) => {
           const songIndex = prevQueue.findIndex((item) => item.id === song.id);
           const songExists = songIndex !== -1;
