@@ -240,8 +240,8 @@ function QueueListComp({
   return (
     <div
       style={{
-        WebkitMaskImage:"linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,1) 100%)",
-        maskImage: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,1) 100%)",
+        WebkitMaskImage:"linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%, rgba(0,0,0,1) 98%, rgba(0,0,0,0) 100%)",
+        maskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%, rgba(0,0,0,1) 98%, rgba(0,0,0,0) 100%)",
       }}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
