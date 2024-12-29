@@ -88,7 +88,7 @@ function InviteButton() {
                   await navigator.clipboard.writeText(e.currentTarget.value);
                   toast.success("Link copied to clipboard!");
                 }}
-                className="pr-7 py-5 hover:opacity-80 " /* Add right padding to avoid overlap with the SVG */
+                className="pr-7 py-5 cursor-pointer hover:opacity-80 " /* Add right padding to avoid overlap with the SVG */
                 value={inviteLink}
               />
               <svg

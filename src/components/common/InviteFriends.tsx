@@ -6,10 +6,12 @@ import { cn } from "@/lib/utils";
 import InviteButton from "./inviteButton";
 // import { Dialog, DialogTrigger } from "../ui/dialog";
 import Youtube from "./Youtube";
+import ChatIcon from "../ChatIcon";
 
 function InviteFriendsComp({ className }: { className?: string }) {
   return (
     <div className={cn(" flex items-center justify-between pr-4", className)}>
+      <ChatIcon />
       <Listeners className=" max-md:hidden" />
       <div className=" flex items-center gap-1">
         <InviteButton />

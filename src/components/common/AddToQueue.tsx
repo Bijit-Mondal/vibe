@@ -16,7 +16,6 @@ import { data, searchResults } from "@/lib/types";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
-import Feedback from "./Feedback";
 
 function AddToQueueComp() {
   const { queue, roomId, user, setQueue, emitMessage } = useUserContext();
@@ -147,7 +146,7 @@ function AddToQueueComp() {
           <Button
             onClick={handleToggleSearch}
             variant={"secondary"}
-            className=" bg-purple p-2.5 hover:bg-purple/80 "
+            className=" bg-lightPurple text-[#4F378A] p-2.5 hover:bg-lightPurple/80 "
           >
             {isSearchedOpened ? (
               <X className=" size-4" />
@@ -162,7 +161,7 @@ function AddToQueueComp() {
                 setIsDeleting((prev) => !prev);
               }}
               variant={"secondary"}
-              className=" bg-purple p-2.5 hover:bg-purple/80 "
+              className=" bg-lightPurple text-[#4F378A] p-2.5 hover:bg-lightPurple/80 "
             >
               {isDeleting ? (
                 <X className=" size-4" />
@@ -171,7 +170,6 @@ function AddToQueueComp() {
               )}
             </Button>
           )}
-          <Feedback />
         </div>
       </div>
       {isDeleting && queue.length > 1 && (
@@ -188,7 +186,7 @@ function AddToQueueComp() {
         >
           <VibeAlert
             disabled={selectedSongs.length == 0}
-            className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 rounded-lg px-3 w-fit text-xs bg-purple text-white hover:bg-purple/80"
+            className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 rounded-lg px-3 w-fit text-xs bg-lightPurple text-[#4F378A] hover:bg-lightPurple/80"
             title={`Remove Selected ${selectedSongs.length}`}
             headingClassName="md:w-8/12 w-[80vw] "
             confirmText="Yes, delete selected"
@@ -205,6 +203,7 @@ function AddToQueueComp() {
           />
         </motion.div>
       )}
+
       <div className="h-full hide-scrollbar transition-all z-50 overflow-y-scroll">
         {queue.length > 0 ? (
           <>

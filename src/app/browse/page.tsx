@@ -1,4 +1,5 @@
 import { Browse } from "@/components/common/Browse";
+import api from "@/lib/api";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -48,14 +49,15 @@ export async function generateMetadata() {
 async function page() {
   const vibeId = cookies().get("vibeId")?.value;
   if (!vibeId) redirect("/");
-  const res = await fetch(`${process.env.SOCKET_URI}/api/rooms/browse`, {
+  const res = await api.get<any>(`${process.env.SOCKET_URI}/api/rooms/all`, {
     headers: {
       cookie: `vibeIdR=${vibeId}`,
     },
+    showErrorToast: false,
   });
-  if (!res.ok) redirect("/");
+  if (!res.success) redirect("/");
 
-  return <Browse data={await res.json()} />;
+  return <Browse data={res.data?.results.slice(0, 10)} />;
 }
 
 export default page;

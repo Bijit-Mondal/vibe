@@ -47,6 +47,10 @@ export const isImageUrl = (url: string): boolean => {
     url
   );
 };
+export const isVideoUrl = (url: string): boolean => {
+  // Only match URLs that end with known image file extensions
+  return /^https?:\/\/.*\.(mp4|mov)$/i.test(url);
+};
 export const linkifyOptions = {
   target: "_blank",
   nl2br: true,
@@ -54,9 +58,11 @@ export const linkifyOptions = {
 };
 
 export function extractPlaylistID(url: string) {
-  // const urlObj = new URL(url);
+  if (url.includes("youtube.com")) {
+    const urlObj = new URL(url);
 
-  // return urlObj.searchParams.get("list");
+    return urlObj.searchParams.get("list");
+  }
   const match = url.match(/playlist\/([^/?]+)/);
   return match?.[1] || null;
 }
@@ -205,15 +211,15 @@ export default function getURL(currentSong: searchResults) {
     currentSong?.downloadUrl[currentSong.downloadUrl.length - 1]?.url;
   const currentVideoUrl = currentSongUrl?.startsWith("http")
     ? currentSongUrl
-    : `${
-        window.navigator.userAgent.includes("Electron")
-          ? "http://localhost:7777/stream"
-          : process.env.VIDEO_STREAM_URI
-      }/${currentSongUrl}` ||
+    : `${process.env.VIDEO_STREAM_URI}/${currentSongUrl}` ||
       "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg";
 
   return currentVideoUrl;
 }
+
+// window.navigator.userAgent.includes("Electron")
+//   ? "http://localhost:7777/stream"
+//   :
 
 export function getBackgroundURL(currentSong: searchResults) {
   const currentSongUrl =

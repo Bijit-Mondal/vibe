@@ -42,12 +42,13 @@ function PLayerCoverComp() {
       draggable
       onDragStart={(e) => handleDragStart(e)}
       onDragEnd={handleDragEnd}
-      className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl"
+      className=" border-2 border-white/10 relative h-auto min-h-40  overflow-hidden rounded-xl "
     >
       {!currentSong?.video ? (
         <Image
           draggable="false"
           priority
+          style={{ aspectRatio: "1 / 1" }} // Ensures square aspect ratio
           title={
             currentSong?.name
               ? `${currentSong.name} - Added by ${
@@ -77,7 +78,9 @@ function PLayerCoverComp() {
 
           <video
             draggable="false"
-            style={{ display: showVideo ? "block" : "none" }}
+            style={{
+              display: showVideo ? "block" : "none",
+            }}
             ref={videoRef}
             muted
             preload="none"
@@ -105,7 +108,7 @@ function PLayerCoverComp() {
 
           <Image
             draggable="false"
-            style={{ opacity: showVideo ? 0 : 1 }}
+            style={{ opacity: showVideo ? 0 : 1, aspectRatio: "1 / 1" }}
             priority
             title={
               currentSong?.name

@@ -2,7 +2,7 @@
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useUserContext } from "@/store/userStore";
-import { X } from "lucide-react";
+import { Loader2Icon, X } from "lucide-react";
 import { RiFileGifLine } from "react-icons/ri";
 import React, {
   SetStateAction,
@@ -17,13 +17,14 @@ import {
   containsOnlyEmojis,
   formatArtistName,
   isImageUrl,
+  isVideoUrl,
   linkifyOptions,
 } from "@/utils/utils";
 import Linkify from "linkify-react";
 import Link from "next/link";
 import PlayButton from "./PlayButton";
 import { toast } from "sonner";
-import { messages } from "@/lib/types";
+import { linkPreview, messages } from "@/lib/types";
 import { decrypt } from "tanmayo7lock";
 import { uploadImage } from "@/lib/utils";
 import api from "@/lib/api";
@@ -81,9 +82,13 @@ function Chat({
       currentSocket.off("message", handleMessage);
     };
   }, [socketRef, handleMessage]);
+  const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (isChatOpen) {
       setSeen(true);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
     }
   }, [isChatOpen, setSeen]);
   useEffect(() => {
@@ -91,51 +96,61 @@ function Chat({
   }, [messages]);
   const [uploading, setUploading] = useState<boolean>(false);
   const [gif, showGif] = useState<boolean>(false);
-  const handleFileUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append(
-      "payload_json",
-      JSON.stringify({
-        upload_source: process.env.UPLOAD_SOURCE,
-        domain: process.env.UPLOAD_DOMAIN,
-        type: 1,
-        name: file.name,
-      })
-    );
-    formData.append("file", file);
-    setUploading(true);
-    const res = await uploadImage(formData);
+  const handleFileUpload = useCallback(
+    async (file: File) => {
+      if (uploading) return;
+      const formData = new FormData();
+      formData.append(
+        "payload_json",
+        JSON.stringify({
+          upload_source: process.env.UPLOAD_SOURCE,
+          domain: process.env.UPLOAD_DOMAIN,
+          type: 1,
+          name: file.name,
+        })
+      );
+      formData.append("file", file);
+      setUploading(true);
+      const res = await uploadImage(formData);
 
-    if (res.success && res.data && res.data.data.direct_url) {
-      emitMessage("message", res.data.data.direct_url);
-    }
-    setUploading(false);
-  };
-  const handlePaste = async (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const clipboardData = e.clipboardData;
-    const items = clipboardData.items;
-
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.startsWith("image/")) {
-        const file = items[i].getAsFile();
-        if (file) {
-          await handleFileUpload(file);
-        }
-        e.preventDefault();
-        break;
+      if (res.success && res.data && res.data.data.direct_url) {
+        emitMessage("message", res.data.data.direct_url);
       }
-    }
-  };
-  const handleDrop = async (e: React.DragEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
+      setUploading(false);
+    },
+    [emitMessage, uploading]
+  );
+  const handlePaste = useCallback(
+    async (e: React.ClipboardEvent<HTMLInputElement>) => {
+      const clipboardData = e.clipboardData;
+      const items = clipboardData.items;
 
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      await handleFileUpload(file);
-    }
-  };
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith("image/")) {
+          const file = items[i].getAsFile();
+          if (file) {
+            await handleFileUpload(file);
+          }
+          e.preventDefault();
+          break;
+        }
+      }
+    },
+    [handleFileUpload]
+  );
+  const handleDrop = useCallback(
+    async (e: React.DragEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        const file = files[0];
+        await handleFileUpload(file);
+      }
+    },
+    [handleFileUpload]
+  );
 
   const handleDragOver = (e: React.DragEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -170,15 +185,28 @@ function Chat({
     fetchGifs(gifQuery);
   }, [gifQuery]);
 
+  // for gif input
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
-
     setQuery(searchTerm);
   };
+  // const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // for message input
+  // const handleTyping = () => {
+  //   emitMessage("typing", { u: user?._id, status: true });
+  //   if (typingTimeoutRef.current) {
+  //     clearTimeout(typingTimeoutRef.current);
+  //   }
+
+  //   typingTimeoutRef.current = setTimeout(() => {
+  //     emitMessage("typing", { u: user?._id, status: false });
+  //   }, 1000);
+  // };
 
   return (
     <>
-      <div className=" flex hide-scrollbar p-5 justify-between items-center">
+      <div className="  flex hide-scrollbar p-5 justify-between items-center">
         <div className=" flex w-9/12 truncate items-center gap-1.5">
           <Avatar className=" rounded-md size-14">
             <AvatarImage
@@ -249,31 +277,28 @@ function Chat({
         </div>
       </div>
 
-      <div className=" flex py-2 px-5 text-2xl font-semibold bg-white/10 w-full justify-between items-center">
+      <div className=" flex py-2 px-5 text-2xl font-semibold bg-white/5 border w-full justify-between items-center">
         <p>Chat</p>
         <div className=" flex items-center">
-          {listener?.roomUsers
-            ?.filter((r) => r.userId.username !== user?.username)
-            ?.slice(0, 5)
-            ?.map((roomUser, i) => (
-              <div
-                title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
-                key={roomUser?._id}
-              >
-                <div className={` ${i !== 0 && "-ml-2"} size-7`}>
-                  <Avatar className=" size-7 border border-white">
-                    <AvatarImage
-                      loading="lazy"
-                      alt={roomUser?.userId?.name}
-                      height={200}
-                      width={200}
-                      className=" rounded-full object-cover"
-                      src={roomUser?.userId?.imageUrl}
-                    />
-                  </Avatar>
-                </div>
+          {listener?.roomUsers?.slice(0, 5)?.map((roomUser, i) => (
+            <div
+              title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
+              key={roomUser?._id}
+            >
+              <div className={` ${i !== 0 && "-ml-2"} size-7`}>
+                <Avatar className=" size-7 border border-white">
+                  <AvatarImage
+                    loading="lazy"
+                    alt={roomUser?.userId?.name}
+                    height={200}
+                    width={200}
+                    className=" rounded-full object-cover"
+                    src={roomUser?.userId?.imageUrl}
+                  />
+                </Avatar>
               </div>
-            ))}
+            </div>
+          ))}
           {listener && listener?.totalUsers >= 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
               <Avatar className=" size-7 border-white border">
@@ -285,10 +310,15 @@ function Chat({
             </div>
           )}
         </div>
-        <X onClick={() => setIsChatOpen(false)} />
+        <X className=" cursor-pointer" onClick={() => setIsChatOpen(false)} />
       </div>
       <div className="  h-full hide-scrollbar overflow-y-scroll px-5 pb-4 flex flex-col justify-between  break-words overflow-x-hidden">
-        <div className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll">
+        <div
+          onClick={(e) => {
+            e.stopPropagation(), showGif(false);
+          }}
+          className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll"
+        >
           {messages.map((message) => (
             <div title={message?.time} key={message?.message}>
               {message.user._id !== user?._id ? (
@@ -300,7 +330,7 @@ function Chat({
                       height={50}
                       width={50}
                       className=" h-full object-cover  w-full"
-                      src={message?.user.imageUrl || "/bg.webp"}
+                      src={message?.user?.imageUrl || "/bg.webp"}
                     />
                     <AvatarFallback>SX</AvatarFallback>
                   </Avatar>
@@ -308,27 +338,33 @@ function Chat({
                     <p className="truncate -mt-0.5 border-white w-5/12 font-semibold mb-1.5">
                       {message?.user?.name}
                     </p>
-
-                    {isImageUrl(message?.message) ? (
+                    {isVideoUrl(message?.message) ? (
                       <Link href={message?.message} target="_blank">
-                        <img
+                        <video
                           src={message?.message}
-                          alt="User sent image"
-                          className="w-fit max-h-72 max-w-5/12 rounded-lg rounded-tl-none"
+                          controls
+                          autoPlay
+                          muted
+                          className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
                         />
                       </Link>
                     ) : (
-                      <Linkify as="p" options={linkifyOptions}>
-                        <p
-                          className={`w-fit  break-words bg-white/10 ${
-                            containsOnlyEmojis(message?.message)
-                              ? "text-5xl"
-                              : "text-sm"
-                          } px-4 py-1 rounded-md rounded-tl-none`}
-                        >
-                          {message?.message}
-                        </p>
-                      </Linkify>
+                      <>
+                        {isImageUrl(message?.message) ? (
+                          <Link href={message?.message} target="_blank">
+                            <img
+                              src={message?.message}
+                              alt="User sent image"
+                              className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
+                            />
+                          </Link>
+                        ) : (
+                          <MessageComponent
+                            me={false}
+                            message={message?.message}
+                          />
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -338,26 +374,30 @@ function Chat({
                     <p className=" truncate -mt-0.5 text-end font-semibold mb-1.5 w-5/12">
                       {message.user?.name}
                     </p>
-                    {isImageUrl(message?.message) ? (
+                    {isVideoUrl(message.message) ? (
                       <Link href={message?.message} target="_blank">
-                        <img
+                        <video
                           src={message?.message}
-                          alt="User sent image"
-                          className="w-fit max-h-72  self-end rounded-lg rounded-tr-none"
+                          controls
+                          autoPlay
+                          muted
+                          className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
                         />
                       </Link>
                     ) : (
-                      <Linkify as="p" options={linkifyOptions}>
-                        <p
-                          className={` w-fit  text-end  break-words bg-white/10  ${
-                            containsOnlyEmojis(message?.message)
-                              ? "text-5xl"
-                              : "text-sm"
-                          } px-4 py-1 rounded-md rounded-tr-none`}
-                        >
-                          {message?.message}
-                        </p>
-                      </Linkify>
+                      <>
+                        {isImageUrl(message?.message) ? (
+                          <Link href={message?.message} target="_blank">
+                            <img
+                              src={message?.message}
+                              alt="User sent image"
+                              className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
+                            />
+                          </Link>
+                        ) : (
+                          <MessageComponent message={message?.message} />
+                        )}
+                      </>
                     )}
                   </div>
                   <Avatar className="size-9">
@@ -366,7 +406,7 @@ function Chat({
                       alt={message?.user?.name || ""}
                       height={50}
                       width={50}
-                      className=" h-full object-cover  w-full"
+                      className=" h-full object-cover w-full"
                       src={message?.user?.imageUrl || "/bg.webp"}
                     />
                     <AvatarFallback>SX</AvatarFallback>
@@ -379,14 +419,16 @@ function Chat({
         </div>
         <form onSubmit={sendMessage} className=" relative">
           {uploading && (
-            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bottom-[3.2rem] z-10 cursor-pointer h-10 w-40 bg-muted-foreground/10 flex items-center text-xs gap-1 px-2 backdrop-blur-sm rounded-xl">
-              <p>sending file...</p>
+            <div className="text-muted-foreground border-2 border-white/15 absolute size-6 left-0 bottom-[3.2rem] z-10 cursor-pointer h-10 w-40 bg-muted-foreground/10 flex items-center text-xs gap-1 px-2 backdrop-blur-sm rounded-xl">
+              <Loader2Icon className=" animate-spin" /> <p>sending file...</p>
             </div>
           )}
 
           <Input
+            ref={inputRef}
             onChange={(e) => setMessage(e.target.value)}
             value={message}
+            // onInput={handleTyping}
             onPaste={handlePaste}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -397,7 +439,7 @@ function Chat({
             placeholder="Send Message"
           />
           {gif && (
-            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bg-black/10 bottom-[3.2rem] z-10 cursor-pointer h-96  w-full border-2 border-white/10 shadow-lg flex flex-col items-start p-2 text-xs gap-2 px-2 backdrop-blur-lg rounded-xl">
+            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bg-black/20 bottom-[3.2rem] z-10 cursor-pointer h-96  w-full border-2 border-white/10 shadow-lg flex flex-col items-start p-2 text-xs gap-2 px-2 backdrop-blur-xl rounded-xl">
               <Input
                 autoFocus
                 value={gifQuery}
@@ -442,6 +484,119 @@ function Chat({
     </>
   );
 }
+
+const MessageComponent = ({
+  message,
+  me = true,
+}: {
+  message: string;
+  me?: boolean;
+}) => {
+  const [linkPreviews, setLinkPreviews] = useState<linkPreview[] | null>();
+
+  const extractLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[\w.-]+(?:\.[\w.-]+)+(?:\/[^\s]*)?)/g; // Refined regex
+
+    // Replace any URL followed by another URL with a space in between
+    text = text.replace(
+      /(https?:\/\/[\w.-]+(?:\.[\w.-]+)+(?:\/[^\s]*)?)(https?:\/\/)/g,
+      "$1 $2"
+    );
+
+    return text.match(urlRegex) || [];
+  };
+
+  useEffect(() => {
+    const links = extractLinks(message);
+    const fetchLinkPreviews = async () => {
+      const previews = await Promise.all(
+        links.map(async (link) => {
+          const response = await api.get<linkPreview>(
+            `${process.env.SOCKET_URI}/api/linkpreview?url=${encodeURIComponent(
+              link
+            )}`,
+            {
+              showErrorToast: false,
+            }
+          );
+          if (response.data && response.success) {
+            return { ...response.data, requestUrl: link };
+          }
+          return null;
+        })
+      );
+      setLinkPreviews(
+        Object.values(
+          previews
+            .filter((preview): preview is linkPreview => Boolean(preview))
+            .reduce((uniquePreviews, preview) => {
+              if (!uniquePreviews[preview.requestUrl]) {
+                uniquePreviews[preview.requestUrl] = preview;
+              }
+              return uniquePreviews;
+            }, {} as { [key: string]: linkPreview })
+        )
+      );
+    };
+    if (links.length > 0) {
+      fetchLinkPreviews();
+    }
+  }, [message]);
+
+  const removeLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[\w.-]+(?:\.[\w.-]+)+(?:\/[^\s]*)?)/g; // Refined regex for URLs
+
+    return text.replace(urlRegex, "").trim(); // Remove links and trim extra spaces
+  };
+
+  return (
+    <div className=" space-y-1">
+      {linkPreviews?.map((linkPreview, index) => (
+        <div
+          title={linkPreview?.requestUrl}
+          key={linkPreview?.title + index}
+          className={` border bg-white/5  overflow-hidden rounded-lg ${
+            me ? "rounded-tr-none" : "rounded-tl-none"
+          }`}
+        >
+          <Link href={linkPreview?.requestUrl} target="_blank">
+            <Avatar className=" rounded-none aspect-video h-auto  w-full">
+              <AvatarImage
+                loading="lazy"
+                alt={linkPreview?.title}
+                height={50}
+                width={50}
+                className=" h-full object-cover rounded-none w-full"
+                src={linkPreview?.image || ""}
+              />
+              <AvatarFallback>SX</AvatarFallback>
+            </Avatar>
+
+            <div className="p-2">
+              <p className=" text-sm">{linkPreview?.title}</p>
+              <p className=" text-xs text-accent-foreground/70">
+                {linkPreview?.description}
+              </p>
+            </div>
+          </Link>
+        </div>
+      ))}
+      {removeLinks(message) !== "" && (
+        <Linkify as="p" options={linkifyOptions}>
+          <p
+            className={` w-fit  break-words bg-white/5 border  ${
+              containsOnlyEmojis(message) ? "text-5xl" : "text-sm"
+            } px-2 py-1 rounded-lg ${
+              me ? "rounded-tr-none" : "rounded-tl-none"
+            }`}
+          >
+            {removeLinks(message)}
+          </p>
+        </Linkify>
+      )}
+    </div>
+  );
+};
 
 const GifComponent = ({ gifUrl, index, emitMessage, showGif }: any) => {
   const [isLoading, setIsLoading] = useState(true);

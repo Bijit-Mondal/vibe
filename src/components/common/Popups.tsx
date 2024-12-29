@@ -2,7 +2,7 @@ import React from "react";
 import Background from "../Background";
 import InviteFriendsToast from "./InviteFriendsToast";
 import Blur from "../Blur";
-import Reconnect from "./Reconnect";
+// import Reconnect from "./Reconnect";
 
 function Popups() {
   return (
@@ -10,7 +10,7 @@ function Popups() {
       <Background />
       <InviteFriendsToast />
       <Blur />
-      <Reconnect />
+      {/* <Reconnect /> */}
     </>
   );
 }

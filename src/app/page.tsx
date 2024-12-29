@@ -179,7 +179,7 @@ function Page() {
             <video
               preload="true"
               playsInline
-              src="/vibe.mp4"
+              src="https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/Vibe_Opt.mp4"
               className=" rounded-xl"
               muted
               loop

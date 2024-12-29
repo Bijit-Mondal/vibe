@@ -5,12 +5,11 @@ import React, {
   createContext,
   useContext,
   useRef,
-  useState,
   useEffect,
   ReactNode,
   useCallback,
   useMemo,
-  SetStateAction,
+  useReducer,
 } from "react";
 import { useUserContext } from "./userStore";
 import getURL from "@/utils/utils";
@@ -33,12 +32,8 @@ interface AudioContextType {
   duration: number;
   progress: number;
   currentSong: searchResults | null;
-  setCurrentSong: React.Dispatch<SetStateAction<searchResults | null>>;
-  setProgress: React.Dispatch<SetStateAction<number>>;
-  isLooped: boolean;
-  setLoop: React.Dispatch<SetStateAction<boolean>>;
-  shuffled: boolean;
-  setShuffled: React.Dispatch<SetStateAction<boolean>>;
+  setCurrentSong: (song: searchResults | null) => void;
+  setProgress: (value: number) => void;
   videoRef: React.RefObject<HTMLVideoElement> | undefined;
   backgroundVideoRef: React.RefObject<HTMLVideoElement> | undefined;
   audioRef: React.RefObject<HTMLAudioElement>;
@@ -58,29 +53,77 @@ interface AudioProviderProps {
   children: ReactNode;
 }
 
+interface State {
+  isPlaying: boolean;
+  isMuted: boolean;
+  currentSong: searchResults | null;
+  currentProgress: number;
+  currentDuration: number;
+  currentVolume: number;
+}
+
+const initialState: State = {
+  isPlaying: false,
+  isMuted: false,
+  currentSong: null,
+  currentProgress: 0,
+  currentDuration: 0,
+  currentVolume: 1,
+};
+
+type Action =
+  | { type: "SET_IS_PLAYING"; payload: boolean }
+  | { type: "SET_IS_MUTED"; payload: boolean }
+  | { type: "SET_CURRENT_SONG"; payload: searchResults | null }
+  | { type: "SET_PROGRESS"; payload: number }
+  | { type: "SET_VOLUME"; payload: number };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "SET_IS_PLAYING":
+      return { ...state, isPlaying: action.payload };
+    case "SET_IS_MUTED":
+      return { ...state, isMuted: action.payload };
+    case "SET_CURRENT_SONG":
+      return { ...state, currentSong: action.payload };
+    case "SET_PROGRESS":
+      return { ...state, currentProgress: action.payload };
+    case "SET_VOLUME":
+      return { ...state, currentVolume: action.payload };
+    default:
+      throw new Error(`Unhandled action type: ${action}`);
+  }
+}
 export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const audioRef = useRef<HTMLAudioElement>(
     typeof window !== "undefined" ? new Audio() : null
   );
   const videoRef = useRef<HTMLVideoElement>(null);
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [currentSong, setCurrentSong] = useState<searchResults | null>(null);
-  const [currentProgress, setProgress] = useState<number>(0);
-  const [currentDuration] = useState<number>(0);
-  const [currentVolume, setVolume] = useState<number>(1);
-  const [isLooped, setLoop] = useState<boolean>(false);
-  const [shuffled, setShuffled] = useState<boolean>(false);
-  const progress = useMemo(() => currentProgress, [currentProgress]);
-  const duration = useMemo(() => currentDuration, [currentDuration]);
-  const volume = useMemo(() => currentVolume, [currentVolume]);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  // const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  // const [isMuted, setIsMuted] = useState<boolean>(false);
+  // const [currentSong, setCurrentSong] = useState<searchResults | null>(null);
+  // const [currentProgress, setProgress] = useState<number>(0);
+  // const [currentDuration] = useState<number>(0);
+  // const [currentVolume, setVolume] = useState<number>(1);
+  // const [isLooped, setLoop] = useState<boolean>(false);
+  // const [shuffled, setShuffled] = useState<boolean>(false);
+  const progress = useMemo(
+    () => state.currentProgress,
+    [state.currentProgress]
+  );
+  const duration = useMemo(
+    () => state.currentDuration,
+    [state.currentDuration]
+  );
+  const volume = useMemo(() => state.currentVolume, [state.currentVolume]);
   const skipCountRef = useRef(0); // Ref to track skipped songs
   const { user, isAdminOnline, socketRef, emitMessage } = useUserContext();
   // play
   const play = useCallback(
     async (song: searchResults) => {
-      setCurrentSong(song);
+      dispatch({ type: "SET_CURRENT_SONG", payload: song });
       if (audioRef.current) {
         if (backgroundVideoRef.current) {
           backgroundVideoRef.current.src = "";
@@ -91,9 +134,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         audioRef.current.src = "";
         const currentVideoUrl = getURL(song).replace(
           process.env.VIDEO_STREAM_URI || "",
-          window.navigator.userAgent.includes("Electron")
-            ? "http://localhost:7777/stream"
-            : process.env.STREAM_URL || ""
+          // window.navigator.userAgent.includes("Electron")
+          // ? // ? "http://localhost:7777/stream"
+          // : process.env.STREAM_URL || ""
+          // process.env.STREAM_URL || ""
+          process.env.STREAM_URL || ""
         );
 
         audioRef.current.src = currentVideoUrl;
@@ -109,7 +154,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             if (backgroundVideoRef.current) {
               backgroundVideoRef.current?.play();
             }
-            setIsPlaying(true);
+            dispatch({ type: "SET_IS_PLAYING", payload: true });
           })
           .catch((e) => {
             if (e.message.startsWith("Failed to load because no supported")) {
@@ -143,40 +188,40 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current.pause();
     }
     socketRef.current.emit("status", false);
-    setIsPlaying(false);
+    dispatch({ type: "SET_IS_PLAYING", payload: false });
   }, [socketRef]);
 
   // resume
   const resume = useCallback(() => {
-    if (audioRef.current && currentSong) {
+    if (audioRef.current && state.currentSong) {
       audioRef.current
         .play()
         .then(() => {
           socketRef.current.emit("status", true);
-          setIsPlaying(true);
+          dispatch({ type: "SET_IS_PLAYING", payload: true });
         })
         .catch((error) => {
           console.error("Error resuming audio:", error);
         });
     }
-  }, [currentSong, socketRef]);
+  }, [state.currentSong, socketRef]);
 
   // toggle play/pause
   const togglePlayPause = useCallback(() => {
-    if (isPlaying) {
+    if (state.isPlaying) {
       pause();
     } else {
-      if (currentSong) {
+      if (state.currentSong) {
         resume();
       }
     }
-  }, [isPlaying, currentSong, pause, resume]);
+  }, [state.isPlaying, state.currentSong, pause, resume]);
 
   // mute
   const mute = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.muted = true;
-      setIsMuted(true);
+      dispatch({ type: "SET_IS_MUTED", payload: true });
     }
   }, []);
 
@@ -184,7 +229,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const unmute = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.muted = false;
-      setIsMuted(false);
+      dispatch({ type: "SET_IS_MUTED", payload: false });
     }
   }, []);
 
@@ -196,7 +241,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         localStorage.setItem("volume", String(value));
       }
     }
-    setVolume(value);
+    dispatch({ type: "SET_PROGRESS", payload: value });
   };
 
   // seek
@@ -230,9 +275,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentSong?.name,
-        artist: currentSong?.artists.primary[0].name,
-        artwork: currentSong?.image.map((image) => ({
+        title: state.currentSong?.name,
+        artist: state.currentSong?.artists.primary[0].name,
+        artwork: state.currentSong?.image.map((image) => ({
           sizes: image.quality,
           src: image.url,
         })),
@@ -255,7 +300,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       navigator.mediaSession.setActionHandler("seekbackward", handleBlock);
       navigator.mediaSession.setActionHandler("seekforward", handleBlock);
     }
-  }, [currentSong, playNext, playPrev, pause, resume, seek, user]);
+  }, [state.currentSong, playNext, playPrev, pause, resume, seek, user]);
 
   // Debounced function to emit progress
 
@@ -313,7 +358,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     if (audioElement) {
       const handlePlay = () => {
         // requestAnimationFrame(updateProgress),
-        setIsPlaying(true);
+
+        dispatch({ type: "SET_IS_PLAYING", payload: true });
         if (videoRef.current) {
           videoRef.current?.play();
         }
@@ -381,55 +427,40 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     };
   }, [togglePlayPause, playNext, playPrev]);
 
-  const value = useMemo(
-    () => ({
-      play,
-      pause,
-      resume,
-      togglePlayPause,
-      mute,
-      unmute,
-      setVolume: handleVolumeChange, // Add the volume setter to the context
-      isPlaying,
-      isMuted,
-      volume,
-      currentSong,
-      progress,
-      setProgress,
-      playPrev,
-      playNext,
-      seek,
-      duration,
-      isLooped,
-      setLoop,
-      shuffled,
-      setShuffled,
-      videoRef,
-      backgroundVideoRef,
-      audioRef,
-      setCurrentSong,
-    }),
-    [
-      play,
-      pause,
-      resume,
-      togglePlayPause,
-      mute,
-      unmute,
-      isPlaying,
-      isMuted,
-      volume,
-      currentSong,
-      progress,
-      playPrev,
-      playNext,
-      seek,
-      duration,
-      isLooped,
-      shuffled,
-    ]
-  );
+  const setProgress = useCallback((progress: number) => {
+    dispatch({ type: "SET_PROGRESS", payload: progress });
+  }, []);
+
+  const setCurrentSong = useCallback((song: searchResults | null) => {
+    dispatch({ type: "SET_CURRENT_SONG", payload: song });
+  }, []);
   return (
-    <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
+    <AudioContext.Provider
+      value={{
+        play,
+        pause,
+        resume,
+        togglePlayPause,
+        mute,
+        unmute,
+        setVolume: handleVolumeChange, // Add the volume setter to the context
+        isPlaying: state.isPlaying,
+        isMuted: state.isMuted,
+        volume,
+        currentSong: state.currentSong,
+        progress,
+        setProgress,
+        playPrev,
+        playNext,
+        seek,
+        duration,
+        videoRef,
+        backgroundVideoRef,
+        audioRef,
+        setCurrentSong,
+      }}
+    >
+      {children}
+    </AudioContext.Provider>
   );
 };

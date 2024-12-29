@@ -1,4 +1,4 @@
-"use client";
+"use client"; // need to be fixed  with (useReducer)
 import { socket } from "@/app/socket";
 import { listener, searchResults, TUser } from "@/lib/types";
 import { generateRoomId } from "@/utils/utils";

@@ -27,9 +27,9 @@ function TopVotes({ song }: { song: searchResults }) {
             initial="hidden"
             animate="visible"
             variants={avatarVariants}
-            className={` ${i !== 0 && "-ml-2.5"} size-5`}
+            className={` ${i !== 0 && "-ml-2"} size-5`}
           >
-            <Avatar className="size-5 border border-white">
+            <Avatar className="size-5 border border-white/80">
               <AvatarImage
                 loading="lazy"
                 alt={voter?.name}
@@ -53,10 +53,12 @@ function TopVotes({ song }: { song: searchResults }) {
             stiffness: 70,
             damping: 12,
           }}
-          className="-ml-4 pl-1.5 py-1 text-[9px] rounded-full"
+          className="-ml-3.5 pl-1.5  text-[9px] font-bold rounded-full"
         >
-          <Avatar className="size-6 border-white border">
-            <AvatarFallback>+{song?.voteCount - 2}</AvatarFallback>
+          <Avatar className="size-5 border-white/80 border">
+            <AvatarFallback className="bg-purple">
+              +{song?.voteCount - 2}
+            </AvatarFallback>
           </Avatar>
         </motion.div>
       )}

@@ -71,7 +71,9 @@ function SearchSongPopupComp({
           return;
         }
         const url = youtube
-          ? `${process.env.SOCKET_URI}/api/spotify/playlist/${id}`
+          ? `${process.env.SOCKET_URI}/api/${
+              value.includes("youtube.com") ? "youtube" : "spotify"
+            }/playlist/${id}`
           : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
 
         setPage(0); // Reset page on a new search
@@ -330,7 +332,7 @@ function SearchSongPopupComp({
                   height="27"
                   className={`cursor-pointer ${
                     starred ? "fill-purple" : "fill-lightPurple opacity-90"
-                  } hover:opacity-100`}
+                  } hover:opacity-100 max-md:hidden`}
                   viewBox="0 0 256 256"
                 >
                   <path d="M208,40H48A24,24,0,0,0,24,64V176a24,24,0,0,0,24,24h72v16H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V200h72a24,24,0,0,0,24-24V64A24,24,0,0,0,208,40ZM48,56H208a8,8,0,0,1,8,8v80H40V64A8,8,0,0,1,48,56ZM208,184H48a8,8,0,0,1-8-8V160H216v16A8,8,0,0,1,208,184Z"></path>
@@ -373,9 +375,7 @@ function SearchSongPopupComp({
             autoFocus
             onChange={handleSearch}
             placeholder={
-              youtube
-                ? "Paste spotify playlist link (removing soon)"
-                : "What u wanna listen?"
+              youtube ? "Paste spotify playlist link" : "What u wanna listen?"
             }
             className="border-none focus-visible:ring-0"
           />

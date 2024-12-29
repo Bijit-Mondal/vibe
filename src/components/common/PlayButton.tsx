@@ -6,7 +6,10 @@ import { AnimatePresence, motion } from "framer-motion";
 function PlayButton({ className }: { className?: string }) {
   const { isPlaying, togglePlayPause } = useAudio();
   return (
-    <div onClick={togglePlayPause} className="bg-purple  p-4 rounded-full">
+    <div
+      onClick={togglePlayPause}
+      className="bg-purple cursor-pointer p-4 rounded-full"
+    >
       <div className=" w-fit overflow-hidden">
         <AnimatePresence mode="wait" key={"play pause"}>
           {isPlaying ? (

@@ -133,3 +133,10 @@ export interface CachedVideo {
 export interface uploadedImageT {
   data: { direct_url: string; deletion_url: string };
 }
+
+export interface linkPreview {
+  title: string;
+  description: string;
+  image: string | null;
+  requestUrl: string;
+}
