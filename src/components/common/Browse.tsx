@@ -36,8 +36,8 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
   return (
     <motion.div
       style={{
-        WebkitMaskImage: "linear-gradient(to top, black 95%, transparent 100%)",
-        maskImage: "linear-gradient(to top, black 95%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,1) 100%)",
+        maskImage: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,1) 100%)",
       }}
       initial={{
         opacity: 0,
