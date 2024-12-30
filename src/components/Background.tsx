@@ -41,7 +41,7 @@ function Background() {
         </>
       ) : (
         <div
-          className="relative bg-cover  object-cover transition-all duration-700 bg-no-repeat bg-center w-full h-full"
+          className="relative bg-cover  max-md:hidden object-cover transition-all duration-700 bg-no-repeat bg-center w-full h-full"
           style={{
             backgroundImage: `url('${
               currentSong?.image[currentSong?.image?.length - 1]?.url ||
