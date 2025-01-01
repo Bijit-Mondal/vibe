@@ -57,7 +57,7 @@ async function page() {
   });
   if (!res.success) redirect("/");
 
-  return <Browse data={res.data?.results.slice(0, 10)} />;
+  return <Browse data={res.data?.results.slice(0, 6)} />;
 }
 
 export default page;
