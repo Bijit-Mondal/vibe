@@ -185,11 +185,24 @@ function Chat({
     fetchGifs(gifQuery);
   }, [gifQuery]);
 
+  // for gif input
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
-
     setQuery(searchTerm);
   };
+  // const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // for message input
+  // const handleTyping = () => {
+  //   emitMessage("typing", { u: user?._id, status: true });
+  //   if (typingTimeoutRef.current) {
+  //     clearTimeout(typingTimeoutRef.current);
+  //   }
+
+  //   typingTimeoutRef.current = setTimeout(() => {
+  //     emitMessage("typing", { u: user?._id, status: false });
+  //   }, 1000);
+  // };
 
   return (
     <>
@@ -317,7 +330,7 @@ function Chat({
                       height={50}
                       width={50}
                       className=" h-full object-cover  w-full"
-                      src={message?.user.imageUrl || "/bg.webp"}
+                      src={message?.user?.imageUrl || "/bg.webp"}
                     />
                     <AvatarFallback>SX</AvatarFallback>
                   </Avatar>
@@ -325,7 +338,7 @@ function Chat({
                     <p className="truncate -mt-0.5 border-white w-5/12 font-semibold mb-1.5">
                       {message?.user?.name}
                     </p>
-                    {isVideoUrl(message.message) ? (
+                    {isVideoUrl(message?.message) ? (
                       <Link href={message?.message} target="_blank">
                         <video
                           src={message?.message}
@@ -348,7 +361,7 @@ function Chat({
                         ) : (
                           <MessageComponent
                             me={false}
-                            message={message.message}
+                            message={message?.message}
                           />
                         )}
                       </>
@@ -382,7 +395,7 @@ function Chat({
                             />
                           </Link>
                         ) : (
-                          <MessageComponent message={message.message} />
+                          <MessageComponent message={message?.message} />
                         )}
                       </>
                     )}
@@ -415,6 +428,7 @@ function Chat({
             ref={inputRef}
             onChange={(e) => setMessage(e.target.value)}
             value={message}
+            // onInput={handleTyping}
             onPaste={handlePaste}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -539,13 +553,13 @@ const MessageComponent = ({
     <div className=" space-y-1">
       {linkPreviews?.map((linkPreview, index) => (
         <div
-          title={linkPreview.requestUrl}
-          key={linkPreview.title + index}
-          className={` border bg-white/5  overflow-hidden rounded-md ${
+          title={linkPreview?.requestUrl}
+          key={linkPreview?.title + index}
+          className={` border bg-white/5  overflow-hidden rounded-lg ${
             me ? "rounded-tr-none" : "rounded-tl-none"
           }`}
         >
-          <Link href={linkPreview.requestUrl} target="_blank">
+          <Link href={linkPreview?.requestUrl} target="_blank">
             <Avatar className=" rounded-none aspect-video h-auto  w-full">
               <AvatarImage
                 loading="lazy"
@@ -572,7 +586,7 @@ const MessageComponent = ({
           <p
             className={` w-fit  break-words bg-white/5 border  ${
               containsOnlyEmojis(message) ? "text-5xl" : "text-sm"
-            } px-2 py-1 rounded-md ${
+            } px-2 py-1 rounded-lg ${
               me ? "rounded-tr-none" : "rounded-tl-none"
             }`}
           >
