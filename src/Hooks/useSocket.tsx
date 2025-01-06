@@ -114,7 +114,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       const user = decrypt(data) as TUser;
       if (user.username === "@someone") return;
       updateListeners();
-      toast.info(`${user?.username} has left`, {
+      toast.info(`${user?.username} dropped the vibe!`, {
         style: { background: "#e94625" },
       });
     },
@@ -126,7 +126,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       const user = decrypt(data) as TUser;
       if (user.username === "@someone") return;
       updateListeners();
-      toast.info(`${user?.username} has Joined`);
+      toast.info(`${user?.username} vibed in!`);
     },
     [updateListeners]
   );
