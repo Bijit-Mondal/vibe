@@ -19,7 +19,7 @@ import Link from "next/link";
 import { BsDiscord } from "react-icons/bs";
 
 function Login({ footer = false }: { footer?: boolean }) {
-  const { user, roomId, isElectron } = useUserContext();
+  const { user, roomId, isElectron, socketRef } = useUserContext();
   const [loader, setLoader] = useState<boolean>(false);
   const handleLogin = async () => {
     try {
@@ -42,10 +42,21 @@ function Login({ footer = false }: { footer?: boolean }) {
       setLoader(false);
     }
   };
+  const [isOpen, setIsOpen] = useState<boolean>(
+    footer ? false : user ? false : true
+  );
+
   return (
     <Dialog
+      open={isOpen}
+      onOpenChange={() => {
+        if (!socketRef.current.connected && !user && !footer) {
+          setIsOpen(true);
+          return;
+        }
+        setIsOpen((prev) => !prev);
+      }}
       key={"user Login"}
-      defaultOpen={footer ? false : user ? false : true}
     >
       {footer ? (
         <DialogTrigger

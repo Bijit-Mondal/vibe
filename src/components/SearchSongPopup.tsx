@@ -1,12 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import {
-  ArrowLeft,
-  Loader2Icon,
-  Search,
-  // Star,
-  X,
-} from "lucide-react";
+import { ArrowLeft, Loader2Icon, Search, Star, X } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { MdDone } from "react-icons/md";
 import { searchResults, searchSongResult } from "@/lib/types";
@@ -45,7 +39,7 @@ function SearchSongPopupComp({
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { roomId, user, queue, emitMessage, isElectron } = useUserContext();
+  const { roomId, user, queue, emitMessage } = useUserContext();
   const { currentSong } = useAudio();
   const [query, setQuery] = useState<string>("");
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -254,7 +248,7 @@ function SearchSongPopupComp({
   }, []);
   const [starred, setIsStarred] = useState(false);
 
-  // const controllerRef = useRef<AbortController | null>(null);
+  const controllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -262,41 +256,36 @@ function SearchSongPopupComp({
     }
   }, [user]);
 
-  const handleStarClick = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const userAgent = navigator.userAgent.toLowerCase();
+  const handleStarClick = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation();
 
-    const isMac = /macintosh|mac os x/i.test(userAgent);
-    if (isMac) {
-      window.open(process.env.MAC_DOWNLOAD_URL);
-    } else {
-      window.open(process.env.WINDOW_DOWNLOAD_URL);
-    }
-    // const payload = {
-    //   type: "room",
-    // };
+      const payload = {
+        type: "room",
+      };
 
-    // if (controllerRef.current) {
-    //   controllerRef.current.abort();
-    // }
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
 
-    // const controller = new AbortController();
-    // controllerRef.current = controller;
+      const controller = new AbortController();
+      controllerRef.current = controller;
 
-    // const method = starred ? "delete" : "post";
-    // const url = `${process.env.SOCKET_URI}/api/bookmark${
-    //   starred ? "?type=room" : ""
-    // }`;
-    // setIsStarred((prev) => !prev);
-    // const res = await api[method](url, payload, {
-    //   credentials: "include",
-    //   signal: controller.signal,
-    // });
+      const method = starred ? "delete" : "post";
+      const url = `${process.env.SOCKET_URI}/api/bookmark${
+        starred ? "?type=room" : ""
+      }`;
+      setIsStarred((prev) => !prev);
+      const res = await api[method](url, payload, {
+        signal: controller.signal,
+      });
 
-    // if (res.error) {
-    //   setIsStarred((prev) => !prev);
-    // }
-  }, []);
+      if (res.error) {
+        setIsStarred((prev) => !prev);
+      }
+    },
+    [starred]
+  );
   return (
     <Dialog key={"songs"}>
       {youtube ? (
@@ -324,20 +313,10 @@ function SearchSongPopupComp({
                 placeholder="Search songs"
               />
 
-              {!isElectron && (
-                <svg
-                  onClick={handleStarClick}
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="27"
-                  height="27"
-                  className={`cursor-pointer ${
-                    starred ? "fill-purple" : "fill-lightPurple opacity-90"
-                  } hover:opacity-100 max-md:hidden`}
-                  viewBox="0 0 256 256"
-                >
-                  <path d="M208,40H48A24,24,0,0,0,24,64V176a24,24,0,0,0,24,24h72v16H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V200h72a24,24,0,0,0,24-24V64A24,24,0,0,0,208,40ZM48,56H208a8,8,0,0,1,8,8v80H40V64A8,8,0,0,1,48,56ZM208,184H48a8,8,0,0,1-8-8V160H216v16A8,8,0,0,1,208,184Z"></path>
-                </svg>
-              )}
+              <Star
+                className={starred ? "fill-purple" : ""}
+                onClick={handleStarClick}
+              />
             </DialogTrigger>
           ) : (
             <DialogTrigger className="flex-col hidden md:flex w-full h-full text-[#EADDFF] justify-center border-none items-center">

@@ -9,7 +9,6 @@ import React, {
   SetStateAction,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
 } from "react";
 import { Socket } from "socket.io-client";
@@ -39,7 +38,6 @@ interface UserContextType {
   emitMessage: (emit: string, message: any) => void;
   seen: boolean;
   setSeen: React.Dispatch<SetStateAction<boolean>>;
-  isElectron: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -76,10 +74,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     socketRef.current.emit(emit, encrypt(message));
   }, []);
   const [seen, setSeen] = React.useState<boolean>(true);
-  const [isElectron, setIsElectron] = React.useState<boolean>(false);
-  useEffect(() => {
-    setIsElectron(window?.navigator?.userAgent.includes("Electron"));
-  }, []);
+
   const value = useMemo(
     () => ({
       queue,
@@ -90,7 +85,6 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       roomId,
       setRoomId,
       showVideo,
-      isElectron,
       setShowVideo,
       user,
       setUser,
@@ -108,7 +102,6 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       emitMessage,
     }),
     [
-      isElectron,
       seen,
       emitMessage,
       listener,
