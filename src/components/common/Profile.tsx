@@ -141,25 +141,18 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
             name: LoggedInUser?.username,
           })
         );
-        const rateLimit = await api.get<any>(
-          `${process.env.SOCKET_URI}/api/ping`
-        );
-        if (rateLimit.error) {
-          return;
-        }
         setUploading(true);
         if (LoggedInUser?.imageDelUrl) {
           await api.get(LoggedInUser.imageDelUrl, { showErrorToast: false });
         }
         formData.append("file", file);
-        const res = await api.post(process.env.UPLOAD_URL || "", formData, {
-          headers: {
-            "X-Window-Location": process.env.UPLOAD_LOCATION || "",
-            "X-Api-Sitekey": process.env.UPLOAD_SITE_KEY || "",
-            Authorization: process.env.UPLOAD_KEY || "",
-          },
-          signal: controller.signal,
-        });
+        const res = await api.post(
+          `${process.env.PROXY_SERVER_URL}/upload-image`,
+          formData,
+          {
+            signal: controller.signal,
+          }
+        );
         if (res.success) {
           const imageUrl = (res.data as any)?.data?.direct_url;
           const imageDelUrl = (res.data as any)?.data?.deletion_url;

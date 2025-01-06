@@ -154,7 +154,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           // stiffness: 45,
         }}
         onSubmit={handleRedirect}
-        className="max-w-[340px] flex fixed bottom-10 h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center "
+        className="max-w-[340px] flex fixed bottom-5 h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center "
       >
         <div className="flex items-center relative">
           <input

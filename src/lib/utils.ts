@@ -53,15 +53,8 @@ export const uploadImage = async (
     return rateLimit;
   }
   const res = await api.post<uploadedImageT>(
-    process.env.UPLOAD_URL || "",
-    formData,
-    {
-      headers: {
-        "X-Window-Location": process.env.UPLOAD_LOCATION || "",
-        "X-Api-Sitekey": process.env.UPLOAD_SITE_KEY || "",
-        Authorization: process.env.UPLOAD_KEY || "",
-      },
-    }
+    `${process.env.PROXY_SERVER_URL}/upload-image`,
+    formData
   );
   await api.get<any>(
     `${process.env.SOCKET_URI}/api/ping?url=${res.data?.data.deletion_url}`,

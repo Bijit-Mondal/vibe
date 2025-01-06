@@ -2,6 +2,7 @@ import { Browse } from "@/components/common/Browse";
 import api from "@/lib/api";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 export async function generateMetadata() {
   return {
@@ -57,7 +58,11 @@ async function page() {
   });
   if (!res.success) redirect("/");
 
-  return <Browse data={res.data?.results.slice(0, 6)} />;
+  return (
+    <Suspense>
+      <Browse data={res.data?.results.slice(0, 6)} />{" "}
+    </Suspense>
+  );
 }
 
 export default page;
