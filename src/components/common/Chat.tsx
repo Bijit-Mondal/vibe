@@ -157,7 +157,7 @@ function Chat({
     e.stopPropagation();
   };
   const [gifs, setGifs] = useState([]);
-  const [gifQuery, setQuery] = useState("funny");
+  const [gifQuery, setQuery] = useState("trending");
   const controllerRef = useRef<AbortController | null>(null);
   const fetchGifs = async (searchTerm: string) => {
     if (searchTerm.trim().length == 0) return;
@@ -417,6 +417,34 @@ function Chat({
             </div>
           ))}
         </div>
+        {gif && (
+          <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bg-black/20 bottom-[3.2rem] z-10 cursor-pointer h-72  w-[calc(100%-5rem)] ml-5 mb-6 border-2 border-white/10 shadow-lg flex flex-col items-start p-2 text-xs gap-2 px-2 backdrop-blur-xl rounded-xl">
+            <Input
+              autoFocus
+              value={gifQuery}
+              onChange={handleInputChange}
+              placeholder="Search gif"
+              className=" rounded-lg py-4 backdrop-blur-lg placeholder:text-muted-foreground/70 mb-0.5"
+            />
+            <div className="columns-1 sm:columns-2 md:columns-2 lg:columns-2 space-y-3 overflow-y-scroll rounded-md">
+              {gifs.length > 0 ? (
+                gifs.map((gifUrl, index) => (
+                  <GifComponent
+                    key={index}
+                    index={index}
+                    gifUrl={gifUrl}
+                    showGif={showGif}
+                    emitMessage={emitMessage}
+                  />
+                ))
+              ) : (
+                <p className="text-center px-1 text-muted-foreground">
+                  No GIFs found!
+                </p>
+              )}
+            </div>
+          </div>
+        )}
         <form onSubmit={sendMessage} className=" relative">
           {uploading && (
             <div className="text-muted-foreground border-2 border-white/15 absolute size-6 left-0 bottom-[3.2rem] z-10 cursor-pointer h-10 w-40 bg-muted-foreground/10 flex items-center text-xs gap-1 px-2 backdrop-blur-sm rounded-xl">
@@ -438,34 +466,7 @@ function Chat({
             className=" bg-white/5 pr-20 pl-9 rounded-xl py-5 border border-white/20"
             placeholder="Send Message"
           />
-          {gif && (
-            <div className="text-muted-foreground hover:text-white absolute size-6 left-0 bg-black/20 bottom-[3.2rem] z-10 cursor-pointer h-96  w-full border-2 border-white/10 shadow-lg flex flex-col items-start p-2 text-xs gap-2 px-2 backdrop-blur-xl rounded-xl">
-              <Input
-                autoFocus
-                value={gifQuery}
-                onChange={handleInputChange}
-                placeholder="Search gif"
-                className=" rounded-lg py-4 backdrop-blur-lg placeholder:text-muted-foreground/70 mb-0.5"
-              />
-              <div className="columns-1 sm:columns-2 md:columns-2 lg:columns-2 space-y-3 overflow-y-scroll rounded-md">
-                {gifs.length > 0 ? (
-                  gifs.map((gifUrl, index) => (
-                    <GifComponent
-                      key={index}
-                      index={index}
-                      gifUrl={gifUrl}
-                      showGif={showGif}
-                      emitMessage={emitMessage}
-                    />
-                  ))
-                ) : (
-                  <p className="text-center px-1 text-muted-foreground">
-                    No GIFs found!
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
+
           <RiFileGifLine
             onClick={() => showGif((prev) => !prev)}
             className={`${

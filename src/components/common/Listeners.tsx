@@ -120,11 +120,17 @@ function Listeners({ className }: { className?: string }) {
   );
 }
 
-const ProfilePic = ({ imageUrl }: { imageUrl: string }) => {
+export const ProfilePic = ({
+  imageUrl,
+  className,
+}: {
+  imageUrl: string;
+  className?: string;
+}) => {
   return (
     <Dialog>
       <DialogTrigger className="flex items-center justify-center gap-2">
-        <Avatar className=" size-12 border-2 border-white/15">
+        <Avatar className={cn(" size-12 border-2 border-white/15", className)}>
           <AvatarImage
             loading="lazy"
             className=" object-cover"
