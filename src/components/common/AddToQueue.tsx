@@ -184,7 +184,7 @@ function AddToQueueComp() {
             duration: 0.2,
             ease: "easeInOut",
           }}
-          className=" flex hide-scrollbar overflow-x-scroll py-1 -mb-1 mt-2 items-center gap-1"
+          className=" flex hide-scrollbar overflow-x-scroll py-1 pr-4 justify-between -mb-1 mt-2 items-center gap-1"
         >
           <VibeAlert
             disabled={selectedSongs.length == 0}
@@ -192,7 +192,7 @@ function AddToQueueComp() {
             title={`Remove Selected ${selectedSongs.length}`}
             headingClassName="md:w-8/12 w-[80vw] "
             confirmText="Yes, delete selected"
-            heading="Are you sure you want to delete selected songs?"
+            heading={`Are you sure you want to delete ${selectedSongs.length} songs?`}
             action={handleBulkDelete}
           />
 
