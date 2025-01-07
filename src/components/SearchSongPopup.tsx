@@ -278,6 +278,7 @@ function SearchSongPopupComp({
       setIsStarred((prev) => !prev);
       const res = await api[method](url, payload, {
         signal: controller.signal,
+        credentials: "include",
       });
 
       if (res.error) {
