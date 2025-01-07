@@ -47,6 +47,15 @@ const AvatarImage = React.forwardRef<
           isLoading ? "opacity-0" : "opacity-100",
           className
         )}
+        src={
+          props.src?.startsWith("https://wsrv.nl/?url")
+            ? props.src
+            : `https://wsrv.nl/?url=${props.src}`
+        }
+        onError={(e) => {
+          e.currentTarget.src =
+            "https://lightwidget.com/wp-content/uploads/localhost-file-not-found.jpg";
+        }}
         onLoad={handleImageLoad}
         {...props}
       />

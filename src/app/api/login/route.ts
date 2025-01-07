@@ -6,12 +6,15 @@ export async function POST(req: NextRequest) {
     if (accessToken) {
       const response = NextResponse.json({ success: true });
 
+      const cookieExpirationDate = new Date();
+      cookieExpirationDate.setDate(cookieExpirationDate.getDate() + 30);
+
       response.cookies.set("vibeId", accessToken, {
         httpOnly: true,
         sameSite: "lax",
         secure: true,
         path: "/",
-        expires: new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000),
+        expires: cookieExpirationDate,
       });
       return response;
     }

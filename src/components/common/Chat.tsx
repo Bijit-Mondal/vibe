@@ -614,6 +614,10 @@ const GifComponent = ({ gifUrl, index, emitMessage, showGif }: any) => {
         width={500}
         key={index}
         src={gifUrl}
+        onError={(e) => {
+          e.currentTarget.src =
+            "https://lightwidget.com/wp-content/uploads/localhost-file-not-found.jpg";
+        }}
         onClick={() => {
           emitMessage("message", gifUrl);
           showGif(false);
