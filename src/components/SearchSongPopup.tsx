@@ -279,6 +279,7 @@ function SearchSongPopupComp({
       const res = await api[method](url, payload, {
         signal: controller.signal,
         credentials: "include",
+        ...(roomId && { headers: { room: roomId } }),
       });
 
       if (res.error) {
