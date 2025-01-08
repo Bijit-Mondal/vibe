@@ -50,7 +50,7 @@ export async function generateMetadata() {
 async function page() {
   const vibeId = cookies().get("vibeId")?.value;
   if (!vibeId) redirect("/");
-  const res = await api.get<any>(`${process.env.SOCKET_URI}/api/rooms/all`, {
+  const res = await api.get<any>(`${process.env.SOCKET_URI}/api/rooms/browse`, {
     headers: {
       cookie: `vibeIdR=${vibeId}`,
     },
@@ -60,7 +60,7 @@ async function page() {
 
   return (
     <Suspense>
-      <Browse data={res.data?.results.slice(0, 6)} />{" "}
+      <Browse data={res.data} />{" "}
     </Suspense>
   );
 }
