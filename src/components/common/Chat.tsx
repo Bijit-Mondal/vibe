@@ -339,15 +339,13 @@ function Chat({
                       {message?.user?.name}
                     </p>
                     {isVideoUrl(message?.message) ? (
-                      <Link href={message?.message} target="_blank">
-                        <video
-                          src={message?.message}
-                          controls
-                          autoPlay
-                          muted
-                          className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
-                        />
-                      </Link>
+                      <video
+                        src={message?.message}
+                        controls
+                        autoPlay
+                        muted
+                        className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
+                      />
                     ) : (
                       <>
                         {isImageUrl(message?.message) ? (
@@ -375,15 +373,13 @@ function Chat({
                       {message.user?.name}
                     </p>
                     {isVideoUrl(message.message) ? (
-                      <Link href={message?.message} target="_blank">
-                        <video
-                          src={message?.message}
-                          controls
-                          autoPlay
-                          muted
-                          className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
-                        />
-                      </Link>
+                      <video
+                        src={message?.message}
+                        controls
+                        autoPlay
+                        muted
+                        className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
+                      />
                     ) : (
                       <>
                         {isImageUrl(message?.message) ? (
