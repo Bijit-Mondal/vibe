@@ -273,7 +273,7 @@ function SearchSongPopupComp({
 
       const method = starred ? "delete" : "post";
       const url = `${process.env.SOCKET_URI}/api/bookmark${
-        starred ? "?type=room" : ""
+        starred ? `?type=room&roomId=${roomId}` : ""
       }`;
       setIsStarred((prev) => !prev);
       const res = await api[method](url, payload, {
@@ -285,7 +285,7 @@ function SearchSongPopupComp({
         setIsStarred((prev) => !prev);
       }
     },
-    [starred]
+    [starred, roomId]
   );
   return (
     <Dialog key={"songs"}>

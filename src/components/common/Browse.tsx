@@ -6,10 +6,20 @@ import { Button } from "../ui/button";
 import React, { useState } from "react";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import { Star } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Browse({ data = [] }: { data: roomsData[] }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [roomLink, setRoomLink] = useState<string>("");
+  const pathname = usePathname();
+  const [isSaved, setIsSaved] = useState<boolean>(pathname.includes("saved"));
+
+  const togglePath = () => {
+    setIsSaved(!isSaved);
+  };
+
   const handleRedirect = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (roomLink.trim().length === 0) return;
@@ -156,6 +166,14 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         onSubmit={handleRedirect}
         className="max-w-[340px] flex fixed bottom-5 h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center "
       >
+        <Link
+          title={isSaved ? "Go to browse" : "Go to saved rooms"}
+          href={isSaved ? "/browse" : "/browse/saved"}
+          onClick={togglePath}
+          className="flex justify-center absolute -left-8 items-center text-muted-foreground hover:text-white transition-all duration-150"
+        >
+          <Star className="size-6" />
+        </Link>
         <div className="flex items-center relative">
           <input
             autoFocus

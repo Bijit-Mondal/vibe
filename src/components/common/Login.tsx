@@ -61,7 +61,7 @@ function Login({ footer = false }: { footer?: boolean }) {
       {footer ? (
         <DialogTrigger
           asChild
-          className="w-fit focus:outline-none text-xs -mt-3.5 px-0.5 font-normal text-white/70 hover:text-white"
+          className="w-fit cursor-pointer focus:outline-none text-xs -mt-3.5 px-0.5 font-normal text-white/70 hover:text-white"
         >
           <p>Login to your account?</p>
         </DialogTrigger>

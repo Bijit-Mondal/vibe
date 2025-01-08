@@ -6,7 +6,7 @@ import { Suspense } from "react";
 
 export async function generateMetadata() {
   return {
-    title: `Your Rooms`,
+    title: `Your Saved Rooms`,
     description: `Democratic Music Selection:`,
 
     icons: { icon: "/favicon.png" },
@@ -50,7 +50,7 @@ export async function generateMetadata() {
 async function page() {
   const vibeId = cookies().get("vibeId")?.value;
   if (!vibeId) redirect("/");
-  const res = await api.get<any>(`${process.env.SOCKET_URI}/api/rooms/browse`, {
+  const res = await api.get<any>(`${process.env.SOCKET_URI}/api/rooms/saved`, {
     headers: {
       cookie: `vibeIdR=${vibeId}`,
     },
