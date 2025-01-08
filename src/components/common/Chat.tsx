@@ -157,7 +157,7 @@ function Chat({
     e.stopPropagation();
   };
   const [gifs, setGifs] = useState([]);
-  const [gifQuery, setQuery] = useState("trending");
+  const [gifQuery, setQuery] = useState<string>("");
   const controllerRef = useRef<AbortController | null>(null);
   const fetchGifs = async (searchTerm: string) => {
     if (searchTerm.trim().length == 0) return;
