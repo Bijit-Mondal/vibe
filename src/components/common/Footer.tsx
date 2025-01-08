@@ -51,20 +51,6 @@ function Footer() {
             />
           </Link>
         </span>
-        {/* <span className=" -ml-4">
-          <Link href="https://www.instagram.com/1yuno1/" target="_blank">
-            <Image
-              title="yono"
-              src={
-                "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/ziddhi.png"
-              }
-              alt="logo"
-              height={45}
-              className=" size-8 border-2 border-white max-md:size-7 object-cover rounded-full"
-              width={45}
-            />
-          </Link>
-        </span> */}
       </div>
       <div className="flex md:hidden  text-xl md:text-2xl  items-center gap-2">
         <Link href="https://www.instagram.com/fixing_x/" target="_blank">
