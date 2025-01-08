@@ -24,7 +24,7 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
   useEffect(() => {
     setRooms(RoomsData);
     setDraggingStates(
-      Object.fromEntries(RoomsData.map((room) => [room.roomId, false]))
+      Object.fromEntries(RoomsData?.map((room) => [room.roomId, false]))
     );
   }, [RoomsData]);
 

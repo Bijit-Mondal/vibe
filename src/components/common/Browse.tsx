@@ -63,7 +63,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
       className=" flex items-center flex-col bg-[#141414] justify-center min-h-dvh py-20  overflow-y-scroll"
     >
       <div className=" flex items-start  px-7 flex-wrap relative justify-center w-full gap-6">
-        {data.map((room, index) => (
+        {data?.map((room, index) => (
           <motion.a
             title={room?.name[0]}
             initial={{

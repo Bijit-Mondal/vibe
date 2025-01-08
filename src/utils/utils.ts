@@ -4,7 +4,7 @@ import { decrypt, encrypt } from "tanmayo7lock";
 
 export const formatArtistName = (artists: artists[]) => {
   return artists
-    .map((data, index) => {
+    ?.map((data, index) => {
       if (index === artists.length - 1) {
         return `${data.name}`;
       }

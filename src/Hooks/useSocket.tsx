@@ -155,7 +155,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       if (value?.results?.length > 0) {
         setQueue((prev) => {
           // Create a Set with IDs from the previous queue to track unique songs
-          const songIds = new Set(prev.map((song) => song.id));
+          const songIds = new Set(prev?.map((song) => song.id));
 
           // Filter new results to include only songs not already in the queue
           const uniqueNewSongs = (value.results || []).filter((song) => {

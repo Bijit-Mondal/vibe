@@ -175,7 +175,7 @@ function Chat({
     );
     if (response.success) {
       setGifs(
-        response.data.results.map((gif: any) => gif.media_formats.gif.url)
+        response.data.results?.map((gif: any) => gif.media_formats.gif.url)
       );
     }
   };
@@ -319,7 +319,7 @@ function Chat({
           }}
           className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll"
         >
-          {messages.map((message) => (
+          {messages?.map((message) => (
             <div title={message?.time} key={message?.message}>
               {message.user._id !== user?._id ? (
                 <div className=" flex gap-2">
@@ -424,7 +424,7 @@ function Chat({
             />
             <div className="columns-1 sm:columns-2 md:columns-2 lg:columns-2 space-y-3 overflow-y-scroll rounded-md">
               {gifs.length > 0 ? (
-                gifs.map((gifUrl, index) => (
+                gifs?.map((gifUrl, index) => (
                   <GifComponent
                     key={index}
                     index={index}
@@ -507,7 +507,7 @@ const MessageComponent = ({
     const links = extractLinks(message);
     const fetchLinkPreviews = async () => {
       const previews = await Promise.all(
-        links.map(async (link) => {
+        links?.map(async (link) => {
           const response = await api.get<linkPreview>(
             `${process.env.SOCKET_URI}/api/linkpreview?url=${encodeURIComponent(
               link

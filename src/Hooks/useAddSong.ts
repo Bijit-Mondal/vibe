@@ -15,7 +15,7 @@ function useAddSong() {
       if (!roomId) return;
       let uniqueSongs: searchResults[] = [];
       if (check) {
-        const queuedSongIds = new Set(queue.map((song) => song.id));
+        const queuedSongIds = new Set(queue?.map((song) => song.id));
         uniqueSongs = selectedSongs.filter(
           (song) => !queuedSongIds.has(song.id)
         );

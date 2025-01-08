@@ -66,7 +66,7 @@ function SearchQueueList({
 
             if (songExists) {
               // If the song is already in the queue, toggle the isVoted state
-              return prev.map((item) =>
+              return prev?.map((item) =>
                 item.id === song.id
                   ? {
                       ...item,
@@ -137,7 +137,7 @@ function SearchQueueList({
     setShowAddDragOptions(false);
   };
   useEffect(() => {
-    setSelectedIds(new Set(selectedSongs.map((song) => song.id)));
+    setSelectedIds(new Set(selectedSongs?.map((song) => song.id)));
   }, [selectedSongs]);
   return (
     <>

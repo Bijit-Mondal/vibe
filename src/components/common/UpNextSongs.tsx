@@ -27,7 +27,7 @@ function UpNextSongs() {
           {upNextSongs.length > 0 &&
             upNextSongs
               .filter((s) => s.id !== currentSong?.id)
-              .map((nextSong, i) => (
+              ?.map((nextSong, i) => (
                 <motion.div
                   onDragEnd={handleDragEnd}
                   onDragStart={(e) => handleDragStart(e, nextSong)}

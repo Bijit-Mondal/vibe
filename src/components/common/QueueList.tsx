@@ -76,7 +76,7 @@ function QueueListComp({
 
           if (songExists) {
             // Toggle isVoted status and update topVoters list
-            return prevQueue.map((item, index) =>
+            return prevQueue?.map((item, index) =>
               index === songIndex
                 ? {
                     ...item,
@@ -234,14 +234,16 @@ function QueueListComp({
     setIsDragging(false);
   };
   useEffect(() => {
-    setSelectedIds(new Set(selectedSongs.map((song) => song.id)));
+    setSelectedIds(new Set(selectedSongs?.map((song) => song.id)));
   }, [selectedSongs]);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   return (
     <div
       style={{
-        WebkitMaskImage:"linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%, rgba(0,0,0,1) 98%, rgba(0,0,0,0) 100%)",
-        maskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%, rgba(0,0,0,1) 98%, rgba(0,0,0,0) 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%, rgba(0,0,0,1) 98%, rgba(0,0,0,0) 100%)",
+        maskImage:
+          "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%, rgba(0,0,0,1) 98%, rgba(0,0,0,0) 100%)",
       }}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}

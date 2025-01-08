@@ -20,7 +20,7 @@ function TopVotes({ song }: { song: searchResults }) {
 
   return (
     <div key={song?.id} className="flex items-center">
-      {song.topVoters?.slice(0, 2).map((voter, i) => (
+      {song.topVoters?.slice(0, 2)?.map((voter, i) => (
         <div title={`  ${voter?.username} (${voter?.name})`} key={voter?._id}>
           <motion.div
             custom={i}
