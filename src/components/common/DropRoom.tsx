@@ -102,15 +102,15 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
           onDragOver={handleDragOver}
         >
           {rooms
-            ?.filter((r) => r.roomId !== roomId)
+            ?.filter((r) => r?.roomId !== roomId)
             ?.slice(0, 3)
             ?.map((room, index) => (
               <motion.div
                 key={room.roomId}
-                onDragEnter={(e) => handleDragEnter(e, room.roomId)}
-                onDragOver={(e) => handleDragEnter(e, room.roomId)}
-                onDragLeave={(e) => handleDragLeave(e, room.roomId)}
-                onDrop={(e) => handleDrop(e, room.roomId)}
+                onDragEnter={(e) => handleDragEnter(e, room?.roomId)}
+                onDragOver={(e) => handleDragEnter(e, room?.roomId)}
+                onDragLeave={(e) => handleDragLeave(e, room?.roomId)}
+                onDrop={(e) => handleDrop(e, room?.roomId)}
                 onDragEnd={handleDragEnd}
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -124,13 +124,13 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
               >
                 <Card
                   className={`w-52 h-36 transition-all duration-200 ease-in-out flex-shrink-0 ${
-                    draggingStates[room.roomId] ? "scale-95" : "scale-100"
+                    draggingStates[room?.roomId] ? "scale-95" : "scale-100"
                   }`}
                 >
                   <CardContent className="p-0 h-full">
                     <div
                       className={`relative w-full h-full border  border-dashed rounded-lg overflow-hidden ${
-                        draggingStates[room.roomId]
+                        draggingStates[room?.roomId]
                           ? "border-primary"
                           : "border-muted"
                       }`}
@@ -138,17 +138,17 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                       <Image
                         height={500}
                         width={500}
-                        src={room.background}
-                        alt={room.name[0]}
+                        src={room?.background}
+                        alt={room?.name[0]}
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"></div>
                       <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
-                        {room.name[0]}
+                        {room?.name[0]}
                       </div>
                       <button
                         className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none"
-                        aria-label={`Drop area for ${room.name[0]}`}
+                        aria-label={`Drop area for ${room?.name[0]}`}
                       />
                     </div>
                   </CardContent>
@@ -166,15 +166,15 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
           onDragOver={handleDragOver}
         >
           {rooms
-            ?.filter((r) => r.roomId !== roomId)
+            ?.filter((r) => r?.roomId !== roomId)
             ?.slice(3, rooms.length - 1)
             ?.map((room, index) => (
               <motion.div
                 key={room.roomId}
-                onDragEnter={(e) => handleDragEnter(e, room.roomId)}
-                onDragOver={(e) => handleDragEnter(e, room.roomId)}
-                onDragLeave={(e) => handleDragLeave(e, room.roomId)}
-                onDrop={(e) => handleDrop(e, room.roomId)}
+                onDragEnter={(e) => handleDragEnter(e, room?.roomId)}
+                onDragOver={(e) => handleDragEnter(e, room?.roomId)}
+                onDragLeave={(e) => handleDragLeave(e, room?.roomId)}
+                onDrop={(e) => handleDrop(e, room?.roomId)}
                 onDragEnd={handleDragEnd}
                 initial={{ opacity: 0, x: -100 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -188,13 +188,13 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
               >
                 <Card
                   className={`w-52 h-36 transition-all duration-200 ease-in-out flex-shrink-0 ${
-                    draggingStates[room.roomId] ? "scale-95" : "scale-100"
+                    draggingStates[room?.roomId] ? "scale-95" : "scale-100"
                   }`}
                 >
                   <CardContent className="p-0 h-full">
                     <div
                       className={`relative w-full h-full border  border-dashed rounded-lg overflow-hidden ${
-                        draggingStates[room.roomId]
+                        draggingStates[room?.roomId]
                           ? "border-primary"
                           : "border-muted"
                       }`}
@@ -202,17 +202,17 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                       <Image
                         height={500}
                         width={500}
-                        src={room.background}
-                        alt={room.name[0]}
+                        src={room?.background}
+                        alt={room?.name[0]}
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"></div>
                       <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
-                        {room.name[0]}
+                        {room?.name[0]}
                       </div>
                       <button
                         className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none"
-                        aria-label={`Drop area for ${room.name[0]}`}
+                        aria-label={`Drop area for ${room?.name[0]}`}
                       />
                     </div>
                   </CardContent>
