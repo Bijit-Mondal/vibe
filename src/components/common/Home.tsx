@@ -8,13 +8,13 @@ import { TUser } from "@/lib/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserContext } from "@/store/userStore";
 import Popups from "./Popups";
-import HyperText from "../ui/hyper-text";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { getSpotifyTrackID } from "@/utils/utils";
 import useAddSong from "@/Hooks/useAddSong";
 import Feedback from "./Feedback";
+
 export default function Home({
   user,
   roomId,
@@ -23,12 +23,20 @@ export default function Home({
   roomId?: string;
 }) {
   const { socketRef } = useUserContext();
+  const [designerText] = useState<string>(() => {
+    const designers = ["Designed by Ajay", "by Babyo7_", "Vibe"];
+    return designers[Math.floor(Math.random() * designers.length)];
+  });
+  const [showLoader, setShowLoader] = useState<boolean>(true);
+
   const loaderVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.5 } },
     exit: { opacity: 0, transition: { duration: 0.5 } },
   };
+
   const { addSong } = useAddSong();
+
   useEffect(() => {
     const handlePaste = async (event: ClipboardEvent) => {
       const target = event.target as HTMLElement;
@@ -36,8 +44,10 @@ export default function Home({
       if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
         return;
       }
+
       const droppedUrl = event?.clipboardData?.getData("text");
       if (!droppedUrl) return;
+
       if (droppedUrl.includes("youtube.com")) {
         const res = await api.get(
           `${process.env.SOCKET_URI}/api/search/?name=${droppedUrl}&page=0`,
@@ -84,23 +94,27 @@ export default function Home({
       document.removeEventListener("paste", handlePaste);
     };
   }, [addSong, roomId]);
+
+  useEffect(() => {
+    if (socketRef.current?.connected) {
+      setTimeout(() => setShowLoader(false), 700);
+    }
+  }, [socketRef.current.connected]);
+
   return (
     <>
       <Popups />
       <Feedback />
       <AnimatePresence>
-        {!socketRef.current?.connected && (
+        {showLoader && (
           <motion.div
-            className="w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black/10 backdrop-blur-xl z-50 absolute flex items-center flex-col justify-center font-semibold text-2xl"
+            className="w-full inset-0 max-md:px-5 max-md:text-xl text-zinc-200 h-screen bg-black backdrop-blur-xl z-50 absolute flex items-center flex-col justify-center text-xl font-semibold"
             initial="hidden"
             animate="visible"
             exit="exit"
             variants={loaderVariants}
           >
-            <HyperText
-              className="text-4xl font-bold text-black dark:text-white"
-              text="vibe"
-            />
+            {designerText}
           </motion.div>
         )}
       </AnimatePresence>
