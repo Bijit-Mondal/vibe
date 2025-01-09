@@ -85,12 +85,12 @@ export default function DraggableOptions() {
   useEffect(() => {
     if (!user) return;
     api
-      .get(`${process.env.SOCKET_URI}/api/rooms/browse`, {
+      .get<any>(`${process.env.SOCKET_URI}/api/rooms/browse`, {
         showErrorToast: false,
       })
       .then((response) => {
         if (response.success) {
-          setRooms(response.data as any);
+          setRooms(response.data.results);
         }
       });
   }, [user]);

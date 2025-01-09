@@ -46,23 +46,32 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const { clientX } = e;
-    const { left, right } = container.getBoundingClientRect();
-    const scrollSpeed = 5;
+    const { clientY } = e;
+    const { top, bottom, height } = container.getBoundingClientRect();
+    const scrollSpeed = 15;
+    const triggerZone = height * 0.3; // 30% of height for top and bottom zones
 
-    if (clientX > right - 50) {
+    const distanceFromTop = clientY - top;
+    const distanceFromBottom = bottom - clientY;
+
+    if (distanceFromTop < triggerZone) {
+      // Scroll up when near top
+      const intensity = 1 - distanceFromTop / triggerZone;
       if (!autoScrollIntervalRef.current) {
         autoScrollIntervalRef.current = window.setInterval(() => {
-          container.scrollLeft += scrollSpeed;
-        }, 16);
+          container.scrollTop -= scrollSpeed * intensity;
+        }, 0);
       }
-    } else if (clientX < left + 50) {
+    } else if (distanceFromBottom < triggerZone) {
+      // Scroll down when near bottom
+      const intensity = 1 - distanceFromBottom / triggerZone;
       if (!autoScrollIntervalRef.current) {
         autoScrollIntervalRef.current = window.setInterval(() => {
-          container.scrollLeft -= scrollSpeed;
-        }, 16);
+          container.scrollTop += scrollSpeed * intensity;
+        }, 0);
       }
     } else {
+      // Stop scrolling in middle zone
       if (autoScrollIntervalRef.current) {
         clearInterval(autoScrollIntervalRef.current);
         autoScrollIntervalRef.current = null;
@@ -96,7 +105,6 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
     <>
       <div className="fixed right-5 top-5 ">
         <div
-          ref={scrollContainerRef}
           className="flex flex-col space-y-4 overflow-x-auto pb-4 scrollbar-hide"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           onDragOver={handleDragOver}
@@ -161,13 +169,13 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
       <div className="fixed left-5 top-5 ">
         <div
           ref={scrollContainerRef}
-          className="flex flex-col space-y-4 overflow-x-auto pb-4 scrollbar-hide"
+          className="flex flex-col space-y-4 max-h-[calc(100vh-3rem)] overflow-y-auto pb-4 scrollbar-hide"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           onDragOver={handleDragOver}
         >
           {rooms
             ?.filter((r) => r?.roomId !== roomId)
-            ?.slice(3, rooms.length - 1)
+            ?.slice(3, rooms.length)
             ?.map((room, index) => (
               <motion.div
                 key={room.roomId}
