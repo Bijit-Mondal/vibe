@@ -157,7 +157,7 @@ function Chat({
     e.stopPropagation();
   };
   const [gifs, setGifs] = useState([]);
-  const [gifQuery, setQuery] = useState("trending");
+  const [gifQuery, setQuery] = useState<string>("");
   const controllerRef = useRef<AbortController | null>(null);
   const fetchGifs = async (searchTerm: string) => {
     if (searchTerm.trim().length == 0) return;
@@ -175,7 +175,7 @@ function Chat({
     );
     if (response.success) {
       setGifs(
-        response.data.results.map((gif: any) => gif.media_formats.gif.url)
+        response.data.results?.map((gif: any) => gif.media_formats.gif.url)
       );
     }
   };
@@ -319,7 +319,7 @@ function Chat({
           }}
           className=" flex-grow gap-4 flex hide-scrollbar flex-col py-6 overflow-y-scroll"
         >
-          {messages.map((message) => (
+          {messages?.map((message) => (
             <div title={message?.time} key={message?.message}>
               {message.user._id !== user?._id ? (
                 <div className=" flex gap-2">
@@ -339,15 +339,13 @@ function Chat({
                       {message?.user?.name}
                     </p>
                     {isVideoUrl(message?.message) ? (
-                      <Link href={message?.message} target="_blank">
-                        <video
-                          src={message?.message}
-                          controls
-                          autoPlay
-                          muted
-                          className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
-                        />
-                      </Link>
+                      <video
+                        src={message?.message}
+                        controls
+                        autoPlay
+                        muted
+                        className="w-fit max-h-72 self-start rounded-lg rounded-tl-none"
+                      />
                     ) : (
                       <>
                         {isImageUrl(message?.message) ? (
@@ -375,15 +373,13 @@ function Chat({
                       {message.user?.name}
                     </p>
                     {isVideoUrl(message.message) ? (
-                      <Link href={message?.message} target="_blank">
-                        <video
-                          src={message?.message}
-                          controls
-                          autoPlay
-                          muted
-                          className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
-                        />
-                      </Link>
+                      <video
+                        src={message?.message}
+                        controls
+                        autoPlay
+                        muted
+                        className="w-fit max-h-72 self-end rounded-lg rounded-tr-none"
+                      />
                     ) : (
                       <>
                         {isImageUrl(message?.message) ? (
@@ -428,7 +424,7 @@ function Chat({
             />
             <div className="columns-1 sm:columns-2 md:columns-2 lg:columns-2 space-y-3 overflow-y-scroll rounded-md">
               {gifs.length > 0 ? (
-                gifs.map((gifUrl, index) => (
+                gifs?.map((gifUrl, index) => (
                   <GifComponent
                     key={index}
                     index={index}
@@ -511,7 +507,7 @@ const MessageComponent = ({
     const links = extractLinks(message);
     const fetchLinkPreviews = async () => {
       const previews = await Promise.all(
-        links.map(async (link) => {
+        links?.map(async (link) => {
           const response = await api.get<linkPreview>(
             `${process.env.SOCKET_URI}/api/linkpreview?url=${encodeURIComponent(
               link

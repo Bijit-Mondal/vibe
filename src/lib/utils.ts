@@ -54,7 +54,10 @@ export const uploadImage = async (
   }
   const res = await api.post<uploadedImageT>(
     `${process.env.PROXY_SERVER_URL}/upload-image`,
-    formData
+    formData,
+    {
+      credentials: "same-origin",
+    }
   );
   await api.get<any>(
     `${process.env.SOCKET_URI}/api/ping?url=${res.data?.data.deletion_url}`,

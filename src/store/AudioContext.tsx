@@ -277,7 +277,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: state.currentSong?.name,
         artist: state.currentSong?.artists.primary[0].name,
-        artwork: state.currentSong?.image.map((image) => ({
+        artwork: state.currentSong?.image?.map((image) => ({
           sizes: image.quality,
           src: image.url,
         })),

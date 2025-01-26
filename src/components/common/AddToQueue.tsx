@@ -84,7 +84,7 @@ function AddToQueueComp() {
     if (selectedSongs.length > 0) {
       emitMessage(
         "bulkDelete",
-        selectedSongs.map((song) => ({
+        selectedSongs?.map((song) => ({
           id: song.id,
           queueId: song.queueId,
         }))

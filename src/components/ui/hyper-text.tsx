@@ -47,7 +47,7 @@ export default function HyperText({
       }
       if (interations.current < text.length) {
         setDisplayText((t) =>
-          t.map((l, i) =>
+          t?.map((l, i) =>
             l === " "
               ? l
               : i <= interations.current
@@ -71,7 +71,7 @@ export default function HyperText({
       onMouseEnter={triggerAnimation}
     >
       <AnimatePresence>
-        {displayText.map((letter, i) => (
+        {displayText?.map((letter, i) => (
           <motion.h1
             key={i}
             className={cn(letter === " " ? "w-3" : "", className)}

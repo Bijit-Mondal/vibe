@@ -61,7 +61,7 @@ function Feedback() {
   return (
     <Dialog>
       <DialogTrigger
-        className=" m-0 absolute  bottom-5 right-5 z-20"
+        className=" m-0 absolute  max-sm:hidden max-md:hidden max-lg:hidden max-xl:hidden    bottom-5 right-5 z-20"
         disabled={loader || status ? true : false}
       >
         <div>

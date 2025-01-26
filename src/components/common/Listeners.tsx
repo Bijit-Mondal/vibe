@@ -39,7 +39,7 @@ function Listeners({ className }: { className?: string }) {
             <p>Listening</p> */}
 
           <div className=" flex items-center">
-            {listener?.roomUsers?.slice(0, 3).map((roomUser, i) => (
+            {listener?.roomUsers?.slice(0, 3)?.map((roomUser, i) => (
               <TooltipProvider key={i}>
                 <Tooltip>
                   <TooltipTrigger asChild>

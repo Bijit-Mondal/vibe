@@ -45,7 +45,7 @@
 //   //       );
 
 //   //       if (response.success) {
-//   //         const tracks = (response.data as any).items.map(
+//   //         const tracks = (response.data as any).items?.map(
 //   //           (item: any) => item.track
 //   //         );
 //   //         console.log(tracks);
@@ -75,7 +75,7 @@
 //         </div>
 //         {/* {spotifyPlaylists && (
 //           <div className="flex border-zinc-500 border-t-0 flex-col overflow-hidden bg-[#49454F]/70 max-h-[50dvh] overflow-y-scroll">
-//             {spotifyPlaylists.map((playlist, i) => (
+//             {spotifyPlaylists?.map((playlist, i) => (
 //               <div
 //                 key={playlist.id}
 //                 onClick={() => handleLoadPlaylist(playlist.id)}

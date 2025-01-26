@@ -24,7 +24,7 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
   useEffect(() => {
     setRooms(RoomsData);
     setDraggingStates(
-      Object.fromEntries(RoomsData.map((room) => [room.roomId, false]))
+      Object.fromEntries(RoomsData?.map((room) => [room.roomId, false]))
     );
   }, [RoomsData]);
 
@@ -46,23 +46,32 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const { clientX } = e;
-    const { left, right } = container.getBoundingClientRect();
-    const scrollSpeed = 5;
+    const { clientY } = e;
+    const { top, bottom, height } = container.getBoundingClientRect();
+    const scrollSpeed = 15;
+    const triggerZone = height * 0.3; // 30% of height for top and bottom zones
 
-    if (clientX > right - 50) {
+    const distanceFromTop = clientY - top;
+    const distanceFromBottom = bottom - clientY;
+
+    if (distanceFromTop < triggerZone) {
+      // Scroll up when near top
+      const intensity = 1 - distanceFromTop / triggerZone;
       if (!autoScrollIntervalRef.current) {
         autoScrollIntervalRef.current = window.setInterval(() => {
-          container.scrollLeft += scrollSpeed;
-        }, 16);
+          container.scrollTop -= scrollSpeed * intensity;
+        }, 0);
       }
-    } else if (clientX < left + 50) {
+    } else if (distanceFromBottom < triggerZone) {
+      // Scroll down when near bottom
+      const intensity = 1 - distanceFromBottom / triggerZone;
       if (!autoScrollIntervalRef.current) {
         autoScrollIntervalRef.current = window.setInterval(() => {
-          container.scrollLeft -= scrollSpeed;
-        }, 16);
+          container.scrollTop += scrollSpeed * intensity;
+        }, 0);
       }
     } else {
+      // Stop scrolling in middle zone
       if (autoScrollIntervalRef.current) {
         clearInterval(autoScrollIntervalRef.current);
         autoScrollIntervalRef.current = null;
@@ -93,68 +102,133 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
   };
 
   return (
-    <div className="fixed right-5 top-5 ">
-      <div
-        ref={scrollContainerRef}
-        className="flex flex-col space-y-4 overflow-x-auto pb-4 scrollbar-hide"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        onDragOver={handleDragOver}
-      >
-        {rooms
-          ?.filter((r) => r.roomId !== roomId)
-          ?.slice(0, 3)
-          ?.map((room, index) => (
-            <motion.div
-              key={room.roomId}
-              onDragEnter={(e) => handleDragEnter(e, room.roomId)}
-              onDragOver={(e) => handleDragEnter(e, room.roomId)}
-              onDragLeave={(e) => handleDragLeave(e, room.roomId)}
-              onDrop={(e) => handleDrop(e, room.roomId)}
-              onDragEnd={handleDragEnd}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 100 }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 25,
-                delay: index * 0.1,
-              }}
-            >
-              <Card
-                className={`w-52 h-36 transition-all duration-200 ease-in-out flex-shrink-0 ${
-                  draggingStates[room.roomId] ? "scale-95" : "scale-100"
-                }`}
+    <>
+      <div className="fixed right-5 top-5 ">
+        <div
+          className="flex flex-col space-y-4 overflow-x-auto pb-4 scrollbar-hide"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          onDragOver={handleDragOver}
+        >
+          {rooms
+            ?.filter((r) => r?.roomId !== roomId)
+            ?.slice(0, 3)
+            ?.map((room, index) => (
+              <motion.div
+                key={room.roomId}
+                onDragEnter={(e) => handleDragEnter(e, room?.roomId)}
+                onDragOver={(e) => handleDragEnter(e, room?.roomId)}
+                onDragLeave={(e) => handleDragLeave(e, room?.roomId)}
+                onDrop={(e) => handleDrop(e, room?.roomId)}
+                onDragEnd={handleDragEnd}
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 100 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 25,
+                  delay: index * 0.1,
+                }}
               >
-                <CardContent className="p-0 h-full">
-                  <div
-                    className={`relative w-full h-full border  border-dashed rounded-lg overflow-hidden ${
-                      draggingStates[room.roomId]
-                        ? "border-primary"
-                        : "border-muted"
-                    }`}
-                  >
-                    <Image
-                      height={500}
-                      width={500}
-                      src={room.background}
-                      alt={room.name[0]}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"></div>
-                    <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
-                      {room.name[0]}
+                <Card
+                  className={`w-52 h-36 transition-all duration-200 ease-in-out flex-shrink-0 ${
+                    draggingStates[room?.roomId] ? "scale-95" : "scale-100"
+                  }`}
+                >
+                  <CardContent className="p-0 h-full">
+                    <div
+                      className={`relative w-full h-full border  border-dashed rounded-lg overflow-hidden ${
+                        draggingStates[room?.roomId]
+                          ? "border-primary"
+                          : "border-muted"
+                      }`}
+                    >
+                      <Image
+                        height={500}
+                        width={500}
+                        src={room?.background}
+                        alt={room?.name[0]}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"></div>
+                      <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
+                        {room?.name[0]}
+                      </div>
+                      <button
+                        className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none"
+                        aria-label={`Drop area for ${room?.name[0]}`}
+                      />
                     </div>
-                    <button
-                      className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none"
-                      aria-label={`Drop area for ${room.name[0]}`}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+        </div>
       </div>
-    </div>
+
+      <div className="fixed left-5 top-5 ">
+        <div
+          ref={scrollContainerRef}
+          className="flex flex-col space-y-4 max-h-[calc(100vh-3rem)] overflow-y-auto pb-4 scrollbar-hide"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          onDragOver={handleDragOver}
+        >
+          {rooms
+            ?.filter((r) => r?.roomId !== roomId)
+            ?.slice(3, rooms.length)
+            ?.map((room, index) => (
+              <motion.div
+                key={room.roomId}
+                onDragEnter={(e) => handleDragEnter(e, room?.roomId)}
+                onDragOver={(e) => handleDragEnter(e, room?.roomId)}
+                onDragLeave={(e) => handleDragLeave(e, room?.roomId)}
+                onDrop={(e) => handleDrop(e, room?.roomId)}
+                onDragEnd={handleDragEnd}
+                initial={{ opacity: 0, x: -100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 25,
+                  delay: index * 0.1,
+                }}
+              >
+                <Card
+                  className={`w-52 h-36 transition-all duration-200 ease-in-out flex-shrink-0 ${
+                    draggingStates[room?.roomId] ? "scale-95" : "scale-100"
+                  }`}
+                >
+                  <CardContent className="p-0 h-full">
+                    <div
+                      className={`relative w-full h-full border  border-dashed rounded-lg overflow-hidden ${
+                        draggingStates[room?.roomId]
+                          ? "border-primary"
+                          : "border-muted"
+                      }`}
+                    >
+                      <Image
+                        height={500}
+                        width={500}
+                        src={room?.background}
+                        alt={room?.name[0]}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"></div>
+                      <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
+                        {room?.name[0]}
+                      </div>
+                      <button
+                        className="absolute inset-0 w-full h-full cursor-pointer focus:outline-none"
+                        aria-label={`Drop area for ${room?.name[0]}`}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+        </div>
+      </div>
+    </>
   );
 }

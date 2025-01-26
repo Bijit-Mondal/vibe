@@ -273,19 +273,20 @@ function SearchSongPopupComp({
 
       const method = starred ? "delete" : "post";
       const url = `${process.env.SOCKET_URI}/api/bookmark${
-        starred ? "?type=room" : ""
+        starred ? `?type=room&roomId=${roomId}` : ""
       }`;
       setIsStarred((prev) => !prev);
       const res = await api[method](url, payload, {
         signal: controller.signal,
         credentials: "include",
+        ...(roomId && { headers: { room: roomId } }),
       });
 
       if (res.error) {
         setIsStarred((prev) => !prev);
       }
     },
-    [starred]
+    [starred, roomId]
   );
   return (
     <Dialog key={"songs"}>
@@ -369,7 +370,7 @@ function SearchSongPopupComp({
         </div>
         {loading && !songs && (
           <div className="flex border-zinc-500 border-t flex-col overflow-hidden backdrop-blur-xl bg-black/80 hide-scrollbar max-h-[50dvh] overflow-y-scroll">
-            {Array.from(Array(6)).map((_, i) => (
+            {Array.from(Array(6))?.map((_, i) => (
               <div
                 key={i}
                 className="flex gap-2  rounded-none text-start  border-b border-white/20 p-2.5 px-4 items-center "
@@ -396,7 +397,7 @@ function SearchSongPopupComp({
         >
           {songs?.data.results
             .slice(0, youtube ? 100 : songs.data.results.length)
-            .map((song, i) => (
+            ?.map((song, i) => (
               <label
                 htmlFor={song?.id}
                 key={i}

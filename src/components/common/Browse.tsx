@@ -6,10 +6,20 @@ import { Button } from "../ui/button";
 import React, { useState } from "react";
 import api from "@/lib/api";
 import { toast } from "sonner";
+import { Star } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Browse({ data = [] }: { data: roomsData[] }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const [roomLink, setRoomLink] = useState<string>("");
+  const pathname = usePathname();
+  const [isSaved, setIsSaved] = useState<boolean>(pathname.includes("saved"));
+
+  const togglePath = () => {
+    setIsSaved(!isSaved);
+  };
+
   const handleRedirect = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (roomLink.trim().length === 0) return;
@@ -53,7 +63,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
       className=" flex items-center flex-col bg-[#141414] justify-center min-h-dvh py-20  overflow-y-scroll"
     >
       <div className=" flex items-start  px-7 flex-wrap relative justify-center w-full gap-6">
-        {data.map((room, index) => (
+        {data?.map((room, index) => (
           <motion.a
             title={room?.name[0]}
             initial={{
@@ -83,8 +93,8 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
               }}
               className="  bg-no-repeat border-2 hover:border-white/70 transition-all duration-75 overflow-hidden bg-cover h-[12vw] w-[12vw] rounded-md min-h-[100px] min-w-[100px] p-4"
             ></motion.div>
-            <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1.3vw] capitalize  font-medium  tracking-tight truncate w-[12vw] mt-2">
-              {room?.name[0]}
+            <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1vw] capitalize  font-medium  tracking-tight truncate w-[12vw] mt-2">
+              {room?.name[0]} • {room?.roomId}
             </p>
           </motion.a>
         ))}
@@ -156,6 +166,14 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         onSubmit={handleRedirect}
         className="max-w-[340px] flex fixed bottom-5 h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center "
       >
+        <Link
+          title={isSaved ? "Go to browse" : "Go to saved rooms"}
+          href={isSaved ? "/browse" : "/browse/saved"}
+          onClick={togglePath}
+          className="flex justify-center absolute -left-8 items-center text-muted-foreground hover:text-white transition-all duration-150"
+        >
+          <Star className="size-6" />
+        </Link>
         <div className="flex items-center relative">
           <input
             autoFocus
