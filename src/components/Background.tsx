@@ -9,7 +9,7 @@ function Background() {
   useCache();
 
   return (
-    <div className="h-dvh relative overflow-hidden md:flex flex-col items-center justify-center w-full">
+    <div className="h-dvh relative overflow-hidden flex flex-col items-center justify-center w-full">
       {currentSong?.video ? (
         <>
           <video

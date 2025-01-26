@@ -367,7 +367,7 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
                 </form>
                 <Button
                   variant={"outline"}
-                  className=" w-full bg-transparent mt-2.5"
+                  className=" w-full border-white/50 bg-transparent mt-2.5"
                   onClick={async () => {
                     const res = await api.get("/api/logout");
                     if (res.success) {
