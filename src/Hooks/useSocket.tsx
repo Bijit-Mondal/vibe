@@ -78,7 +78,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
   const onConnect = useCallback((): void => {
     toast.dismiss("connecting");
-  }, []);
+    if (!roomId || !socketRef.current.id) return;
+    api.setGlobalHeaders({
+      room: roomId,
+      socket: socketRef.current.id,
+    });
+  }, [roomId, socketRef]);
 
   const updateListeners = useCallback(async () => {
     if (!isActive.current) return;

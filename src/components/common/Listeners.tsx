@@ -21,7 +21,7 @@ import InviteButton from "./inviteButton";
 import Youtube from "./Youtube";
 import ChatIcon from "../ChatIcon";
 function Listeners({ className }: { className?: string }) {
-  const { listener } = useUserContext();
+  const { listener, user: loggedInUser } = useUserContext();
 
   return (
     <div className=" flex items-center w-full justify-between">
@@ -59,7 +59,9 @@ function Listeners({ className }: { className?: string }) {
                   </TooltipTrigger>
                   <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
                     <p>
-                      {roomUser?.userId?.username} ({roomUser?.userId?.name})
+                      {roomUser?.userId?.username} ({roomUser?.userId?.name}){" "}
+                      {loggedInUser?.username === roomUser.userId.username &&
+                        " - You"}
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -88,7 +90,9 @@ function Listeners({ className }: { className?: string }) {
             <div className="flex flex-col w-full overflow-hidden rounded-2xl">
               <div className="bg-black/5 w-full p-2.5 px-4">
                 <p className=" font-semibold flex w-full justify-between">
-                  <span className=" opacity-90">Vibing with</span>{" "}
+                  <span className=" opacity-90">
+                    Vibing {listener?.totalUsers === 1 ? "alone 🥺" : "with 😃"}
+                  </span>{" "}
                   {listener && `${listener?.totalUsers}`}
                 </p>
               </div>
@@ -100,9 +104,15 @@ function Listeners({ className }: { className?: string }) {
                   >
                     <ProfilePic imageUrl={user?.userId?.imageUrl} />
                     <div className="text-sm leading-tight">
-                      <p className=" font-semibold">{user?.userId?.name}</p>
+                      <p className=" font-semibold">
+                        {user?.userId?.name}{" "}
+                        <span className=" text-lightPurple">
+                          {loggedInUser?.username === user.userId.username &&
+                            "(You)"}
+                        </span>
+                      </p>
                       <p className=" text-xs text-accent-foreground/80">
-                        {user?.userId?.username}
+                        {user?.userId?.username}{" "}
                       </p>
                     </div>
                   </div>

@@ -27,7 +27,7 @@ export default function Home({
     const designers = ["Designed by Ajay", "by Babyo7_", "Vibe"];
     return designers[Math.floor(Math.random() * designers.length)];
   });
-  const [showLoader, setShowLoader] = useState<boolean>(true);
+  const [showLoader, setShowLoader] = useState<boolean>(false);
 
   const loaderVariants = {
     hidden: { opacity: 0 },
@@ -98,7 +98,9 @@ export default function Home({
   useEffect(() => {
     if (socketRef.current?.connected) {
       setTimeout(() => setShowLoader(false), 700);
+      return;
     }
+    setShowLoader(true);
   }, [socketRef.current.connected]);
 
   return (
