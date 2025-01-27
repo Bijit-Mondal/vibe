@@ -52,6 +52,7 @@ const nextConfig = {
     MAC_DOWNLOAD_URL: process.env.MAC_DOWNLOAD_URL,
     WINDOW_DOWNLOAD_URL: process.env.WINDOW_DOWNLOAD_URL,
     PROXY_SERVER_URL: process.env.PROXY_SERVER_URL,
+    SEARCH_API: process.env.SEARCH_API,
   },
 };
 
