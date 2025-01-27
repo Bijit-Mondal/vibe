@@ -41,7 +41,7 @@ function Listeners({ className }: { className?: string }) {
           <div className=" flex items-center">
             {listener?.roomUsers
               ?.filter(
-                (user) => user.userId.username === loggedInUser?.username
+                (user) => user.userId.username !== loggedInUser?.username
               )
               ?.slice(0, 3)
               ?.map((roomUser, i) => (
