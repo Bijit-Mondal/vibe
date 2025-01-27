@@ -111,7 +111,7 @@ export default function DraggableOptions() {
             }}
           >
             <Card
-              className={`fixed right-5 bottom-5 w-52 h-36 transition-all duration-200 ease-in-out ${
+              className={`fixed right-5 bottom-5 w-52 h-40 transition-all duration-200 ease-in-out ${
                 isDragging ? "scale-95" : "scale-100"
               }`}
               onDragEnter={handleDragEnter}
@@ -121,7 +121,7 @@ export default function DraggableOptions() {
             >
               <CardContent className="p-0 h-full">
                 <div
-                  className={`relative w-full h-full border border-dashed rounded-lg ${
+                  className={`relative w-full h-full border rounded-xl ${
                     isDragging ? "border-red-500" : "border-muted"
                   }`}
                 >
