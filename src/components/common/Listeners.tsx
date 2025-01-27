@@ -39,34 +39,39 @@ function Listeners({ className }: { className?: string }) {
             <p>Listening</p> */}
 
           <div className=" flex items-center">
-            {listener?.roomUsers?.slice(0, 3)?.map((roomUser, i) => (
-              <TooltipProvider key={i}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className={` ${i !== 0 && "-ml-2"} size-6`}>
-                      <Avatar className=" size-6 border-2 border-white/80">
-                        <AvatarImage
-                          loading="lazy"
-                          alt={roomUser?.userId?.name}
-                          height={200}
-                          width={200}
-                          className=" rounded-full object-cover"
-                          src={roomUser?.userId?.imageUrl}
-                        />
-                        <AvatarFallback>SX</AvatarFallback>
-                      </Avatar>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                    <p>
-                      {roomUser?.userId?.username} ({roomUser?.userId?.name}){" "}
-                      {loggedInUser?.username === roomUser.userId.username &&
-                        " - You"}
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ))}
+            {listener?.roomUsers
+              ?.filter(
+                (user) => user.userId.username === loggedInUser?.username
+              )
+              ?.slice(0, 3)
+              ?.map((roomUser, i) => (
+                <TooltipProvider key={i}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className={` ${i !== 0 && "-ml-2"} size-6`}>
+                        <Avatar className=" size-6 border-2 border-white/80">
+                          <AvatarImage
+                            loading="lazy"
+                            alt={roomUser?.userId?.name}
+                            height={200}
+                            width={200}
+                            className=" rounded-full object-cover"
+                            src={roomUser?.userId?.imageUrl}
+                          />
+                          <AvatarFallback>SX</AvatarFallback>
+                        </Avatar>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
+                      <p>
+                        {roomUser?.userId?.username} ({roomUser?.userId?.name}){" "}
+                        {loggedInUser?.username === roomUser.userId.username &&
+                          " - You"}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))}
             {listener && listener?.totalUsers > 3 && (
               <div className={` -ml-4 px-2 text-[9px] font-bold  rounded-full`}>
                 <Avatar className=" size-6 border-white/80 border-2">
