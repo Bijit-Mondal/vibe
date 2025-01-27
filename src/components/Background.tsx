@@ -5,7 +5,7 @@ import { useUserContext } from "@/store/userStore";
 
 function Background() {
   const { showVideo, setShowVideo } = useUserContext();
-  const { currentSong, backgroundVideoRef } = useAudio();
+  const { currentSong, backgroundVideoRef, state } = useAudio();
   useCache();
 
   return (
@@ -43,6 +43,7 @@ function Background() {
         <div
           className="relative bg-cover object-cover transition-all duration-700 bg-no-repeat bg-center w-full h-full"
           style={{
+            display: state.background ? "" : "none",
             backgroundImage: `url('${
               currentSong?.image[currentSong?.image?.length - 1]?.url ||
               "/mask.svg"

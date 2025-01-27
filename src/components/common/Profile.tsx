@@ -26,9 +26,10 @@ import { Input } from "../ui/input";
 import { AtSign, LoaderCircle, Mail, Sun } from "lucide-react";
 import { encryptObjectValues } from "@/utils/utils";
 import VibeAlert from "./VibeAlert";
+import { useAudio } from "@/store/AudioContext";
 function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
   const { setUser, user: LoggedInUser, socketRef } = useUserContext();
-
+  const { state, dispatch } = useAudio();
   useEffect(() => {
     console.log(
       "%cVibe developed by tanmay7_",
@@ -354,8 +355,8 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
 
                   <Button
                     disabled={loader}
-                    variant={"default"}
-                    className=" w-full mt-2.5 bg-purple hover:bg-purple/80 text-white"
+                    variant={"purple"}
+                    className=" w-full mt-2.5"
                     type="submit"
                   >
                     {loader ? (
@@ -365,9 +366,26 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
                     )}
                   </Button>
                 </form>
+
+                <Button
+                  onClick={() => {
+                    dispatch({
+                      type: "SET_BACKGROUND",
+                      payload: !state.background,
+                    });
+                    localStorage.setItem(
+                      "background",
+                      JSON.stringify(!state.background)
+                    );
+                  }}
+                  className=" w-full mt-2.5"
+                  variant={!state.background ? "purple" : "outline"}
+                >
+                  {state.background ? "Disable" : "Enable"} Background
+                </Button>
                 <Button
                   variant={"outline"}
-                  className=" w-full border-white/50 bg-transparent mt-2.5"
+                  className=" w-full mt-2.5"
                   onClick={async () => {
                     const res = await api.get("/api/logout");
                     if (res.success) {

@@ -42,7 +42,7 @@ export default function VibeAlert({
           {title}
         </div>
       </DialogTrigger>
-      <DialogContent className="w-fit flex-col flex items-center justify-center bg-transparent border-none">
+      <DialogContent className="w-fit min-w-max flex-col flex items-center justify-center bg-transparent border-none">
         <DialogHeader className=" h-0">
           <DialogTitle />
           <DialogDescription />

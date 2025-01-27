@@ -16,6 +16,8 @@ import getURL from "@/utils/utils";
 import { toast } from "sonner";
 
 interface AudioContextType {
+  state: State;
+  dispatch: React.Dispatch<Action>;
   play: (song: searchResults) => void;
   pause: () => void;
   resume: () => void;
@@ -60,6 +62,7 @@ interface State {
   currentProgress: number;
   currentDuration: number;
   currentVolume: number;
+  background: boolean;
 }
 
 const initialState: State = {
@@ -69,6 +72,10 @@ const initialState: State = {
   currentProgress: 0,
   currentDuration: 0,
   currentVolume: 1,
+  background:
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("background") || "true")
+      : true,
 };
 
 type Action =
@@ -76,7 +83,8 @@ type Action =
   | { type: "SET_IS_MUTED"; payload: boolean }
   | { type: "SET_CURRENT_SONG"; payload: searchResults | null }
   | { type: "SET_PROGRESS"; payload: number }
-  | { type: "SET_VOLUME"; payload: number };
+  | { type: "SET_VOLUME"; payload: number }
+  | { type: "SET_BACKGROUND"; payload: boolean };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -90,6 +98,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, currentProgress: action.payload };
     case "SET_VOLUME":
       return { ...state, currentVolume: action.payload };
+    case "SET_BACKGROUND":
+      return { ...state, background: action.payload };
     default:
       throw new Error(`Unhandled action type: ${action}`);
   }
@@ -437,6 +447,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   return (
     <AudioContext.Provider
       value={{
+        state,
+        dispatch,
         play,
         pause,
         resume,
