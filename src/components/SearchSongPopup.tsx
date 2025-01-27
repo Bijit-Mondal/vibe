@@ -68,7 +68,7 @@ function SearchSongPopupComp({
           ? `${process.env.SOCKET_URI}/api/${
               value.includes("youtube.com") ? "youtube" : "spotify"
             }/playlist/${id}`
-          : `${process.env.SOCKET_URI}/api/search/?name=${value}&page=0`;
+          : `${process.env.SEARCH_URI}/api/search/?name=${value}&page=0`;
 
         setPage(0); // Reset page on a new search
         setLoading(true);
@@ -103,7 +103,7 @@ function SearchSongPopupComp({
       return;
 
     setLoading(true);
-    const url = `${process.env.SOCKET_URI}/api/search/?name=${query}&page=${
+    const url = `${process.env.SEARCH_URI}/api/search/?name=${query}&page=${
       page + 1
     }`;
 
