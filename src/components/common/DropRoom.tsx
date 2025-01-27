@@ -131,13 +131,13 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                 }}
               >
                 <Card
-                  className={`w-52 h-36 transition-all duration-200 ease-in-out flex-shrink-0 ${
+                  className={` aspect-square h-44 w-52 transition-all duration-200 ease-in-out flex-shrink-0 ${
                     draggingStates[room?.roomId] ? "scale-95" : "scale-100"
                   }`}
                 >
                   <CardContent className="p-0 h-full">
                     <div
-                      className={`relative w-full h-full border  border-dashed rounded-lg overflow-hidden ${
+                      className={`relative w-full h-full border rounded-xl overflow-hidden ${
                         draggingStates[room?.roomId]
                           ? "border-primary"
                           : "border-muted"
@@ -148,10 +148,10 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                         width={500}
                         src={room?.background}
                         alt={room?.name[0]}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full aspect-square"
                       />
-                      <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"></div>
-                      <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
+                      <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center"></div>
+                      <div className="absolute capitalize top-2 left-2  text-white font-medium">
                         {room?.name[0]}
                       </div>
                       <button
@@ -195,13 +195,13 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                 }}
               >
                 <Card
-                  className={`w-52 h-36 transition-all duration-200 ease-in-out flex-shrink-0 ${
+                  className={` aspect-square h-44 w-52 transition-all duration-200 ease-in-out flex-shrink-0 ${
                     draggingStates[room?.roomId] ? "scale-95" : "scale-100"
                   }`}
                 >
                   <CardContent className="p-0 h-full">
                     <div
-                      className={`relative w-full h-full border  border-dashed rounded-lg overflow-hidden ${
+                      className={`relative w-full h-full border  border-dashed rounded-xl overflow-hidden ${
                         draggingStates[room?.roomId]
                           ? "border-primary"
                           : "border-muted"
@@ -212,10 +212,10 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                         width={500}
                         src={room?.background}
                         alt={room?.name[0]}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full aspect-square"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"></div>
-                      <div className="absolute bottom-2 left-2 right-2 text-white text-sm font-semibold">
+                      <div className="absolute capitalize top-2 left-2  text-white font-medium">
                         {room?.name[0]}
                       </div>
                       <button
