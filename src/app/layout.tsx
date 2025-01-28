@@ -94,7 +94,7 @@ const interDisplay = localFont({
 
 export const metadata: Metadata = {
   title: "Vibe",
-  description: "Let votes decide the beat",
+  description: "Vibe together over millions of songs.",
   manifest: "/manifest.json",
   keywords: [
     "music",
@@ -111,7 +111,7 @@ export const metadata: Metadata = {
   // OpenGraph Meta Tags
   openGraph: {
     title: "Vibe",
-    description: "Let votes decide the beat",
+    description: "Vibe together over millions of songs.",
     url: "https://getvibe.in",
     type: "website",
     siteName: "Vibe", // Add this line for site_name
@@ -130,7 +130,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@tanmay11117",
     title: "Vibe",
-    description: "Let votes decide the beat",
+    description: "Vibe together over millions of songs.",
     images: [
       {
         url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",

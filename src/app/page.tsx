@@ -126,7 +126,7 @@ function Page() {
             </p>
             <span className="ml-1 max-md:hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
               Invite friends, enjoy high quality music
-              <br /> & let votes decide the beat🥂.
+              <br /> & Vibe together over millions of songs.🥂.
             </span>
             <span className="ml-1 max-md:flex hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
               Invite friends, enjoy high quality music & let votes decide the

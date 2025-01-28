@@ -25,7 +25,7 @@ export async function generateMetadata() {
       card: "summary_large_image",
       site: "@tanmay11117",
       title: "Vibe",
-      description: "Let votes decide the beat",
+      description: "Vibe together over millions of songs.",
       images: [
         {
           url: "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/OGIMG.png",
