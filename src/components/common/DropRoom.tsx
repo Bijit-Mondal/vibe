@@ -201,7 +201,7 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
                 >
                   <CardContent className="p-0 h-full">
                     <div
-                      className={`relative w-full h-full border  border-dashed rounded-xl overflow-hidden ${
+                      className={`relative w-full h-full border rounded-xl overflow-hidden ${
                         draggingStates[room?.roomId]
                           ? "border-primary"
                           : "border-muted"
