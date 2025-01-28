@@ -171,6 +171,7 @@ function Chat({
       `https://tenor.googleapis.com/v2/search?q=${searchTerm}&key=AIzaSyDv9pWityxOON42ciQ3MrmVedu32pZ2TWE&limit=50`,
       {
         signal: controllerRef.current?.signal,
+        showErrorToast: false,
       }
     );
     if (response.success) {
@@ -450,7 +451,9 @@ function Chat({
 
           <Input
             ref={inputRef}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => (
+              setMessage(e.target.value), setQuery(e.target.value)
+            )}
             value={message}
             // onInput={handleTyping}
             onPaste={handlePaste}
