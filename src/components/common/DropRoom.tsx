@@ -111,7 +111,7 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
         >
           {rooms
             ?.filter((r) => r?.roomId !== roomId)
-            ?.slice(0, 3)
+            ?.slice(0, 2)
             ?.map((room, index) => (
               <motion.div
                 key={room.roomId}
@@ -175,7 +175,7 @@ export default function RoomCards({ RoomsData, onDrop }: RoomCardsProps) {
         >
           {rooms
             ?.filter((r) => r?.roomId !== roomId)
-            ?.slice(3, rooms.length)
+            ?.slice(2, rooms.length)
             ?.map((room, index) => (
               <motion.div
                 key={room.roomId}
