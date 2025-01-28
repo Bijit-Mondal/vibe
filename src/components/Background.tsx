@@ -7,7 +7,7 @@ function Background() {
   const { showVideo, setShowVideo } = useUserContext();
   const { currentSong, backgroundVideoRef, state } = useAudio();
   useCache();
-  if (!state.background) return null;
+
   return (
     <div className="h-dvh relative overflow-hidden flex flex-col items-center justify-center w-full">
       {currentSong?.video ? (
@@ -31,6 +31,7 @@ function Background() {
           <div
             className=" absolute bg-cover object-cover transition-all duration-700 bg-no-repeat bg-center w-full h-full"
             style={{
+              display: state.background ? "block" : "none",
               backgroundImage: `url('${
                 currentSong?.image[currentSong?.image?.length - 1]?.url ||
                 "/mask.svg"
@@ -43,6 +44,7 @@ function Background() {
         <div
           className="relative bg-cover object-cover transition-all duration-700 bg-no-repeat bg-center w-full h-full"
           style={{
+            display: state.background ? "block" : "none",
             backgroundImage: `url('${
               currentSong?.image[currentSong?.image?.length - 1]?.url ||
               "/mask.svg"
