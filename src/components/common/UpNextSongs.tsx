@@ -23,7 +23,7 @@ function UpNextSongs() {
   return (
     <div className="hide-scrollbar select-none w-full flex gap-2 min-h-5 items-center justify-center">
       <div className="flex overflow-x-scroll hide-scrollbar items-center gap-2.5">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           {upNextSongs.length > 0 &&
             upNextSongs
               .filter((s) => s.id !== currentSong?.id)
@@ -33,11 +33,7 @@ function UpNextSongs() {
                   onDragStart={(e) => handleDragStart(e, nextSong)}
                   draggable
                   key={nextSong.id}
-                  initial={{
-                    y: isDesktop ? "5dvh" : 0,
-                    opacity: 0,
-                    filter: "blur(10px)",
-                  }}
+                  initial={false}
                   // viewport={{ amount: "some", once: true }}
                   animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
                   transition={{
