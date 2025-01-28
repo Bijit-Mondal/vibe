@@ -130,6 +130,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const volume = useMemo(() => state.currentVolume, [state.currentVolume]);
   const skipCountRef = useRef(0); // Ref to track skipped songs
   const { user, isAdminOnline, socketRef, emitMessage } = useUserContext();
+  const lastEmittedTime = useRef(0);
   // play
   const play = useCallback(
     async (song: searchResults) => {
@@ -157,6 +158,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           .play()
           .then(async () => {
             // Reset skip count on successful play
+            lastEmittedTime.current = 0;
             skipCountRef.current = 0;
             if (videoRef.current) {
               videoRef.current?.play();
@@ -263,6 +265,18 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (backgroundVideoRef.current) {
         backgroundVideoRef.current.currentTime = value;
       }
+      const currentTime = Math.floor(audioRef.current.currentTime);
+
+      const skipToPosition =
+        (value / 100) * Math.floor(audioRef.current.duration);
+      const skipAmount = skipToPosition - currentTime;
+      const skipped = Math.abs(currentTime - Math.floor(skipAmount));
+
+      if (skipped > 0) {
+        const skim = lastEmittedTime.current - skipAmount;
+        lastEmittedTime.current = skim <= 0 ? 0 : skim;
+      }
+
       audioRef.current.currentTime = value;
     }
   }, []);
@@ -278,6 +292,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     audioRef.current?.pause();
     emitMessage("playPrev", "playPrev");
   }, [emitMessage]);
+
   // Set media session metadata and event handlers
   const setMediaSession = useCallback(() => {
     const handleBlock = () => {
@@ -312,52 +327,18 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     }
   }, [state.currentSong, playNext, playPrev, pause, resume, seek, user]);
 
-  // Debounced function to emit progress
-
-  // const lastEmittedTime = useRef(0);
-  // const lastEmitted = useRef(0);
-
-  // const updateProgress = useCallback(() => {
-  //   if (audioRef.current) {
-  //     const currentTime = audioRef.current.currentTime;
-
-  //     // // Update the visual progress every second
-  //     // if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
-  //     //   // setProgress(currentTime);
-
-  //     //   // Update the last emitted time for progress
-  //     //   lastEmittedTime.current = currentTime;
-  //     // }
-
-  //     // Emit progress to the server every 5 seconds
-  //     if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
-  //       lastEmitted.current = currentTime;
-  //       // Sync video progress with audio progress
-  //       if (videoRef.current) {
-  //         videoRef.current.currentTime = currentTime;
-  //       }
-
-  //       if (backgroundVideoRef.current) {
-  //         backgroundVideoRef.current.currentTime = currentTime;
-  //       }
-  //     }
-
-  //     // If audio is not paused, keep updating progress
-  //     if (!audioRef.current.paused) {
-  //       requestAnimationFrame(updateProgress);
-  //     }
-  //   }
-  // }, []);
-
   useEffect(() => {
     const t = setInterval(() => {
-      if (
-        isAdminOnline.current &&
-        audioRef.current &&
-        !audioRef.current.paused
-      ) {
+      if (audioRef.current && audioRef.current.paused) return;
+      if (isAdminOnline.current) {
         socketRef.current.emit("progress", audioRef.current?.currentTime);
       }
+      if (lastEmittedTime.current === 30) {
+        socketRef.current.emit("analytics", {
+          type: "listening",
+        });
+      }
+      lastEmittedTime.current += 2;
     }, 2000);
     return () => clearInterval(t);
   }, [isAdminOnline, socketRef]);
@@ -367,8 +348,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
     if (audioElement) {
       const handlePlay = () => {
-        // requestAnimationFrame(updateProgress),
-
         dispatch({ type: "SET_IS_PLAYING", payload: true });
         if (videoRef.current) {
           videoRef.current?.play();
@@ -387,20 +366,18 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       };
       const handleCanPlay = () => {
         setMediaSession();
-
-        // if (audioRef.current) {
-        //   setDuration(audioRef.current.duration);
-        // }
       };
       const handleEnd = () => {
         if (isAdminOnline.current) {
           emitMessage("songEnded", "songEnded");
         }
       };
+
       audioElement.addEventListener("play", handlePlay);
       audioElement.addEventListener("pause", handlePause);
       audioElement.addEventListener("ended", handleEnd);
       audioElement.addEventListener("canplay", handleCanPlay);
+
       return () => {
         audioElement.removeEventListener("play", handlePlay);
         audioElement.removeEventListener("pause", handlePause);

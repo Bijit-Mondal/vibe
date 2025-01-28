@@ -283,7 +283,7 @@ function Chat({
           {listener?.roomUsers?.slice(0, 5)?.map((roomUser, i) => (
             <div
               title={`${roomUser?.userId?.username} (${roomUser?.userId?.name})`}
-              key={roomUser?._id}
+              key={roomUser.userId?.id}
             >
               <div className={` ${i !== 0 && "-ml-2"} size-7`}>
                 <Avatar className=" size-7 border border-white">

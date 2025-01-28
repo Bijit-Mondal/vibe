@@ -44,6 +44,7 @@ export interface songState {
 }
 
 export interface TUser {
+  id?: string;
   _id: string;
   email: string;
   name: string;

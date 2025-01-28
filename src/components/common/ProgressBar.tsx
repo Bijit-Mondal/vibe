@@ -6,24 +6,12 @@ import { toast } from "sonner";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 function ProgressBar({ className }: { className?: string }) {
-  const { audioRef, setProgress, videoRef, backgroundVideoRef } = useAudio();
+  const { audioRef, setProgress, videoRef, backgroundVideoRef, seek } =
+    useAudio();
   const [currentProgress, setAudioProgress] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const { user, socketRef } = useUserContext();
-  const seek = useCallback(
-    (value: number) => {
-      if (audioRef.current) {
-        if (videoRef?.current) {
-          videoRef.current.currentTime = value;
-        }
-        if (backgroundVideoRef?.current) {
-          backgroundVideoRef.current.currentTime = value;
-        }
-        audioRef.current.currentTime = value;
-      }
-    },
-    [audioRef, backgroundVideoRef, videoRef]
-  );
+
   const handleSeek = (e: number[]) => {
     if (e[0]) {
       if (user && user.role !== "admin") {
