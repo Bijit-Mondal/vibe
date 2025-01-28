@@ -272,7 +272,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       const skipAmount = skipToPosition - currentTime;
       const skipped = Math.abs(currentTime - Math.floor(skipAmount));
 
-      if (skipped > 0) {
+      if (skipped > 0 && lastEmittedTime.current !== Math.pow(2, 53)) {
         const skim = lastEmittedTime.current - skipAmount;
         lastEmittedTime.current = skim <= 0 ? 0 : skim;
       }
@@ -337,8 +337,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         socketRef.current.emit("analytics", {
           type: "listening",
         });
+        lastEmittedTime.current = Math.pow(2, 53);
       }
-      lastEmittedTime.current += 2;
+      if (lastEmittedTime.current !== Math.pow(2, 53)) {
+        lastEmittedTime.current += 2;
+      }
     }, 2000);
     return () => clearInterval(t);
   }, [isAdminOnline, socketRef]);
