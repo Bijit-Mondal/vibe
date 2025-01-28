@@ -1,12 +1,12 @@
 "use client";
 import { useUserContext } from "@/store/userStore";
-
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { cn } from "@/lib/utils";
 import {
@@ -20,6 +20,23 @@ import {
 import InviteButton from "./inviteButton";
 import Youtube from "./Youtube";
 import ChatIcon from "../ChatIcon";
+import { IoLaptop } from "react-icons/io5";
+import {
+  MdOutlineDesktopWindows,
+  MdPhoneAndroid,
+  MdPhoneIphone,
+} from "react-icons/md";
+import { GrArchlinux, GrStatusUnknown } from "react-icons/gr";
+import { TbDeviceIpad } from "react-icons/tb";
+const icons = {
+  iPhone: <MdPhoneIphone />,
+  iPad: <TbDeviceIpad />,
+  Android: <MdPhoneAndroid />,
+  Windows: <MdOutlineDesktopWindows />,
+  Mac: <IoLaptop />,
+  Linux: <GrArchlinux />,
+  unknown: <GrStatusUnknown />, // Default icon for unknown devices
+};
 function Listeners({ className }: { className?: string }) {
   const { listener, user: loggedInUser } = useUserContext();
 
@@ -40,9 +57,9 @@ function Listeners({ className }: { className?: string }) {
 
           <div className=" flex items-center">
             {listener?.roomUsers
-              ?.filter(
-                (user) => user.userId.username !== loggedInUser?.username
-              )
+              // ?.filter(
+              //   (user) => user.userId.username !== loggedInUser?.username
+              // )
               ?.slice(0, 3)
               ?.map((roomUser, i) => (
                 <TooltipProvider key={i}>
@@ -63,10 +80,13 @@ function Listeners({ className }: { className?: string }) {
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className=" bg-[#9870d3] mb-1 text-white">
-                      <p>
+                      <p className=" flex items-center gap-1">
                         {roomUser?.userId?.username} ({roomUser?.userId?.name}){" "}
                         {loggedInUser?.username === roomUser.userId.username &&
-                          " - You"}
+                          " - You"}{" "}
+                        <span title={roomUser?.userId?.device}>
+                          {icons[roomUser?.userId?.device]}
+                        </span>
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -109,11 +129,14 @@ function Listeners({ className }: { className?: string }) {
                   >
                     <ProfilePic imageUrl={user?.userId?.imageUrl} />
                     <div className="text-sm leading-tight">
-                      <p className=" font-semibold">
+                      <p className=" flex items-center gap-1 font-semibold">
                         {user?.userId?.name}{" "}
                         <span className=" text-lightPurple">
                           {loggedInUser?.username === user.userId.username &&
                             "(You)"}
+                        </span>
+                        <span title={user?.userId?.device}>
+                          {icons[user?.userId?.device]}
                         </span>
                       </p>
                       <p className=" text-xs text-accent-foreground/80">

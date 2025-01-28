@@ -53,6 +53,14 @@ export interface TUser {
   role?: "admin" | "listener" | string;
   token?: string;
   imageDelUrl?: string;
+  device:
+    | "iPhone"
+    | "iPad"
+    | "Android"
+    | "Windows"
+    | "Mac"
+    | "Linux"
+    | "unknown";
 }
 
 export interface listener {
