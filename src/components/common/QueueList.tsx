@@ -64,7 +64,7 @@ function QueueListComp({
       if (!user) return toast.error("Login required");
       e.stopPropagation();
       if (currentSong?.id == song.id) {
-        toast.info("Cant't vote currently playing song");
+        toast.info("Can't vote currently playing song");
         return;
       }
       try {
