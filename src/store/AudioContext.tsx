@@ -153,7 +153,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             // Reset skip count on successful play
             if (
               audioRef.current &&
-              Math.floor(audioRef.current?.currentTime) > 30
+              Math.floor(audioRef.current?.currentTime) >
+                Math.floor(audioRef.current.duration * 0.3)
             ) {
               lastEmittedTime.current !== Math.pow(2, 53);
             }
@@ -328,12 +329,16 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const t = setInterval(() => {
-      if (audioRef.current && audioRef.current.paused) return;
+      if (!audioRef.current) return;
+      if (audioRef.current.paused) return;
       if (isAdminOnline.current) {
         socketRef.current.emit("progress", audioRef.current?.currentTime);
       }
+
       if (lastEmittedTime.current !== Math.pow(2, 53)) return;
-      if (lastEmittedTime.current === 30) {
+      if (
+        lastEmittedTime.current === Math.floor(audioRef.current.duration * 0.3)
+      ) {
         socketRef.current.emit("analytics", {
           type: "listening",
         });
