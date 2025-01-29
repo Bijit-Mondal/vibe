@@ -143,14 +143,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           videoRef.current.src = "";
         }
         audioRef.current.src = "";
-        const currentVideoUrl = getURL(song).replace(
-          process.env.VIDEO_STREAM_URI || "",
-          // window.navigator.userAgent.includes("Electron")
-          // ? // ? "http://localhost:7777/stream"
-          // : process.env.STREAM_URL || ""
-          // process.env.STREAM_URL || ""
-          process.env.STREAM_URL || ""
-        );
+        const currentVideoUrl = getURL(song);
 
         audioRef.current.src = currentVideoUrl;
 
@@ -158,6 +151,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           .play()
           .then(async () => {
             // Reset skip count on successful play
+            if (
+              audioRef.current &&
+              Math.floor(audioRef.current?.currentTime) > 30
+            ) {
+              lastEmittedTime.current !== Math.pow(2, 53);
+            }
             lastEmittedTime.current = 0;
             skipCountRef.current = 0;
             if (videoRef.current) {
@@ -333,15 +332,15 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (isAdminOnline.current) {
         socketRef.current.emit("progress", audioRef.current?.currentTime);
       }
+      if (lastEmittedTime.current !== Math.pow(2, 53)) return;
       if (lastEmittedTime.current === 30) {
         socketRef.current.emit("analytics", {
           type: "listening",
         });
         lastEmittedTime.current = Math.pow(2, 53);
       }
-      if (lastEmittedTime.current !== Math.pow(2, 53)) {
-        lastEmittedTime.current += 2;
-      }
+
+      lastEmittedTime.current += 2;
     }, 2000);
     return () => clearInterval(t);
   }, [isAdminOnline, socketRef]);
