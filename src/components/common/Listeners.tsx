@@ -95,11 +95,11 @@ function Listeners({ className }: { className?: string }) {
             {listener && listener?.totalUsers > 3 && (
               <div className={` -ml-4 px-2 text-[9px] font-bold  rounded-full`}>
                 <Avatar className=" size-6 border-white/80 border-2">
-                  <AvatarFallback className=" bg-purple">
+                  <div className=" bg-purple h-full w-full items-center justify-center rounded-full bg-muted">
                     {" "}
                     +
                     {listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 3}
-                  </AvatarFallback>
+                  </div>
                 </Avatar>
               </div>
             )}
