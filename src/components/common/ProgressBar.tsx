@@ -6,8 +6,14 @@ import { toast } from "sonner";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 function ProgressBar({ className }: { className?: string }) {
-  const { audioRef, setProgress, videoRef, backgroundVideoRef, seek } =
-    useAudio();
+  const {
+    audioRef,
+    setProgress,
+
+    // videoRef, backgroundVideoRef,
+
+    seek,
+  } = useAudio();
   const [currentProgress, setAudioProgress] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const { user, socketRef } = useUserContext();
@@ -48,7 +54,7 @@ function ProgressBar({ className }: { className?: string }) {
     [duration, seek, setProgress, user, socketRef]
   );
   const lastEmittedTime = useRef(0);
-  const lastEmitted = useRef(0);
+  // const lastEmitted = useRef(0);
   const updateProgress = useCallback(() => {
     if (audioRef.current) {
       const currentTime = audioRef.current.currentTime;
@@ -56,23 +62,23 @@ function ProgressBar({ className }: { className?: string }) {
         lastEmittedTime.current = currentTime;
         setAudioProgress(currentTime);
       }
-      if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
-        lastEmitted.current = currentTime;
-        // Sync video progress with audio progress
-        if (videoRef?.current) {
-          videoRef.current.currentTime = currentTime;
-        }
+      // if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
+      //   lastEmitted.current = currentTime;
+      //   // Sync video progress with audio progress
+      //   if (videoRef?.current) {
+      //     videoRef.current.currentTime = currentTime;
+      //   }
 
-        if (backgroundVideoRef?.current) {
-          backgroundVideoRef.current.currentTime = currentTime;
-        }
-      }
+      //   if (backgroundVideoRef?.current) {
+      //     backgroundVideoRef.current.currentTime = currentTime;
+      //   }
+      // }
 
       if (!audioRef.current.paused) {
         requestAnimationFrame(updateProgress);
       }
     }
-  }, [audioRef, backgroundVideoRef, videoRef]);
+  }, [audioRef]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
