@@ -335,7 +335,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         socketRef.current.emit("progress", audioRef.current?.currentTime);
       }
 
-      if (lastEmittedTime.current !== Math.pow(2, 53)) return;
+      if (lastEmittedTime.current === Math.pow(2, 53)) return;
       if (
         lastEmittedTime.current === Math.floor(audioRef.current.duration * 0.3)
       ) {
