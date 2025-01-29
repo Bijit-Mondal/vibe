@@ -303,10 +303,10 @@ function Chat({
           {listener && listener?.totalUsers >= 5 && (
             <div className={` -ml-4 px-2 py-1 text-[9px]  rounded-full`}>
               <Avatar className=" size-7 border-white border">
-                <AvatarFallback>
+                <div className="h-full w-full items-center justify-center rounded-full bg-muted">
                   {" "}
                   +{listener?.totalUsers > 100 ? 99 : listener?.totalUsers - 5}
-                </AvatarFallback>
+                </div>
               </Avatar>
             </div>
           )}
