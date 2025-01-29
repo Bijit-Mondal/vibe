@@ -130,7 +130,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const volume = useMemo(() => state.currentVolume, [state.currentVolume]);
   const skipCountRef = useRef(0); // Ref to track skipped songs
   const { user, isAdminOnline, socketRef, emitMessage } = useUserContext();
-  // const lastEmittedTime = useRef(0);
+  const lastEmittedTime = useRef(0);
   // play
   const play = useCallback(
     async (song: searchResults) => {
@@ -151,14 +151,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           .play()
           .then(async () => {
             // Reset skip count on successful play
-            // if (
-            //   audioRef.current &&
-            //   Math.floor(audioRef.current?.currentTime) >
-            //     Math.floor(audioRef.current.duration * 0.3)
-            // ) {
-            //   lastEmittedTime.current !== Math.pow(2, 53);
-            // }
-            // lastEmittedTime.current = 0;
+            if (
+              audioRef.current &&
+              Math.floor(audioRef.current?.currentTime) >
+                Math.floor(audioRef.current.duration * 0.3)
+            ) {
+              lastEmittedTime.current !== Math.pow(2, 53);
+            }
+            lastEmittedTime.current = 0;
             skipCountRef.current = 0;
             if (videoRef.current) {
               videoRef.current?.play();
@@ -265,17 +265,17 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (backgroundVideoRef.current) {
         backgroundVideoRef.current.currentTime = value;
       }
-      // const currentTime = Math.floor(audioRef.current.currentTime);
+      const currentTime = Math.floor(audioRef.current.currentTime);
 
-      // const skipToPosition =
-      //   (value / 100) * Math.floor(audioRef.current.duration);
-      // const skipAmount = skipToPosition - currentTime;
-      // const skipped = Math.abs(currentTime - Math.floor(skipAmount));
+      const skipToPosition =
+        (value / 100) * Math.floor(audioRef.current.duration);
+      const skipAmount = skipToPosition - currentTime;
+      const skipped = Math.abs(currentTime - Math.floor(skipAmount));
 
-      // if (skipped > 0 && lastEmittedTime.current !== Math.pow(2, 53)) {
-      //   const skim = lastEmittedTime.current - skipAmount;
-      //   lastEmittedTime.current = skim <= 0 ? 0 : skim;
-      // }
+      if (skipped > 0 && lastEmittedTime.current !== Math.pow(2, 53)) {
+        const skim = lastEmittedTime.current - skipAmount;
+        lastEmittedTime.current = skim <= 0 ? 0 : skim;
+      }
 
       audioRef.current.currentTime = value;
     }
@@ -335,19 +335,18 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         socketRef.current.emit("progress", audioRef.current?.currentTime);
       }
 
-      // if (lastEmittedTime.current === Math.pow(2, 53)) return;
+      if (lastEmittedTime.current === Math.pow(2, 53)) return;
       if (
-        Math.floor(audioRef.current?.currentTime) ===
-        Math.floor(audioRef.current.duration * 0.3)
+        lastEmittedTime.current === Math.floor(audioRef.current.duration * 0.3)
       ) {
         socketRef.current.emit("analytics", {
           type: "listening",
         });
-        // lastEmittedTime.current = Math.pow(2, 53);
+        lastEmittedTime.current = Math.pow(2, 53);
         return;
       }
 
-      // lastEmittedTime.current += 2;
+      lastEmittedTime.current += 2;
     }, 2000);
     return () => clearInterval(t);
   }, [isAdminOnline, socketRef]);
