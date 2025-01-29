@@ -343,6 +343,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           type: "listening",
         });
         lastEmittedTime.current = Math.pow(2, 53);
+        return;
       }
 
       lastEmittedTime.current += 2;
