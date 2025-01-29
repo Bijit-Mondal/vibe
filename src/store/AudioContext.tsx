@@ -346,8 +346,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         return;
       }
 
-      lastEmittedTime.current += 2;
-    }, 2000);
+      lastEmittedTime.current += 3;
+    }, 3000);
     return () => clearInterval(t);
   }, [isAdminOnline, socketRef]);
 
