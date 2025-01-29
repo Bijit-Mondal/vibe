@@ -211,7 +211,7 @@ export default function getURL(currentSong: searchResults) {
     currentSong?.downloadUrl[currentSong.downloadUrl.length - 1]?.url;
   const currentVideoUrl = currentSongUrl?.startsWith("http")
     ? currentSongUrl
-    : `${process.env.VIDEO_STREAM_URI}/${currentSongUrl}` ||
+    : `${process.env.STREAM_URL}/${currentSongUrl}` ||
       "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg";
 
   return currentVideoUrl;
