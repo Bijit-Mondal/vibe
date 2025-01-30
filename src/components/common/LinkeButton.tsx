@@ -1,6 +1,7 @@
 "use client";
 
 import api from "@/lib/api";
+import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
 // import useDebounce from "@/Hooks/useDebounce";
 import { Heart } from "lucide-react";
@@ -17,6 +18,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   maxSize = 40,
 }) => {
   const { user, emitMessage, socketRef } = useUserContext();
+  const { currentSong } = useAudio();
   const [users, setLikEffectUser] = useState<{ imageUrl: string }[]>([]);
   const handleHeart = useCallback((data: any) => {
     const value = decrypt(data) as { imageUrl: string };
@@ -124,8 +126,11 @@ const LikeButton: React.FC<LikeButtonProps> = ({
       } as React.MouseEvent<HTMLDivElement>); // Manually cast as a MouseEvent
     }
   }, [handleClick, users]);
-
-  const handleEmit = useCallback(() => {
+  const likedRef = useRef<boolean>(false);
+  useEffect(() => {
+    likedRef.current = false;
+  }, [currentSong]);
+  const handleEmit = useCallback(async () => {
     if (user?.imageUrl) {
       setLikEffectUser([{ imageUrl: user.imageUrl }]);
       api.get<any>(`${process.env.SOCKET_URI}/api/ping`).then((rateLimit) => {
@@ -133,9 +138,26 @@ const LikeButton: React.FC<LikeButtonProps> = ({
           return;
         }
       });
+      if (!user || !currentSong) return;
       emitMessage("heart", { imageUrl: user.imageUrl });
+
+      if (likedRef.current) return;
+      const id = user._id.trim().slice(-11);
+      if (!id) return;
+      console.log(id);
+
+      await api.post(
+        `${process.env.SOCKET_URI}/api/add?room=${id}`,
+        [currentSong],
+        {
+          showErrorToast: false,
+          finally() {
+            likedRef.current = true;
+          },
+        }
+      );
     }
-  }, [user, emitMessage]);
+  }, [user, emitMessage, currentSong]);
 
   return (
     <div className=" mb-0.5 flex gap-1.5 items-center">

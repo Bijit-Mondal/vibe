@@ -48,7 +48,10 @@ export default function Home({
       const droppedUrl = event?.clipboardData?.getData("text");
       if (!droppedUrl) return;
 
-      if (droppedUrl.includes("youtube.com")) {
+      if (
+        droppedUrl.includes("youtube.com") ||
+        droppedUrl.includes("youtu.be")
+      ) {
         const res = await api.get(
           `${process.env.SOCKET_URI}/api/search/?name=${droppedUrl}&page=0`,
           { showErrorToast: false }
@@ -101,7 +104,7 @@ export default function Home({
       return;
     }
     setShowLoader(true);
-  }, [socketRef.current.connected]);
+  }, [socketRef]);
 
   return (
     <>
