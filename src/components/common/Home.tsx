@@ -104,7 +104,7 @@ export default function Home({
       return;
     }
     setShowLoader(true);
-  }, [socketRef]);
+  }, [socketRef.current.connected]);
 
   return (
     <>
