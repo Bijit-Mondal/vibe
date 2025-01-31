@@ -144,13 +144,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           .play()
           .then(async () => {
             // Reset skip count on successful play
-            if (
-              audioRef.current &&
-              Math.floor(audioRef.current?.currentTime) >
-                Math.floor(audioRef.current.duration * 0.3)
-            ) {
-              lastEmittedTime.current !== Math.pow(2, 53);
-            }
             lastEmittedTime.current = 0;
             skipCountRef.current = 0;
             if (videoRef.current) {
