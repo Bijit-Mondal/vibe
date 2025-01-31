@@ -160,6 +160,7 @@ function AddToQueueComp() {
           {user && user.role === "admin" && queue.length > 1 && (
             <Button
               onClick={() => {
+                setSelectedSongs([]);
                 if (queue.length <= 1) return;
                 setIsDeleting((prev) => !prev);
               }}
@@ -167,7 +168,7 @@ function AddToQueueComp() {
               className=" bg-lightPurple text-[#4F378A] p-2.5 hover:bg-lightPurple/80 "
             >
               {isDeleting ? (
-                <X onClick={() => setSelectedSongs([])} className=" size-4" />
+                <X className=" size-4" />
               ) : (
                 <Trash2 className=" size-4" />
               )}
