@@ -146,7 +146,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
       if (!id) return;
       console.log(id);
 
-      await api.post(
+      const add = await api.post(
         `${process.env.SOCKET_URI}/api/add?room=${id}`,
         [currentSong],
         {
@@ -156,6 +156,12 @@ const LikeButton: React.FC<LikeButtonProps> = ({
           },
         }
       );
+      if (add.status === 400) {
+        window.open(`${id}`);
+      }
+      if (add.success) {
+        emitMessage("update", "update");
+      }
     }
   }, [user, emitMessage, currentSong]);
 
