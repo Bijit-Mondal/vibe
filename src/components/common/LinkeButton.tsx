@@ -157,7 +157,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         }
       );
       if (add.status === 400) {
-        window.open(`${id}`);
+        window.open(`/${id}`);
       }
       if (add.success) {
         emitMessage("update", "update");
