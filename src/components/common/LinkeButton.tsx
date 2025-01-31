@@ -6,6 +6,7 @@ import { useUserContext } from "@/store/userStore";
 // import useDebounce from "@/Hooks/useDebounce";
 import { Heart } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { decrypt } from "tanmayo7lock";
 
 interface LikeButtonProps {
@@ -157,13 +158,15 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         }
       );
       if (add.status === 404) {
+        toast.message("Liked songs room created");
         window.open(`/${id}`);
       }
       if (add.success) {
-        emitMessage("update", "update");
+        toast.message("Added to liked songs room");
+        socketRef.current.emit("event", id);
       }
     }
-  }, [user, emitMessage, currentSong]);
+  }, [user, emitMessage, currentSong, socketRef]);
 
   return (
     <div className=" mb-0.5 flex gap-1.5 items-center">
