@@ -365,7 +365,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           lastEmittedTime.current = Math.pow(2, 53);
           return;
         }
-        lastEmittedTime.current = +0.5;
+
+        lastEmittedTime.current = +1;
       };
       audioElement.addEventListener("play", handlePlay);
       audioElement.addEventListener("pause", handlePause);
