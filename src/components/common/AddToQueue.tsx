@@ -103,6 +103,7 @@ function AddToQueueComp() {
     emitMessage("deleteAll", "remove");
     setQueue([]);
     setSelectedSongs([]);
+    setIsDeleting(false);
   };
   const [isDragging, setIsDragging] = useState(false);
 
