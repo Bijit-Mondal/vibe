@@ -111,14 +111,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
   const [state, dispatch] = useReducer(reducer, initialState);
-  // const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  // const [isMuted, setIsMuted] = useState<boolean>(false);
-  // const [currentSong, setCurrentSong] = useState<searchResults | null>(null);
-  // const [currentProgress, setProgress] = useState<number>(0);
-  // const [currentDuration] = useState<number>(0);
-  // const [currentVolume, setVolume] = useState<number>(1);
-  // const [isLooped, setLoop] = useState<boolean>(false);
-  // const [shuffled, setShuffled] = useState<boolean>(false);
+
   const progress = useMemo(
     () => state.currentProgress,
     [state.currentProgress]
@@ -334,19 +327,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (isAdminOnline.current) {
         socketRef.current.emit("progress", audioRef.current?.currentTime);
       }
-
-      if (lastEmittedTime.current === Math.pow(2, 53)) return;
-      if (
-        lastEmittedTime.current === Math.floor(audioRef.current.duration * 0.3)
-      ) {
-        socketRef.current.emit("analytics", {
-          type: "listening",
-        });
-        lastEmittedTime.current = Math.pow(2, 53);
-        return;
-      }
-
-      lastEmittedTime.current += 3;
     }, 3000);
     return () => clearInterval(t);
   }, [isAdminOnline, socketRef]);
@@ -381,19 +361,32 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         }
       };
 
+      const handleTimeUpdate = () => {
+        if (lastEmittedTime.current === Math.pow(2, 53)) return;
+        if (
+          audioElement.currentTime >= Math.floor(audioElement.duration * 0.3)
+        ) {
+          socketRef.current.emit("analytics", {
+            type: "listening",
+          });
+          lastEmittedTime.current = Math.pow(2, 53);
+          return;
+        }
+      };
       audioElement.addEventListener("play", handlePlay);
       audioElement.addEventListener("pause", handlePause);
       audioElement.addEventListener("ended", handleEnd);
       audioElement.addEventListener("canplay", handleCanPlay);
-
+      audioElement.addEventListener("timeupdate", handleTimeUpdate);
       return () => {
         audioElement.removeEventListener("play", handlePlay);
         audioElement.removeEventListener("pause", handlePause);
         audioElement.removeEventListener("ended", handleEnd);
         audioElement.removeEventListener("canplay", handleCanPlay);
+        audioElement.removeEventListener("timeupdate", handleTimeUpdate);
       };
     }
-  }, [setMediaSession, isAdminOnline, emitMessage]);
+  }, [setMediaSession, isAdminOnline, emitMessage, socketRef]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
