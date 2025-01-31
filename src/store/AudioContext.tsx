@@ -144,6 +144,13 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           .play()
           .then(async () => {
             // Reset skip count on successful play
+            if (
+              audioRef.current &&
+              Math.floor(audioRef.current?.currentTime) >=
+                Math.floor(audioRef.current.duration * 0.3)
+            ) {
+              lastEmittedTime.current !== Math.pow(2, 53);
+            }
             lastEmittedTime.current = 0;
             skipCountRef.current = 0;
             if (videoRef.current) {
@@ -320,6 +327,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (isAdminOnline.current) {
         socketRef.current.emit("progress", audioRef.current?.currentTime);
       }
+
+      if (lastEmittedTime.current === Math.pow(2, 53)) return;
+      if (
+        lastEmittedTime.current >= Math.floor(audioRef.current.duration * 0.3)
+      ) {
+        socketRef.current.emit("analytics", {
+          type: "listening",
+        });
+        lastEmittedTime.current = Math.pow(2, 53);
+        return;
+      }
+
+      lastEmittedTime.current += 3;
     }, 3000);
     return () => clearInterval(t);
   }, [isAdminOnline, socketRef]);
@@ -354,34 +374,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         }
       };
 
-      const handleTimeUpdate = () => {
-        if (lastEmittedTime.current === Math.pow(2, 53)) return;
-        if (
-          lastEmittedTime.current >= Math.floor(audioElement.duration * 0.3)
-        ) {
-          socketRef.current.emit("analytics", {
-            type: "listening",
-          });
-          lastEmittedTime.current = Math.pow(2, 53);
-          return;
-        }
-
-        lastEmittedTime.current = +1;
-      };
       audioElement.addEventListener("play", handlePlay);
       audioElement.addEventListener("pause", handlePause);
       audioElement.addEventListener("ended", handleEnd);
       audioElement.addEventListener("canplay", handleCanPlay);
-      audioElement.addEventListener("timeupdate", handleTimeUpdate);
+
       return () => {
         audioElement.removeEventListener("play", handlePlay);
         audioElement.removeEventListener("pause", handlePause);
         audioElement.removeEventListener("ended", handleEnd);
         audioElement.removeEventListener("canplay", handleCanPlay);
-        audioElement.removeEventListener("timeupdate", handleTimeUpdate);
       };
     }
-  }, [setMediaSession, isAdminOnline, emitMessage, socketRef]);
+  }, [setMediaSession, isAdminOnline, emitMessage]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
