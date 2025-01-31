@@ -156,7 +156,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
           },
         }
       );
-      if (add.status === 400) {
+      if (add.status === 404) {
         window.open(`/${id}`);
       }
       if (add.success) {
