@@ -152,14 +152,14 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         [currentSong],
         {
           showErrorToast: false,
-          finally() {
-            likedRef.current = true;
-          },
         }
       );
+
       if (add.status === 404) {
         toast.message("Liked songs room created");
         window.open(`/${id}`);
+      } else {
+        likedRef.current = true;
       }
       if (add.success) {
         toast.message("Added to liked songs room");
