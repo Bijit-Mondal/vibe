@@ -165,7 +165,7 @@ function AddToQueueComp() {
               className=" bg-lightPurple text-[#4F378A] p-2.5 hover:bg-lightPurple/80 "
             >
               {isDeleting ? (
-                <X className=" size-4" />
+                <X onClick={() => setSelectedSongs([])} className=" size-4" />
               ) : (
                 <Trash2 className=" size-4" />
               )}
