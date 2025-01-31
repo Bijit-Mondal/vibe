@@ -96,6 +96,7 @@ function AddToQueueComp() {
         prevQueue.filter((song) => !selectedSongs.includes(song))
       );
       setSelectedSongs([]);
+      setIsDeleting(false);
     }
   };
   const handleRemoveALL = () => {
