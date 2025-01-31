@@ -400,7 +400,7 @@ function QueueListComp({
       ))}
       {/* </AnimatePresence> */}
       <div />
-      {loading && <p className="text-center text-zinc-500 py-1">Loading..</p>}
+      {/* {loading && <p className="text-center text-zinc-500 py-1">Loading..</p>} */}
     </div>
   );
 }
