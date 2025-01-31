@@ -357,12 +357,13 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       const handleTimeUpdate = () => {
         if (lastEmittedTime.current === Math.pow(2, 53)) return;
         if (
-          audioElement.currentTime >= Math.floor(audioElement.duration * 0.3)
+          lastEmittedTime.current >= Math.floor(audioElement.duration * 0.3)
         ) {
           socketRef.current.emit("analytics", {
             type: "listening",
           });
           lastEmittedTime.current = Math.pow(2, 53);
+          lastEmittedTime.current = +0.1;
           return;
         }
       };
