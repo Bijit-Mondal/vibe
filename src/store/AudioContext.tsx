@@ -338,11 +338,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         lastEmittedTime.current = Math.pow(2, 53);
         return;
       }
-
+      if (state.currentVolume === 0) return;
       lastEmittedTime.current += 3;
     }, 3000);
     return () => clearInterval(t);
-  }, [isAdminOnline, socketRef]);
+  }, [isAdminOnline, socketRef, state.currentVolume]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
