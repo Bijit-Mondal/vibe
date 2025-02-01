@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { getSpotifyTrackID } from "@/utils/utils";
 import useAddSong from "@/Hooks/useAddSong";
 import Feedback from "./Feedback";
+import { VibeLogoText } from "./Logo";
 
 export default function Home({
   user,
@@ -119,7 +120,8 @@ export default function Home({
             exit="exit"
             variants={loaderVariants}
           >
-            {designerText}
+            <VibeLogoText text={designerText} className="min-h-20" />
+            {/* {designerText} */}
           </motion.div>
         )}
       </AnimatePresence>

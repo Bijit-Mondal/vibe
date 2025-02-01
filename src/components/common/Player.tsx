@@ -39,7 +39,7 @@ function MemoPLayer() {
   }, [isChatOpen, setIsChatOpen]);
 
   return (
-    <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg md:h-full border border-white/15 flex-grow rounded-2xl p-8 pt-11 md:px-5 flex flex-col items-center justify-center px-4 gap-[2.5dvh]">
+    <div className=" relative hide-scrollbar max-md:w-full max-md:rounded-none max-md:border-none overflow-y-scroll w-1/2 backdrop-blur-lg md:h-full border border-white/15 flex-grow rounded-2xl p-8 pt-11 md:px-5 flex flex-col items-center justify-between px-4 gap-[2.5dvh]">
       <AnimatePresence key={"chat opened"}>
         <motion.div
           style={{
