@@ -144,7 +144,7 @@ function ProgressBar({ className }: { className?: string }) {
         [&::-moz-range-track]:bg-transparent
       "
       />
-      <p className=" progress">{formatElapsedTime(duration)}</p>
+      <p className=" duration">{formatElapsedTime(duration)}</p>
     </div>
   );
 }
