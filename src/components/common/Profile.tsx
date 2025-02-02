@@ -27,6 +27,7 @@ import { AtSign, LoaderCircle, Mail, Sun } from "lucide-react";
 import { encryptObjectValues } from "@/utils/utils";
 import VibeAlert from "./VibeAlert";
 import { useAudio } from "@/store/AudioContext";
+import { useRouter } from "next/navigation";
 function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
   const { setUser, user: LoggedInUser, socketRef } = useUserContext();
   const { state, dispatch } = useAudio();
@@ -180,6 +181,8 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
     [setUser, LoggedInUser, socketRef]
   );
 
+  const router = useRouter();
+
   if (!user) {
     return <Login />;
   }
@@ -194,7 +197,9 @@ function ProfileComp({ user, roomId }: { user: TUser; roomId?: string }) {
           title="Rooms"
           headingClassName=" w-8/12"
           heading="Are you sure you want to leave this Room ?"
-          action={() => (window.location.href = "/browse")}
+          action={() => {
+            router.push("/browse"), socketRef.current.disconnect();
+          }}
         />
 
         <svg
