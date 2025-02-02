@@ -45,7 +45,7 @@ function QueueListComp({
     setShowAddDragOptions,
     emitMessage,
   } = useUserContext();
-  const { currentSong, isPlaying } = useAudio();
+  const { currentSong, isPlaying, play } = useAudio();
   const { loading, handleUpdateQueue } = useSocket();
   const { addSong } = useAddSong();
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -110,8 +110,9 @@ function QueueListComp({
     [handleUpVote, setQueue, user, currentSong]
   );
 
-  const Play = useCallback(
+  const handlePlay = useCallback(
     (e: React.MouseEvent, song: searchResults) => {
+      if (!e.isTrusted) return;
       if (isDeleting) return;
       e.stopPropagation();
       if (!user) {
@@ -119,11 +120,10 @@ function QueueListComp({
       }
       if (user?.role !== "admin") return toast.error("Only admin can play");
       emitMessage("play", { ...song, currentQueueId: currentSong?.queueId });
+      play(song);
     },
-    [isDeleting, user, currentSong, emitMessage]
+    [isDeleting, user, currentSong, emitMessage, play]
   );
-
-  const handlePlay = useDebounce(Play);
 
   const scroll = () => {
     if (!containerRef.current) return;
