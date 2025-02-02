@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { GeistSans } from "geist/font/sans";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { UserProvider } from "@/store/userStore";
@@ -8,6 +8,16 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { Suspense } from "react";
 import { SocketProvider } from "@/Hooks/useSocket";
 
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 export const metadata: Metadata = {
   title: "Vibe",
   description: "Vibe together over millions of songs.",
@@ -83,7 +93,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <GoogleTagManager gtmId="GTM-KS6FPVS3" />
-      <body className={`${GeistSans.className} antialiased`}>
+      <body
+        className={`${geistSans.className} ${geistMono.className} antialiased`}
+      >
         <Suspense>
           <UserProvider>
             <AudioProvider>
