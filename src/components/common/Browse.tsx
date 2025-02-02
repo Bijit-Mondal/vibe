@@ -1,5 +1,5 @@
 "use client";
-// import { useMediaQuery } from "@react-hook/media-query";
+import { useMediaQuery } from "@react-hook/media-query";
 import { motion } from "framer-motion";
 import { roomsData } from "@/lib/types";
 import { Button } from "../ui/button";
@@ -13,7 +13,7 @@ import { useUserContext } from "@/store/userStore";
 import { HomeIcon } from "@radix-ui/react-icons";
 
 export function Browse({ data = [] }: { data: roomsData[] }) {
-  // const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const [roomLink, setRoomLink] = useState<string>("");
   const pathname = usePathname();
   const [isSaved, setIsSaved] = useState<boolean>(pathname.includes("saved"));
@@ -51,36 +51,36 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         WebkitMaskImage: "linear-gradient(to top, black 95%, transparent 100%)",
         maskImage: "linear-gradient(to top, black 95%, transparent 100%)",
       }}
-      // initial={{
-      //   opacity: 0,
-      //   filter: "blur(10px)",
-      // }}
-      // animate={{ opacity: 1, filter: "blur(0px)" }}
-      // transition={{
-      //   duration: 0.5,
-      //   delay: 0.5,
-      //   // type: "spring",
-      //   // stiffness: 45,
-      // }}
+      initial={{
+        opacity: 0,
+        filter: "blur(10px)",
+      }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{
+        duration: 0.5,
+        delay: 0.5,
+        // type: "spring",
+        // stiffness: 45,
+      }}
       className=" flex items-center flex-col bg-[#141414] justify-center min-h-dvh py-20  overflow-y-scroll"
     >
       <div className=" flex items-start px-7 flex-wrap relative justify-center w-full gap-6">
         {data?.map((room, index) => (
           <motion.div
             title={room?.name[0]}
-            // initial={{
-            //   y: isDesktop ? "5dvh" : 0,
-            //   opacity: 0,
-            //   filter: "blur(10px)",
-            // }}
-            // animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-            // transition={{
-            //   duration: 0.5,
-            //   delay: Number(`${Math.floor(index / 10) + 1}.${index % 10}`),
-            //   // type: "spring",
-            //   // stiffness: 45,
-            // }}
-            // exit={{ y: isDesktop ? "5dvh" : 0, opacity: 0 }}
+            initial={{
+              y: isDesktop ? "5dvh" : 0,
+              opacity: 0,
+              filter: "blur(10px)",
+            }}
+            animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+            transition={{
+              duration: 0.5,
+              delay: Number(`${Math.floor(index / 10) + 1}.${index % 10}`),
+              // type: "spring",
+              // stiffness: 45,
+            }}
+            exit={{ y: isDesktop ? "5dvh" : 0, opacity: 0 }}
             key={index}
           >
             <Link
@@ -100,21 +100,21 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           </motion.div>
         ))}
         <motion.div
-          // initial={{
-          //   y: isDesktop ? "5dvh" : 0,
-          //   opacity: 0,
-          //   filter: "blur(10px)",
-          // }}
-          // animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-          // transition={{
-          //   duration: 0.5,
-          //   delay: Number(
-          //     `${Math.floor(data.length / 10 + 1)}.${data.length % 10}`
-          //   ),
-          //   // type: "spring",
-          //   // stiffness: 45,
-          // }}
-          // exit={{ y: isDesktop ? "5dvh" : 0, opacity: 0 }}
+          initial={{
+            y: isDesktop ? "5dvh" : 0,
+            opacity: 0,
+            filter: "blur(10px)",
+          }}
+          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+          transition={{
+            duration: 0.5,
+            delay: Number(
+              `${Math.floor(data.length / 10 + 1)}.${data.length % 10}`
+            ),
+            // type: "spring",
+            // stiffness: 45,
+          }}
+          exit={{ y: isDesktop ? "5dvh" : 0, opacity: 0 }}
           className=" flex flex-col max-md:mb-8"
         >
           <Link
@@ -122,17 +122,17 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
             className="border-2 border-muted-foreground/20 border-dashed hover:bg-muted-foreground/5 transition-all duration-150 p-4 flex flex-col items-center justify-center group  h-[12vw] max-md:-mt-2 w-[12vw] rounded-md min-h-[100px] min-w-[100px] group"
           >
             <motion.svg
-              // initial={{
-              //   y: isDesktop ? "5dvh" : 0,
-              //   opacity: 0,
-              //   filter: "blur(10px)",
-              // }}
-              // animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-              // transition={{
-              //   duration: 0.5,
-              //   // type: "spring",
-              //   // stiffness: 45,
-              // }}
+              initial={{
+                y: isDesktop ? "5dvh" : 0,
+                opacity: 0,
+                filter: "blur(10px)",
+              }}
+              animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+              transition={{
+                duration: 0.5,
+                // type: "spring",
+                // stiffness: 45,
+              }}
               className="md:h-[5vw]  md:w-[5vw] h-[10vw] w-[10vw] rounded-md "
               viewBox="0 0 68 68"
               fill="none"
@@ -150,20 +150,20 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
         </motion.div>
       </div>
       <motion.form
-        // initial={{
-        //   y: isDesktop ? "5dvh" : 0,
-        //   opacity: 0,
-        //   filter: "blur(10px)",
-        // }}
-        // animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-        // transition={{
-        //   duration: 0.5,
-        //   delay: Number(
-        //     `${Math.floor(data.length / 10 + 1)}.${data.length % 10}`
-        //   ),
-        //   // type: "spring",
-        //   // stiffness: 45,
-        // }}
+        initial={{
+          y: isDesktop ? "5dvh" : 0,
+          opacity: 0,
+          filter: "blur(10px)",
+        }}
+        animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+        transition={{
+          duration: 0.5,
+          delay: Number(
+            `${Math.floor(data.length / 10 + 1)}.${data.length % 10}`
+          ),
+          // type: "spring",
+          // stiffness: 45,
+        }}
         onSubmit={handleRedirect}
         className="max-w-[340px] flex fixed bottom-5 h-auto pl-3 pr-1.5 py-1.5 bg-[#c8aeff]/0 rounded-xl border border-[#eaddff]/50 justify-between items-center "
       >
