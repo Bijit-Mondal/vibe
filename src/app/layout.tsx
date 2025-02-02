@@ -94,7 +94,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <GoogleTagManager gtmId="GTM-KS6FPVS3" />
       <body
-        className={`${geistSans.className} ${geistMono.className} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Suspense>
           <UserProvider>
