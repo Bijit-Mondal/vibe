@@ -15,7 +15,7 @@ function Footer() {
             src={"/logo.svg"}
             alt="logo"
             height={45}
-            className=" size-10 -mt-2"
+            className=" size-10 -mt-2 -mx-1"
             width={45}
           />
         </span>
