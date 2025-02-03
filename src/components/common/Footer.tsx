@@ -3,14 +3,14 @@ import { InstagramLogo } from "@phosphor-icons/react/dist/icons/InstagramLogo";
 import { XLogo } from "@phosphor-icons/react/dist/icons/XLogo";
 import Image from "next/image";
 import Link from "next/link";
-import { VibeLogoText } from "./Logo";
+// import { VibeLogoText } from "./Logo";
 
 function Footer() {
   return (
     <footer className="border max-md:hidden max-md:border-none max-xl:w-11/12 max-lg:w-11/12 border-white/15 max-sm:w-full backdrop-blur-lg  max-md:w-full select-none w-7/12 p-3 rounded-2xl max-md:p-4 px-5 z-40 flex items-center justify-between ">
       <div className=" flex max-md:hidden -ml-1 text-2xl font-semibold gap-2">
         <p>Just</p>{" "}
-        {/* <span>
+        <span>
           <Image
             src={"/logo.svg"}
             alt="logo"
@@ -18,8 +18,8 @@ function Footer() {
             className=" size-10"
             width={45}
           />
-        </span> */}
-        <VibeLogoText text="Vibe" className=" text-2xl -mx-1" />
+        </span>
+        {/* <VibeLogoText text="Vibe" className=" text-2xl -mx-1" /> */}
         <p>together.</p>
       </div>
       <div className=" flex -ml-1 max-md:text-base text-xl items-center font-semibold gap-2">
