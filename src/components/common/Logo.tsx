@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useUserContext } from "@/store/userStore";
 import { Pacifico } from "next/font/google";
+import Image from "next/image";
 
 const pacifico = Pacifico({
   subsets: ["latin"],
@@ -21,9 +22,9 @@ function Logo({ className }: { className?: string }) {
       }}
       className={!user ? "cursor-pointer" : ""}
     >
-      <VibeLogoText text="Vibe" className={className} />
+      <VibeLogoText text="Vibe" className={className + " md:hidden"} />
       {/* <p className=" text-xl md:hidden font-semibold">Vibe </p> */}
-      {/* <Image
+      <Image
         src={"/logo.svg"}
         className={cn(
           `size-12 max-md:hidden max-md:size-10 ${!user && ""}`,
@@ -32,7 +33,7 @@ function Logo({ className }: { className?: string }) {
         alt="logo"
         height={500}
         width={500}
-      /> */}
+      />
     </div>
   );
 }
