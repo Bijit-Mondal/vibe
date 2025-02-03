@@ -117,7 +117,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
           exit={{ y: isDesktop ? "5dvh" : 0, opacity: 0 }}
           className=" flex flex-col max-md:mb-8"
         >
-          <Link
+          <a
             href="/v"
             className="border-2 border-muted-foreground/20 border-dashed hover:bg-muted-foreground/5 transition-all duration-150 p-4 flex flex-col items-center justify-center group  h-[12vw] max-md:-mt-2 w-[12vw] rounded-md min-h-[100px] min-w-[100px] group"
           >
@@ -143,7 +143,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
                 className=" fill-muted-foreground  transition-all duration-150  "
               />
             </motion.svg>
-          </Link>
+          </a>
           <p className=" text-center mt-1.5 text-[1.3vw] font-medium   max-md:text-sm max-md:mt-3 tracking-tight transition-all duration-150 ">
             Create Room
           </p>
