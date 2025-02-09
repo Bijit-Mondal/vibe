@@ -59,9 +59,7 @@ function Chat({
     (data: any): void => {
       const message = decrypt(data) as messages;
       setMessages((prev) => [...prev, message]);
-      const audio = new Audio(
-        "https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"
-      );
+      const audio = new Audio("");
       if (!isChatOpen) {
         setSeen(false);
       }
