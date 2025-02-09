@@ -156,7 +156,7 @@ function SearchQueueList({
               }
               key={song?.id + i}
             >
-              {i !== 0 && <div className=" h-0.5 bg-zinc-400/5"></div>}
+              {/* {i !== 0 && <div className=" h-0.5 bg-zinc-400/5"></div>} */}
               <label
                 htmlFor={song?.id + i}
                 key={i}
@@ -164,7 +164,7 @@ function SearchQueueList({
                   i !== queue.length && " border-white/5"
                 } py-2 pl-2 hover:bg-white/15   items-center justify-between ${
                   currentSong?.id == song?.id && "bg-white/10"
-                } hover:bg-white/10  rounded-xl`}
+                } hover:bg-white/10 duration-100 rounded-xl`}
               >
                 <div className="relative">
                   <Avatar className="size-[3.2rem] rounded-md relative group">

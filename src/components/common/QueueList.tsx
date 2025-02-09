@@ -79,15 +79,15 @@ function QueueListComp({
             return prevQueue?.map((item, index) =>
               index === songIndex
                 ? {
-                    ...item,
-                    isVoted: !item.isVoted,
-                    topVoters: item.isVoted
-                      ? item?.topVoters?.filter(
-                          (voter) => voter._id !== user._id
-                        )
-                      : [...(item.topVoters || []), user],
-                    addedByUser: user,
-                  }
+                  ...item,
+                  isVoted: !item.isVoted,
+                  topVoters: item.isVoted
+                    ? item?.topVoters?.filter(
+                      (voter) => voter._id !== user._id
+                    )
+                    : [...(item.topVoters || []), user],
+                  addedByUser: user,
+                }
                 : item
             );
           } else {
@@ -282,15 +282,13 @@ function QueueListComp({
             }
             key={song?.id + i}
           >
-            {i !== 0 && <div className="h-0.5 bg-zinc-400/5"></div>}
+            {/* {i !== 0 && <div className="h-0.5 bg-zinc-400/5"></div>} */}
             <label
               onClick={(e) => handlePlay(e, song)}
               htmlFor={song?.id + i}
-              className={`flex gap-2 ${
-                i !== queue.length && " border-white/5"
-              } py-2 pl-2 ${
-                currentSong?.id == song?.id && "bg-white/15"
-              } hover:bg-white/10 rounded-xl items-center justify-between`}
+              className={`flex gap-2 ${i !== queue.length && " border-white/5"
+                } py-2 pl-2 ${currentSong?.id == song?.id && "bg-white/15"
+                } hover:bg-white/10 hover:duration-100 hover:transition-all rounded-xl items-center justify-between`}
             >
               <div title={String(song?.order)} className="relative">
                 <Avatar className="size-[3.2rem] rounded-md relative group">
@@ -300,9 +298,8 @@ function QueueListComp({
                     alt={song.name}
                     height={500}
                     width={500}
-                    className={`rounded-md object-cover group-hover:opacity-40 ${
-                      currentSong?.id == song.id && "opacity-70"
-                    }`}
+                    className={`rounded-md object-cover group-hover:opacity-40 ${currentSong?.id == song.id && "opacity-70"
+                      }`}
                     src={song.image[song.image.length - 1].url}
                   />
                   <AvatarFallback>SX</AvatarFallback>
