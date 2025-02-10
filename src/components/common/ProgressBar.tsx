@@ -1,33 +1,38 @@
 import { useAudio } from "@/store/AudioContext";
-// import { Slider } from "../ui/slider";
+import { Slider } from "../ui/slider";
 import { formatElapsedTime } from "@/utils/utils";
 import { useUserContext } from "@/store/userStore";
 import { toast } from "sonner";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 function ProgressBar({ className }: { className?: string }) {
-  const {
-    audioRef,
-    setProgress,
-
-    // videoRef,
-    // backgroundVideoRef,
-
-    seek,
-  } = useAudio();
+  const { audioRef, setProgress, videoRef, backgroundVideoRef } = useAudio();
   const [currentProgress, setAudioProgress] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const { user, socketRef } = useUserContext();
-
-  // const handleSeek = (e: number[]) => {
-  //   if (e[0]) {
-  //     if (user && user.role !== "admin") {
-  //       return toast.error("Only admin is allowed to seek");
-  //     }
-  //     socketRef.current.emit("seek", e[0]);
-  //     seek(e[0]);
-  //   }
-  // };
+  const seek = useCallback(
+    (value: number) => {
+      if (audioRef.current) {
+        if (videoRef?.current) {
+          videoRef.current.currentTime = value;
+        }
+        if (backgroundVideoRef?.current) {
+          backgroundVideoRef.current.currentTime = value;
+        }
+        audioRef.current.currentTime = value;
+      }
+    },
+    [audioRef, backgroundVideoRef, videoRef]
+  );
+  const handleSeek = (e: number[]) => {
+    if (e[0]) {
+      if (user && user.role !== "admin") {
+        return toast.error("Only admin is allowed to seek");
+      }
+      socketRef.current.emit("seek", e[0]);
+      seek(e[0]);
+    }
+  };
   const handleProgress = useCallback(
     (value: number[]) => {
       if (value && value[0] !== undefined) {
@@ -55,7 +60,7 @@ function ProgressBar({ className }: { className?: string }) {
     [duration, seek, setProgress, user, socketRef]
   );
   const lastEmittedTime = useRef(0);
-  // const lastEmitted = useRef(0);
+  const lastEmitted = useRef(0);
   const updateProgress = useCallback(() => {
     if (audioRef.current) {
       const currentTime = audioRef.current.currentTime;
@@ -63,23 +68,23 @@ function ProgressBar({ className }: { className?: string }) {
         lastEmittedTime.current = currentTime;
         setAudioProgress(currentTime);
       }
-      // if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
-      //   lastEmitted.current = currentTime;
-      //   // Sync video progress with audio progress
-      //   if (videoRef?.current) {
-      //     videoRef.current.currentTime = currentTime;
-      //   }
+      if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
+        lastEmitted.current = currentTime;
+        // Sync video progress with audio progress
+        if (videoRef?.current) {
+          videoRef.current.currentTime = currentTime;
+        }
 
-      //   if (backgroundVideoRef?.current) {
-      //     backgroundVideoRef.current.currentTime = currentTime;
-      //   }
-      // }
+        if (backgroundVideoRef?.current) {
+          backgroundVideoRef.current.currentTime = currentTime;
+        }
+      }
 
       if (!audioRef.current.paused) {
         requestAnimationFrame(updateProgress);
       }
     }
-  }, [audioRef]);
+  }, [audioRef, backgroundVideoRef, videoRef]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -101,9 +106,6 @@ function ProgressBar({ className }: { className?: string }) {
       };
     }
   }, [audioRef, updateProgress]);
-
-  const progressPercentage = ((currentProgress || 0) / (duration || 1)) * 100;
-
   return (
     <div
       className={cn(
@@ -113,37 +115,17 @@ function ProgressBar({ className }: { className?: string }) {
     >
       <p className=" progress">{formatElapsedTime(currentProgress)}</p>
 
-      <input
-        type="range"
+      <Slider
         max={duration || 0}
-        value={currentProgress}
+        value={[currentProgress]}
         step={1}
         min={0}
         disabled={user?.role !== "admin"}
         onClick={handleValueChange}
-        onChange={(e) => handleProgress([Number(e.target.value)])}
-        style={{
-          WebkitAppearance: "none",
-          width: "100%",
-          height: "0.3rem",
-          background: `linear-gradient(to right, 
-          rgb(139, 92, 246) 0%, 
-          rgb(139, 92, 246) ${progressPercentage}%, 
-          #333 ${progressPercentage}%, 
-          #333 100%)`,
-          outline: "none",
-          cursor: "pointer",
-          border: "none",
-        }}
-        className="
-        rounded-full
-        [&::-webkit-slider-thumb]:appearance-none 
-        [&::-webkit-slider-thumb]:opacity-0
-        [&::-moz-range-thumb]:opacity-0
-        [&::-webkit-slider-runnable-track]:bg-transparent
-        [&::-moz-range-track]:bg-transparent
-      "
+        onValueCommit={handleSeek}
+        onValueChange={handleProgress}
       />
+
       <p className=" duration">{formatElapsedTime(duration)}</p>
     </div>
   );
