@@ -369,9 +369,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         setMediaSession();
       };
       const handleEnd = () => {
-        // if (isAdminOnline.current) {
+        if (isAdminOnline.current) {
           emitMessage("songEnded", "songEnded");
-        // }
+        }
       };
 
       audioElement.addEventListener("play", handlePlay);
