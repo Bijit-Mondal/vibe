@@ -190,6 +190,13 @@ function AddToQueueComp() {
           className=" flex hide-scrollbar overflow-x-scroll py-1 pr-4 justify-between -mb-1 mt-2 items-center gap-1"
         >
           <VibeAlert
+            title="Delete all"
+            headingClassName=" md:w-8/12 w-[80vw] "
+            confirmText="Yes, delete all"
+            heading="Are you sure you want to delete all songs?"
+            action={handleRemoveALL}
+          />
+          <VibeAlert
             disabled={selectedSongs.length == 0}
             className="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 shadow h-8 rounded-lg px-3 w-fit text-xs bg-lightPurple text-[#4F378A] hover:bg-lightPurple/80"
             title={`Remove Selected ${selectedSongs.length}`}
@@ -197,14 +204,6 @@ function AddToQueueComp() {
             confirmText="Yes, delete selected"
             heading={`Are you sure you want to delete ${selectedSongs.length} songs?`}
             action={handleBulkDelete}
-          />
-
-          <VibeAlert
-            title="Delete all"
-            headingClassName=" md:w-8/12 w-[80vw] "
-            confirmText="Yes, delete all"
-            heading="Are you sure you want to delete all songs?"
-            action={handleRemoveALL}
           />
         </motion.div>
       )}
