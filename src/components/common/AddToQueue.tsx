@@ -174,7 +174,7 @@ function AddToQueueComp() {
               )}
             </Button>
           )}
-          <GameModal />
+          {/* <GameModal /> */}
         </div>
       </div>
       {isDeleting && queue.length > 1 && (
