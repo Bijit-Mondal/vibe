@@ -16,7 +16,7 @@ import { data, searchResults } from "@/lib/types";
 import SearchQueueList from "./SearchQueueList";
 import InviteFriends from "./InviteFriends";
 import VibeAlert from "./VibeAlert";
-import GameModal from "../vibe-games/GameModal";
+//import GameModal from "../vibe-games/GameModal";
 
 function AddToQueueComp() {
   const { queue, roomId, user, setQueue, emitMessage } = useUserContext();
