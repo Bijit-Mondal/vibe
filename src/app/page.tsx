@@ -118,13 +118,13 @@ function Page() {
               width={80}
             />
             <p className=" text-6xl max-md:text-5xl -mt-3">
-              Delightful <br />
-              Music Parties
+              Friends<br />
+              Music & Fun
             </p>
-            <p className=" -mt-4 text-6xl max-md:text-5xl text-with-image">
+            <p className=" -mt-4 text-5xl max-md:text-5xl italic text-with-image">
               Start Here.
             </p>
-            <span className="ml-1 max-md:hidden font-normal text-lg leading-tight my-2.5 -mt-1 mb-1">
+            <span className="ml-1 max-md:hidden font-normal text-lg leading-snug my-2.5 -mt-1 mb-1">
               Invite friends, enjoy high quality music
               <br /> & Vibe together over millions of songs.🥂.
             </span>
