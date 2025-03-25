@@ -168,14 +168,14 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
                 toast.error(
                   window.navigator.userAgent.includes("Electron")
                     ? "Open youtube on browser and try again"
-                    : "Maximum skip limit reached. Download vibe desktop app.",
+                    : "Maximum skip limit reached.",
                   {
                     style: { background: "#e94625" },
                   }
                 );
               } else {
                 emitMessage("songEnded", "songEnded");
-                toast.error("Song not available on web Skipping", {
+                toast.error("Song not available due to high request Skipping", {
                   style: { background: "#e94625" },
                 });
               }
@@ -370,7 +370,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       };
       const handleEnd = () => {
         // if (isAdminOnline.current) {
-          emitMessage("songEnded", "songEnded");
+        emitMessage("songEnded", "songEnded");
         // }
       };
 
