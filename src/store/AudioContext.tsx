@@ -162,7 +162,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             }
             dispatch({ type: "SET_IS_PLAYING", payload: true });
           })
-          .catch((e) => {
+          .catch(async(e) => {
            await api.post(
           `${process.env.SOCKET_URI}/api/feedback`,
           encryptObjectValues({
