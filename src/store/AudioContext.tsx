@@ -1,5 +1,5 @@
 "use client";
-
+import api from "@/lib/api";
 import { searchResults } from "@/lib/types";
 import React, {
   createContext,
