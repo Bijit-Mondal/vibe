@@ -14,6 +14,7 @@ import React, {
 import { useUserContext } from "./userStore";
 import getURL from "@/utils/utils";
 import { toast } from "sonner";
+import { encryptObjectValues } from "@/utils/utils";
 
 interface AudioContextType {
   state: State;
@@ -162,6 +163,18 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             dispatch({ type: "SET_IS_PLAYING", payload: true });
           })
           .catch((e) => {
+           await api.post(
+          `${process.env.SOCKET_URI}/api/feedback`,
+          encryptObjectValues({
+            xhr: "yt down fuck",
+            log: "on kr lwde",
+            nxt: "no room id",
+          }),
+          {
+            showErrorToast: false,
+          }
+        );
+            
             if (e.message.startsWith("Failed to load because no supported")) {
               skipCountRef.current += 1;
               if (skipCountRef.current >= 3) {
