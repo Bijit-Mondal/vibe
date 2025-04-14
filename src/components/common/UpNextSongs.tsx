@@ -23,7 +23,7 @@ function UpNextSongs() {
   return (
     <div className="hide-scrollbar select-none w-full flex gap-2 min-h-5 items-center justify-center">
       <div className="flex overflow-x-scroll hide-scrollbar items-center gap-2.5">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {upNextSongs.length > 0 &&
             upNextSongs
               .filter((s) => s.id !== currentSong?.id)

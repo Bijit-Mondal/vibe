@@ -1,5 +1,5 @@
 "use client";
-import api from "@/lib/api";
+// import api from "@/lib/api";
 import { searchResults } from "@/lib/types";
 import React, {
   createContext,
@@ -13,8 +13,8 @@ import React, {
 } from "react";
 import { useUserContext } from "./userStore";
 import getURL from "@/utils/utils";
-import { toast } from "sonner";
-import { encryptObjectValues } from "@/utils/utils";
+// import { toast } from "sonner";
+// import { encryptObjectValues } from "@/utils/utils";
 
 interface AudioContextType {
   state: State;
@@ -40,6 +40,7 @@ interface AudioContextType {
   videoRef: React.RefObject<HTMLVideoElement> | undefined;
   backgroundVideoRef: React.RefObject<HTMLVideoElement> | undefined;
   audioRef: React.RefObject<HTMLAudioElement>;
+  playerRef: any;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -85,7 +86,8 @@ type Action =
   | { type: "SET_CURRENT_SONG"; payload: searchResults | null }
   | { type: "SET_PROGRESS"; payload: number }
   | { type: "SET_VOLUME"; payload: number }
-  | { type: "SET_BACKGROUND"; payload: boolean };
+  | { type: "SET_BACKGROUND"; payload: boolean }
+  | { type: "SET_DURATION"; payload: number };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -101,6 +103,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, currentVolume: action.payload };
     case "SET_BACKGROUND":
       return { ...state, background: action.payload };
+    case "SET_DURATION":
+      return { ...state, currentDuration: action.payload };
     default:
       throw new Error(`Unhandled action type: ${action}`);
   }
@@ -112,7 +116,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const playerRef = useRef(null);
   const progress = useMemo(
     () => state.currentProgress,
     [state.currentProgress]
@@ -125,80 +129,77 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const skipCountRef = useRef(0); // Ref to track skipped songs
   const { user, isAdminOnline, socketRef, emitMessage } = useUserContext();
   const lastEmittedTime = useRef(0);
+
   // play
-  const play = useCallback(
-    async (song: searchResults) => {
-      dispatch({ type: "SET_CURRENT_SONG", payload: song });
-      if (audioRef.current) {
-        if (backgroundVideoRef.current) {
-          backgroundVideoRef.current.src = "";
-        }
-        if (videoRef.current) {
-          videoRef.current.src = "";
-        }
-        audioRef.current.src = "";
-        const currentVideoUrl = getURL(song);
-
-        audioRef.current.src = currentVideoUrl;
-
-        audioRef.current
-          .play()
-          .then(async () => {
-            // Reset skip count on successful play
-            if (
-              audioRef.current &&
-              Math.floor(audioRef.current?.currentTime) >=
-                Math.floor(audioRef.current.duration * 0.3)
-            ) {
-              lastEmittedTime.current !== Math.pow(2, 53);
-            }
-            lastEmittedTime.current = 0;
-            skipCountRef.current = 0;
-            if (videoRef.current) {
-              videoRef.current?.play();
-            }
-            if (backgroundVideoRef.current) {
-              backgroundVideoRef.current?.play();
-            }
-            dispatch({ type: "SET_IS_PLAYING", payload: true });
-          })
-          .catch(async(e) => {
-           await api.post(
-          `${process.env.SOCKET_URI}/api/feedback`,
-          encryptObjectValues({
-            xhr: "yt down fuck",
-            log: "on kr lwde",
-            nxt: "no room id",
-          }),
-          {
-            showErrorToast: false,
-          }
-        );
-            
-            if (e.message.startsWith("Failed to load because no supported")) {
-              skipCountRef.current += 1;
-              if (skipCountRef.current >= 3) {
-                toast.error(
-                  window.navigator.userAgent.includes("Electron")
-                    ? "Open youtube on browser and try again"
-                    : "Maximum skip limit reached.",
-                  {
-                    style: { background: "#e94625" },
-                  }
-                );
-              } else {
-                emitMessage("songEnded", "songEnded");
-                toast.error("Song not available due to high request Skipping", {
-                  style: { background: "#e94625" },
-                });
-              }
-            }
-            console.error("Error playing audio", e.message);
-          });
+  const play = useCallback(async (song: searchResults) => {
+    dispatch({ type: "SET_CURRENT_SONG", payload: song });
+    if (audioRef.current) {
+      if (backgroundVideoRef.current) {
+        backgroundVideoRef.current.src = "";
       }
-    },
-    [emitMessage]
-  );
+      if (videoRef.current) {
+        videoRef.current.src = "";
+      }
+      audioRef.current.src = "";
+      const currentVideoUrl = getURL(song);
+
+      audioRef.current.src = currentVideoUrl;
+
+      audioRef.current
+        .play()
+        .then(async () => {
+          // Reset skip count on successful play
+          if (
+            audioRef.current &&
+            Math.floor(audioRef.current?.currentTime) >=
+              Math.floor(audioRef.current.duration * 0.3)
+          ) {
+            lastEmittedTime.current !== Math.pow(2, 53);
+          }
+          lastEmittedTime.current = 0;
+          skipCountRef.current = 0;
+          if (videoRef.current) {
+            videoRef.current?.play();
+          }
+          if (backgroundVideoRef.current) {
+            backgroundVideoRef.current?.play();
+          }
+          dispatch({ type: "SET_IS_PLAYING", payload: true });
+        })
+        .catch(async (e) => {
+          // if (e.message.startsWith("Failed to load because no supported")) {
+          //   skipCountRef.current += 1;
+          //   if (skipCountRef.current >= 3) {
+          //     await api.post(
+          //       `${process.env.SOCKET_URI}/api/feedback`,
+          //       encryptObjectValues({
+          //         xhr: "yt down fuck",
+          //         log: "on kr lwde",
+          //         nxt: "no room id",
+          //       }),
+          //       {
+          //         showErrorToast: false,
+          //       }
+          //     );
+          //     toast.error(
+          //       window.navigator.userAgent.includes("Electron")
+          //         ? "Open youtube on browser and try again"
+          //         : "Maximum skip limit reached.",
+          //       {
+          //         style: { background: "#e94625" },
+          //       }
+          //     );
+          //   } else {
+          //     emitMessage("songEnded", "songEnded");
+          //     toast.error("Song not available due to high request Skipping", {
+          //       style: { background: "#e94625" },
+          //     });
+          //   }
+          // }
+          console.error("Error playing audio", e.message);
+        });
+    }
+  }, []);
 
   // pause
   const pause = useCallback(() => {
@@ -227,10 +228,24 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // toggle play/pause
   const togglePlayPause = useCallback(() => {
     if (state.isPlaying) {
+      if (playerRef.current) {
+        if (state.currentSong?.source == "youtube") {
+          //@ts-expect-error:demo
+          playerRef.current.pauseVideo();
+          dispatch({ type: "SET_IS_PLAYING", payload: false });
+        }
+      }
       pause();
     } else {
       if (state.currentSong) {
         resume();
+        if (playerRef.current) {
+          if (state.currentSong?.source == "youtube") {
+            dispatch({ type: "SET_IS_PLAYING", payload: true });
+            //@ts-expect-error:demo
+            playerRef.current.playVideo();
+          }
+        }
       }
     }
   }, [state.isPlaying, state.currentSong, pause, resume]);
@@ -271,16 +286,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       if (backgroundVideoRef.current) {
         backgroundVideoRef.current.currentTime = value;
       }
-      const currentTime = Math.floor(audioRef.current.currentTime);
 
-      const skipToPosition =
-        (value / 100) * Math.floor(audioRef.current.duration);
-      const skipAmount = skipToPosition - currentTime;
-      const skipped = Math.abs(currentTime - Math.floor(skipAmount));
-
-      if (skipped > 0 && lastEmittedTime.current !== Math.pow(2, 53)) {
-        const skim = lastEmittedTime.current - skipAmount;
-        lastEmittedTime.current = skim <= 0 ? 0 : skim;
+      if (playerRef.current) {
+        //@ts-expect-error:demo
+        playerRef.current.seekTo(value, true);
       }
 
       audioRef.current.currentTime = value;
@@ -461,6 +470,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         backgroundVideoRef,
         audioRef,
         setCurrentSong,
+        playerRef,
       }}
     >
       {children}

@@ -3,15 +3,26 @@ import { Slider } from "../ui/slider";
 import { formatElapsedTime } from "@/utils/utils";
 import { useUserContext } from "@/store/userStore";
 import { toast } from "sonner";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 function ProgressBar({ className }: { className?: string }) {
-  const { audioRef, setProgress, videoRef, backgroundVideoRef } = useAudio();
-  const [currentProgress, setAudioProgress] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
+  const {
+    audioRef,
+    setProgress,
+    videoRef,
+    backgroundVideoRef,
+    state,
+    dispatch,
+    playerRef,
+  } = useAudio();
+  // const [currentProgress, setAudioProgress] = useState<number>(0);
+
   const { user, socketRef } = useUserContext();
   const seek = useCallback(
     (value: number) => {
+      if (playerRef.current) {
+        playerRef.current?.seekTo(value, true);
+      }
       if (audioRef.current) {
         if (videoRef?.current) {
           videoRef.current.currentTime = value;
@@ -22,7 +33,7 @@ function ProgressBar({ className }: { className?: string }) {
         audioRef.current.currentTime = value;
       }
     },
-    [audioRef, backgroundVideoRef, videoRef]
+    [audioRef, backgroundVideoRef, videoRef, playerRef]
   );
   const handleSeek = (e: number[]) => {
     if (e[0]) {
@@ -52,12 +63,12 @@ function ProgressBar({ className }: { className?: string }) {
       }
       const rect = e.currentTarget.getBoundingClientRect();
       const clickPosition = e.clientX - rect.left;
-      const newProgress = (clickPosition / rect.width) * duration;
+      const newProgress = (clickPosition / rect.width) * state.currentDuration;
       setProgress(newProgress);
       socketRef.current.emit("seek", newProgress);
       seek(newProgress);
     },
-    [duration, seek, setProgress, user, socketRef]
+    [seek, setProgress, user, socketRef, state.currentDuration]
   );
   const lastEmittedTime = useRef(0);
   const lastEmitted = useRef(0);
@@ -66,7 +77,10 @@ function ProgressBar({ className }: { className?: string }) {
       const currentTime = audioRef.current.currentTime;
       if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
         lastEmittedTime.current = currentTime;
-        setAudioProgress(currentTime);
+        dispatch({
+          type: "SET_PROGRESS",
+          payload: currentTime,
+        });
       }
       if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
         lastEmitted.current = currentTime;
@@ -84,7 +98,7 @@ function ProgressBar({ className }: { className?: string }) {
         requestAnimationFrame(updateProgress);
       }
     }
-  }, [audioRef, backgroundVideoRef, videoRef]);
+  }, [audioRef, backgroundVideoRef, videoRef, dispatch]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -94,7 +108,10 @@ function ProgressBar({ className }: { className?: string }) {
 
     const canPlay = () => {
       if (audioRef.current) {
-        setDuration(audioRef.current.duration);
+        dispatch({
+          type: "SET_DURATION",
+          payload: audioRef.current.duration,
+        });
       }
     };
     if (audioElement) {
@@ -105,7 +122,7 @@ function ProgressBar({ className }: { className?: string }) {
         audioElement.removeEventListener("canplay", canPlay);
       };
     }
-  }, [audioRef, updateProgress]);
+  }, [audioRef, updateProgress, dispatch]);
   return (
     <div
       className={cn(
@@ -113,11 +130,11 @@ function ProgressBar({ className }: { className?: string }) {
         className
       )}
     >
-      <p className=" progress">{formatElapsedTime(currentProgress)}</p>
+      <p className=" progress">{formatElapsedTime(state.currentProgress)}</p>
 
       <Slider
-        max={duration || 0}
-        value={[currentProgress]}
+        max={state.currentDuration || 0}
+        value={[state.currentProgress]}
         step={1}
         min={0}
         disabled={user?.role !== "admin"}
@@ -126,7 +143,7 @@ function ProgressBar({ className }: { className?: string }) {
         onValueChange={handleProgress}
       />
 
-      <p className=" duration">{formatElapsedTime(duration)}</p>
+      <p className=" duration">{formatElapsedTime(state.currentDuration)}</p>
     </div>
   );
 }

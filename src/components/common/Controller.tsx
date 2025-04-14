@@ -11,7 +11,7 @@ import LikeButton from "./LinkeButton";
 
 function Controller({ className }: { className?: string }) {
   const { user, emitMessage } = useUserContext();
-  const { audioRef } = useAudio();
+  const { audioRef, playerRef } = useAudio();
   const [volume, setCurrentVolume] = useState<number>(1);
   const playNext = useCallback(() => {
     audioRef.current?.pause();
@@ -26,15 +26,19 @@ function Controller({ className }: { className?: string }) {
 
   const setVolume = useCallback(
     (value: number, save?: boolean) => {
+      if (playerRef.current) {
+        playerRef.current.setVolume(value * 200);
+      }
       if (audioRef.current) {
         audioRef.current.volume = value;
         if (save) {
           localStorage.setItem("volume", String(value));
         }
       }
+
       setCurrentVolume(value);
     },
-    [audioRef]
+    [audioRef, playerRef]
   );
 
   const handlePlayPrev = () => {
