@@ -79,6 +79,7 @@ function PLayerCoverComp() {
         style={{ aspectRatio: "1 / 1", opacity: 0 }}
         className=" -z-10 absolute"
       >
+        (
         <YouTube
           opts={{
             playerVars: {
@@ -89,9 +90,11 @@ function PLayerCoverComp() {
             emitMessage("songEnded", "songEnded");
           }}
           videoId={
-            currentSong?.downloadUrl.at(-1)?.url?.length === 11
-              ? decrypt(currentSong?.downloadUrl?.at(-1)?.url || "")
-              : currentSong?.downloadUrl?.at(-1)?.url || ""
+            currentSong?.source === "youtube"
+              ? currentSong?.downloadUrl.at(-1)?.url?.length !== 11
+                ? decrypt(currentSong?.downloadUrl?.at(-1)?.url || "")
+                : currentSong?.downloadUrl?.at(-1)?.url || ""
+              : "demo"
           }
           onPlay={() => {
             const duration = playerRef.current.getDuration();

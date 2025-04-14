@@ -27,7 +27,7 @@ function Controller({ className }: { className?: string }) {
   const setVolume = useCallback(
     (value: number, save?: boolean) => {
       if (playerRef.current) {
-        playerRef.current.setVolume(value * 200);
+        playerRef.current?.setVolume(value * 200);
       }
       if (audioRef.current) {
         audioRef.current.volume = value;
