@@ -10,7 +10,7 @@ import { decrypt } from "tanmayo7lock";
 function PLayerCoverComp() {
   const { user, showVideo, setShowVideo, setShowAddDragOptions, emitMessage } =
     useUserContext();
-  const { currentSong, videoRef, setProgress, dispatch, playerRef } =
+  const { currentSong, videoRef, setProgress, dispatch, playerRef, state } =
     useAudio();
   const [pip, setPIP] = useState<boolean>(false);
   const handleClick = useCallback(() => {
@@ -46,16 +46,32 @@ function PLayerCoverComp() {
   };
 
   useEffect(() => {
-    if (currentSong?.source !== "youtube") return;
+    if (currentSong?.source !== "youtube" || !state.isPlaying) return;
     const interval = setInterval(() => {
       if (playerRef.current && playerRef.current.getCurrentTime) {
         const time = playerRef.current.getCurrentTime();
         dispatch({ type: "SET_PROGRESS", payload: time });
+        if (
+          state.currentDuration > 0 &&
+          state.currentProgress >= state.currentDuration - 0.5
+        ) {
+          emitMessage("songEnded", "songEnded");
+          clearInterval(interval);
+        }
       }
-    }, 1300);
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, [setProgress, dispatch, playerRef, currentSong]);
+  }, [
+    setProgress,
+    dispatch,
+    playerRef,
+    currentSong,
+    state.isPlaying,
+    state.currentProgress,
+    state.currentDuration,
+    emitMessage,
+  ]);
 
   return (
     <>

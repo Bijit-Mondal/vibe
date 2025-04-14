@@ -310,11 +310,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       const song = decrypt(data) as searchResults;
       if (!song) return;
 
-      if (!isPlaying && audioRef.current) {
+      if (!isPlaying && audioRef.current && audioRef.current?.src) {
         setCurrentSong(song);
         setProgress(0);
-        //@ts-expect-error:expect-error
-        audioRef.current?.src = getURL(song).replace(
+
+        audioRef.current.src = getURL(song).replace(
           process.env.VIDEO_STREAM_URI || "",
           // window.navigator.userAgent.includes("Electron")
           //   ? "http://localhost:7777/stream"
