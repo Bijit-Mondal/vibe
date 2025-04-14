@@ -10,8 +10,15 @@ import { decrypt } from "tanmayo7lock";
 function PLayerCoverComp() {
   const { user, showVideo, setShowVideo, setShowAddDragOptions, emitMessage } =
     useUserContext();
-  const { currentSong, videoRef, setProgress, dispatch, playerRef, state } =
-    useAudio();
+  const {
+    currentSong,
+    videoRef,
+    setProgress,
+    dispatch,
+    playerRef,
+    state,
+    volume,
+  } = useAudio();
   const [pip, setPIP] = useState<boolean>(false);
   const handleClick = useCallback(() => {
     if (localStorage.getItem("v")) {
@@ -59,7 +66,7 @@ function PLayerCoverComp() {
           clearInterval(interval);
         }
       }
-    }, 1300);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [
@@ -88,6 +95,7 @@ function PLayerCoverComp() {
           }}
           onEnd={() => {
             emitMessage("songEnded", "songEnded");
+            dispatch({ type: "SET_VOLUME", payload: volume });
           }}
           videoId={
             currentSong?.source === "youtube"
