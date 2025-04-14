@@ -77,6 +77,7 @@ function PLayerCoverComp() {
             onPlay={() => {
               const duration = playerRef.current.getDuration();
               dispatch({ type: "SET_DURATION", payload: duration });
+              dispatch({ type: "SET_IS_PLAYING", payload: true });
             }}
             onReady={onPlayerReady}
           />
