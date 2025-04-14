@@ -88,14 +88,8 @@ function PLayerCoverComp() {
       >
         (
         <YouTube
-          opts={{
-            playerVars: {
-              autoplay: 1,
-            },
-          }}
           onEnd={() => {
             emitMessage("songEnded", "songEnded");
-            dispatch({ type: "SET_VOLUME", payload: volume });
           }}
           videoId={
             currentSong?.source === "youtube"
@@ -108,6 +102,7 @@ function PLayerCoverComp() {
             const duration = playerRef.current.getDuration();
             dispatch({ type: "SET_DURATION", payload: duration });
             dispatch({ type: "SET_IS_PLAYING", payload: true });
+            dispatch({ type: "SET_VOLUME", payload: volume });
           }}
           onReady={onPlayerReady}
         />
