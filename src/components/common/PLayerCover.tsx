@@ -79,25 +79,23 @@ function PLayerCoverComp() {
         style={{ aspectRatio: "1 / 1", opacity: 0 }}
         className=" -z-10 absolute"
       >
-        {currentSong?.source == "youtube" && (
-          <YouTube
-            opts={{
-              playerVars: {
-                autoplay: 1,
-              },
-            }}
-            onEnd={() => {
-              emitMessage("songEnded", "songEnded");
-            }}
-            videoId={decrypt(currentSong?.downloadUrl.at(-1)?.url || "")}
-            onPlay={() => {
-              const duration = playerRef.current.getDuration();
-              dispatch({ type: "SET_DURATION", payload: duration });
-              dispatch({ type: "SET_IS_PLAYING", payload: true });
-            }}
-            onReady={onPlayerReady}
-          />
-        )}
+        <YouTube
+          opts={{
+            playerVars: {
+              autoplay: 1,
+            },
+          }}
+          onEnd={() => {
+            emitMessage("songEnded", "songEnded");
+          }}
+          videoId={decrypt(currentSong?.downloadUrl.at(-1)?.url || "")}
+          onPlay={() => {
+            const duration = playerRef.current.getDuration();
+            dispatch({ type: "SET_DURATION", payload: duration });
+            dispatch({ type: "SET_IS_PLAYING", payload: true });
+          }}
+          onReady={onPlayerReady}
+        />
       </div>
 
       <div
