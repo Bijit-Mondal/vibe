@@ -88,7 +88,11 @@ function PLayerCoverComp() {
           onEnd={() => {
             emitMessage("songEnded", "songEnded");
           }}
-          videoId={decrypt(currentSong?.downloadUrl.at(-1)?.url || "")}
+          videoId={
+            currentSong?.downloadUrl.at(-1)?.url?.length === 11
+              ? decrypt(currentSong?.downloadUrl?.at(-1)?.url || "")
+              : currentSong?.downloadUrl?.at(-1)?.url || ""
+          }
           onPlay={() => {
             const duration = playerRef.current.getDuration();
             dispatch({ type: "SET_DURATION", payload: duration });
