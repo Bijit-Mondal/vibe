@@ -60,7 +60,7 @@ function PLayerCoverComp() {
         dispatch({ type: "SET_PROGRESS", payload: time });
         if (
           state.currentDuration > 0 &&
-          state.currentProgress >= state.currentDuration - 0.5
+          state.currentProgress >= state.currentDuration - 1
         ) {
           emitMessage("songEnded", "songEnded");
           clearInterval(interval);
