@@ -57,11 +57,11 @@ function PLayerCoverComp() {
 
     if (playerRef.current) {
       interval = setInterval(() => {
-        if (playerRef.current.data === 0) {
-          // Video has ended
+        const state = playerRef.current.getPlayerState?.();
+        if (state === 0) {
           emitMessage("songEnded", "songEnded");
         }
-      }, 1000);
+      }, 5000);
     }
 
     return () => clearInterval(interval);
