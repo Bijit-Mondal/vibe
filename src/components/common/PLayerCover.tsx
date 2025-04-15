@@ -51,21 +51,18 @@ function PLayerCoverComp() {
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
   };
-
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    if (!playerRef.current) return;
 
-    if (playerRef.current) {
-      interval = setInterval(() => {
-        const state = playerRef.current.getPlayerState?.();
-        if (state === 0) {
-          emitMessage("songEnded", "songEnded");
-        }
-      }, 5000);
-    }
+    const interval = setInterval(() => {
+      const state = playerRef.current.getPlayerState?.();
+      if (state === 0) {
+        emitMessage("songEnded", "songEnded");
+      }
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [emitMessage, playerRef]);
+  }, [playerRef.current, emitMessage]);
 
   const getVideoId = () => {
     try {
