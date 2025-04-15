@@ -68,23 +68,25 @@ function PLayerCoverComp() {
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    if (playerRef.current) {
+    if (state.currentDuration && state.isPlaying) {
       interval = setInterval(() => {
-        const player = playerRef.current;
-        if (player && player.getCurrentTime && player.getDuration) {
-          const current = player.getCurrentTime();
-          const total = player.getDuration();
+        const current = state.currentProgress;
+        const total = state.currentDuration;
 
-          if (total && Math.abs(current - total) < 1) {
-            emitMessage("songEnded", "songEnded");
-            clearInterval(interval);
-          }
+        if (total && Math.abs(current - total) < 1) {
+          emitMessage("songEnded", "songEnded");
+          clearInterval(interval);
         }
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [playerRef, emitMessage]);
+  }, [
+    state.currentDuration,
+    state.currentProgress,
+    state.isPlaying,
+    emitMessage,
+  ]);
 
   const getVideoId = () => {
     try {
