@@ -53,34 +53,38 @@ function PLayerCoverComp() {
   };
 
   useEffect(() => {
-    if (currentSong?.source !== "youtube") return;
+    if (currentSong?.source !== "youtube" || !state.isPlaying) return;
     const interval = setInterval(() => {
       if (playerRef.current && playerRef.current.getCurrentTime) {
         const time = playerRef.current.getCurrentTime();
-        if (state.isPlaying) {
-          dispatch({ type: "SET_PROGRESS", payload: time });
-        }
-        if (
-          state.currentDuration > 0 &&
-          state.currentProgress >= state.currentDuration - 1
-        ) {
-          emitMessage("songEnded", "songEnded");
-          clearInterval(interval);
-        }
+
+        dispatch({ type: "SET_PROGRESS", payload: time });
       }
     }, 1300);
 
     return () => clearInterval(interval);
-  }, [
-    setProgress,
-    dispatch,
-    playerRef,
-    currentSong,
-    state.isPlaying,
-    state.currentProgress,
-    state.currentDuration,
-    emitMessage,
-  ]);
+  }, [setProgress, dispatch, playerRef, currentSong, state.isPlaying]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (playerRef.current) {
+      interval = setInterval(() => {
+        const player = playerRef.current;
+        if (player && player.getCurrentTime && player.getDuration) {
+          const current = player.getCurrentTime();
+          const total = player.getDuration();
+
+          if (total && Math.abs(current - total) < 1) {
+            emitMessage("songEnded", "songEnded");
+            clearInterval(interval);
+          }
+        }
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [playerRef, emitMessage]);
 
   const getVideoId = () => {
     try {
@@ -101,6 +105,10 @@ function PLayerCoverComp() {
           opts={{
             playerVars: {
               autoplay: 1,
+              controls: 0,
+              rel: 0,
+              modestbranding: 1,
+              enablejsapi: 1,
             },
           }}
           onEnd={() => {
