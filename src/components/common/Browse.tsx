@@ -83,7 +83,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
             exit={{ y: isDesktop ? "5dvh" : 0, opacity: 0 }}
             key={index}
           >
-            <Link
+            <a
               onClick={() => setRoomId(room?.roomId)}
               href={`/v?room=${room?.roomId}`}
             >
@@ -93,7 +93,7 @@ export function Browse({ data = [] }: { data: roomsData[] }) {
                 }}
                 className="  bg-no-repeat border-2 hover:border-white transition-all duration-75 overflow-hidden bg-cover h-[12vw] w-[12vw] rounded-md min-h-[100px] min-w-[100px] p-4"
               ></motion.div>
-            </Link>
+            </a>
             <p className="  max-md:text-[12px] max-md:w-20 text-center text-[1vw] capitalize  font-medium  tracking-tight truncate w-[12vw] mt-2">
               {room?.name[0]} • {room?.roomId}
             </p>
