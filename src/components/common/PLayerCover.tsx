@@ -82,6 +82,14 @@ function PLayerCoverComp() {
     emitMessage,
   ]);
 
+  const getVideoId = () => {
+    try {
+      const data = decrypt(currentSong?.downloadUrl?.at(-1)?.url || "");
+      return data;
+    } catch (error) {
+      return "";
+    }
+  };
   return (
     <>
       <div
@@ -101,7 +109,7 @@ function PLayerCoverComp() {
           videoId={
             currentSong?.source === "youtube"
               ? currentSong?.downloadUrl.at(-1)?.url?.length !== 11
-                ? decrypt(currentSong?.downloadUrl?.at(-1)?.url || "")
+                ? getVideoId()
                 : currentSong?.downloadUrl?.at(-1)?.url || ""
               : "demo"
           }
