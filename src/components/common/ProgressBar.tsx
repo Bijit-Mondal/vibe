@@ -3,19 +3,25 @@ import { Slider } from "../ui/slider";
 import { formatElapsedTime } from "@/utils/utils";
 import { useUserContext } from "@/store/userStore";
 import { toast } from "sonner";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 function ProgressBar({ className }: { className?: string }) {
-  const {
-    audioRef,
-    setProgress,
-    videoRef,
-    backgroundVideoRef,
-    state,
-    dispatch,
-    playerRef,
-  } = useAudio();
+  const { audioRef, videoRef, backgroundVideoRef, dispatch, state, playerRef } =
+    useAudio();
   // const [currentProgress, setAudioProgress] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(0);
+  useEffect(() => {
+    if (state.currentSong?.source !== "youtube" || !state.isPlaying) return;
+    const interval = setInterval(() => {
+      if (playerRef.current && playerRef.current.getCurrentTime) {
+        const time = playerRef.current.getCurrentTime();
+
+        setProgress(time);
+      }
+    }, 1300);
+
+    return () => clearInterval(interval);
+  }, [setProgress, dispatch, playerRef, state.currentSong, state.isPlaying]);
 
   const { user, socketRef } = useUserContext();
   const seek = useCallback(
@@ -130,11 +136,11 @@ function ProgressBar({ className }: { className?: string }) {
         className
       )}
     >
-      <p className=" progress">{formatElapsedTime(state.currentProgress)}</p>
+      <p className=" progress">{formatElapsedTime(progress)}</p>
 
       <Slider
         max={state.currentDuration || 0}
-        value={[state.currentProgress]}
+        value={[progress]}
         step={1}
         min={0}
         disabled={user?.role !== "admin"}

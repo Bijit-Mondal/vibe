@@ -13,10 +13,10 @@ function PLayerCoverComp() {
   const {
     currentSong,
     videoRef,
-    setProgress,
+
     dispatch,
     playerRef,
-    state,
+
     volume,
   } = useAudio();
   const [pip, setPIP] = useState<boolean>(false);
@@ -53,40 +53,19 @@ function PLayerCoverComp() {
   };
 
   useEffect(() => {
-    if (currentSong?.source !== "youtube" || !state.isPlaying) return;
-    const interval = setInterval(() => {
-      if (playerRef.current && playerRef.current.getCurrentTime) {
-        const time = playerRef.current.getCurrentTime();
+    let interval: NodeJS.Timeout;
 
-        dispatch({ type: "SET_PROGRESS", payload: time });
-      }
-    }, 1000);
+    if (playerRef.current) {
+      interval = setInterval(() => {
+        if (playerRef.current.data === 0) {
+          // Video has ended
+          emitMessage("songEnded", "songEnded");
+        }
+      }, 1000);
+    }
 
     return () => clearInterval(interval);
-  }, [setProgress, dispatch, playerRef, currentSong, state.isPlaying]);
-
-  // useEffect(() => {
-  //   let interval: NodeJS.Timeout;
-
-  //   if (state.currentDuration && state.isPlaying) {
-  //     interval = setInterval(() => {
-  //       const current = state.currentProgress;
-  //       const total = state.currentDuration;
-
-  //       if (total && Math.abs(current - total) < 1) {
-  //         emitMessage("songEnded", "songEnded");
-  //         clearInterval(interval);
-  //       }
-  //     }, 1000);
-  //   }
-
-  //   return () => clearInterval(interval);
-  // }, [
-  //   state.currentDuration,
-  //   state.currentProgress,
-  //   state.isPlaying,
-  //   emitMessage,
-  // ]);
+  }, [emitMessage, playerRef]);
 
   const getVideoId = () => {
     try {
@@ -107,17 +86,7 @@ function PLayerCoverComp() {
           opts={{
             playerVars: {
               autoplay: 1,
-              controls: 0,
-              rel: 0,
-              modestbranding: 1,
-              enablejsapi: 1,
             },
-          }}
-          onStateChange={(event: any) => {
-            if (event.data === 0) {
-              // Video has ended
-              emitMessage("songEnded", "songEnded");
-            }
           }}
           onEnd={() => {
             emitMessage("songEnded", "songEnded");
