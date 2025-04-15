@@ -277,6 +277,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         localStorage.setItem("volume", String(value));
       }
     }
+    if (playerRef.current) {
+      //@ts-expect-error:demo
+      playerRef.current.setVolume(value);
+    }
     dispatch({ type: "SET_PROGRESS", payload: value });
   };
 

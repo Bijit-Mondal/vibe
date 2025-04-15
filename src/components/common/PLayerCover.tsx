@@ -53,7 +53,7 @@ function PLayerCoverComp() {
   };
 
   useEffect(() => {
-    if (currentSong?.source !== "youtube" || !state.isPlaying) return;
+    if (currentSong?.source !== "youtube") return;
     const interval = setInterval(() => {
       if (playerRef.current && playerRef.current.getCurrentTime) {
         const time = playerRef.current.getCurrentTime();
