@@ -21,7 +21,7 @@ function ProgressBar({ className }: { className?: string }) {
     }, 1300);
 
     return () => clearInterval(interval);
-  }, [setProgress, dispatch, playerRef, state.currentSong, state.isPlaying]);
+  }, [setProgress, playerRef, state.currentSong, state.isPlaying]);
 
   const { user, socketRef } = useUserContext();
   const seek = useCallback(
@@ -83,10 +83,7 @@ function ProgressBar({ className }: { className?: string }) {
       const currentTime = audioRef.current.currentTime;
       if (Math.abs(currentTime - lastEmittedTime.current) >= 1.0) {
         lastEmittedTime.current = currentTime;
-        dispatch({
-          type: "SET_PROGRESS",
-          payload: currentTime,
-        });
+        setProgress(currentTime);
       }
       if (Math.abs(currentTime - lastEmitted.current) >= 2.5) {
         lastEmitted.current = currentTime;
@@ -104,7 +101,7 @@ function ProgressBar({ className }: { className?: string }) {
         requestAnimationFrame(updateProgress);
       }
     }
-  }, [audioRef, backgroundVideoRef, videoRef, dispatch]);
+  }, [audioRef, backgroundVideoRef, videoRef]);
 
   useEffect(() => {
     const audioElement = audioRef.current;
