@@ -50,6 +50,7 @@ function PLayerCoverComp() {
 
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
+    event.target.setVolume(volume);
   };
   // useEffect(() => {
   //   if (!playerRef.current) return;
