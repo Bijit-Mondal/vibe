@@ -62,8 +62,15 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   } = useUserContext();
 
   const isActive = useRef<boolean>(true);
-  const { seek, play, setCurrentSong, audioRef, isPlaying, setProgress } =
-    useAudio();
+  const {
+    seek,
+    play,
+    setCurrentSong,
+    audioRef,
+    isPlaying,
+    setProgress,
+    playerRef,
+  } = useAudio();
 
   // const hiddenTimeRef = useRef<number>(0);
   const necessaryFetchRef = useRef<boolean>(false);
@@ -326,6 +333,10 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
         play(song);
       }
     };
+    const seekThrough = (data: any) => {
+      playerRef?.current?.seekTo(seek);
+      seek(data);
+    };
     currentSocket.on("connect", onConnect);
     currentSocket.on("error", handleError);
     currentSocket.on("connect_error", handleConnectError);
@@ -336,7 +347,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     currentSocket.on("seekable", handleSeekable);
     currentSocket.on("isplaying", handlePlay);
     currentSocket.on("play", handlePlay);
-    currentSocket.on("seek", seek);
+    currentSocket.on("seek", seekThrough);
     currentSocket.on("profile", updateListeners);
     // document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
@@ -354,7 +365,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       currentSocket.off("seekable", handleSeekable);
       currentSocket.off("isplaying", handlePlay);
       currentSocket.off("play", handlePlay);
-      currentSocket.off("seek", seek);
+      currentSocket.off("seek", seekThrough);
       currentSocket.off("profile", updateListeners);
     };
   }, [
@@ -371,6 +382,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     UpdateQueue,
     play,
     socketRef,
+    playerRef,
     seek,
     isAdminOnline,
     updateListeners,
