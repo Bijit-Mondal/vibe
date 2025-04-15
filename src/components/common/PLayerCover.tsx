@@ -60,7 +60,7 @@ function PLayerCoverComp() {
 
         dispatch({ type: "SET_PROGRESS", payload: time });
       }
-    }, 1300);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [setProgress, dispatch, playerRef, currentSong, state.isPlaying]);
