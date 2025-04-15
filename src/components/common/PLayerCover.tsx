@@ -57,7 +57,9 @@ function PLayerCoverComp() {
     const interval = setInterval(() => {
       if (playerRef.current && playerRef.current.getCurrentTime) {
         const time = playerRef.current.getCurrentTime();
-        dispatch({ type: "SET_PROGRESS", payload: time });
+        if (state.isPlaying) {
+          dispatch({ type: "SET_PROGRESS", payload: time });
+        }
         if (
           state.currentDuration > 0 &&
           state.currentProgress >= state.currentDuration - 1
