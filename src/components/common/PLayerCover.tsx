@@ -65,28 +65,28 @@ function PLayerCoverComp() {
     return () => clearInterval(interval);
   }, [setProgress, dispatch, playerRef, currentSong, state.isPlaying]);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
+  // useEffect(() => {
+  //   let interval: NodeJS.Timeout;
 
-    if (state.currentDuration && state.isPlaying) {
-      interval = setInterval(() => {
-        const current = state.currentProgress;
-        const total = state.currentDuration;
+  //   if (state.currentDuration && state.isPlaying) {
+  //     interval = setInterval(() => {
+  //       const current = state.currentProgress;
+  //       const total = state.currentDuration;
 
-        if (total && Math.abs(current - total) < 1) {
-          emitMessage("songEnded", "songEnded");
-          clearInterval(interval);
-        }
-      }, 1000);
-    }
+  //       if (total && Math.abs(current - total) < 1) {
+  //         emitMessage("songEnded", "songEnded");
+  //         clearInterval(interval);
+  //       }
+  //     }, 1000);
+  //   }
 
-    return () => clearInterval(interval);
-  }, [
-    state.currentDuration,
-    state.currentProgress,
-    state.isPlaying,
-    emitMessage,
-  ]);
+  //   return () => clearInterval(interval);
+  // }, [
+  //   state.currentDuration,
+  //   state.currentProgress,
+  //   state.isPlaying,
+  //   emitMessage,
+  // ]);
 
   const getVideoId = () => {
     try {
@@ -112,6 +112,12 @@ function PLayerCoverComp() {
               modestbranding: 1,
               enablejsapi: 1,
             },
+          }}
+          onStateChange={(event: any) => {
+            if (event.data === 0) {
+              // Video has ended
+              emitMessage("songEnded", "songEnded");
+            }
           }}
           onEnd={() => {
             emitMessage("songEnded", "songEnded");
