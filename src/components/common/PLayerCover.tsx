@@ -98,11 +98,6 @@ function PLayerCoverComp() {
             const duration = playerRef.current.getDuration();
             dispatch({ type: "SET_DURATION", payload: duration });
             dispatch({ type: "SET_IS_PLAYING", payload: true });
-            console.log("volume", volume);
-
-            playerRef.current.setVolume(
-              localStorage.getItem("volume") ? 0 : volume * 50
-            );
           }}
           onReady={onPlayerReady}
         />
