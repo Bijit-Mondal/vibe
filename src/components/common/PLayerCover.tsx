@@ -51,17 +51,17 @@ function PLayerCoverComp() {
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
   };
-  useEffect(() => {
-    if (!playerRef.current || !playerRef.current.getDuration()) return;
+  // useEffect(() => {
+  //   if (!playerRef.current || !playerRef.current.getDuration()) return;
 
-    const interval = setTimeout(() => {
-      const state = playerRef.current.getPlayerState?.();
-      if (state === 0) {
-        emitMessage("songEnded", "songEnded");
-      }
-    }, playerRef.current.getDuration() * 1000);
-    return () => clearTimeout(interval);
-  }, [playerRef.current, emitMessage]);
+  //   const interval = setTimeout(() => {
+  //     const state = playerRef.current.getPlayerState?.();
+  //     if (state === 0) {
+  //       emitMessage("songEnded", "songEnded");
+  //     }
+  //   }, playerRef.current.getDuration() * 1000);
+  //   return () => clearTimeout(interval);
+  // }, [playerRef.current, emitMessage]);
 
   const getVideoId = () => {
     try {
