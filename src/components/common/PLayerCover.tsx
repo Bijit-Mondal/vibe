@@ -16,8 +16,6 @@ function PLayerCoverComp() {
 
     dispatch,
     playerRef,
-
-    volume,
   } = useAudio();
   const [pip, setPIP] = useState<boolean>(false);
   const handleClick = useCallback(() => {
