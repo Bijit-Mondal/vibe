@@ -1,7 +1,7 @@
 "use client";
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { BsPip } from "react-icons/bs";
 import Image from "next/image";
 import UpvotedBy from "./UpvotedBy";
