@@ -100,7 +100,9 @@ function PLayerCoverComp() {
             dispatch({ type: "SET_IS_PLAYING", payload: true });
             console.log("volume", volume);
 
-            playerRef.current.setVolume(volume * 100);
+            playerRef.current.setVolume(
+              localStorage.getItem("volume") ? 0 : volume * 50
+            );
           }}
           onReady={onPlayerReady}
         />
