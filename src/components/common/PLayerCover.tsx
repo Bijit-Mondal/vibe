@@ -1,7 +1,7 @@
 "use client";
 import { useAudio } from "@/store/AudioContext";
 import { useUserContext } from "@/store/userStore";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { BsPip } from "react-icons/bs";
 import Image from "next/image";
 import UpvotedBy from "./UpvotedBy";
@@ -51,18 +51,17 @@ function PLayerCoverComp() {
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
   };
-  // useEffect(() => {
-  //   if (!playerRef.current) return;
+  useEffect(() => {
+    if (!playerRef.current || !playerRef.current.getDuration()) return;
 
-  //   const interval = setInterval(() => {
-  //     const state = playerRef.current.getPlayerState?.();
-  //     if (state === 0) {
-  //       emitMessage("songEnded", "songEnded");
-  //     }
-  //   }, 5000);
-
-  //   return () => clearInterval(interval);
-  // }, [playerRef.current, emitMessage]);
+    const interval = setTimeout(() => {
+      const state = playerRef.current.getPlayerState?.();
+      if (state === 0) {
+        emitMessage("songEnded", "songEnded");
+      }
+    }, playerRef.current.getDuration() * 1000);
+    return () => clearTimeout(interval);
+  }, [playerRef.current, emitMessage]);
 
   const getVideoId = () => {
     try {
