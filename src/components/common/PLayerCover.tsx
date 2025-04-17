@@ -50,6 +50,7 @@ function PLayerCoverComp() {
 
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
+    playerRef.current.setVolume(volume * 200);
   };
   // useEffect(() => {
   //   if (!playerRef.current) return;
@@ -99,7 +100,6 @@ function PLayerCoverComp() {
             const duration = playerRef.current.getDuration();
             dispatch({ type: "SET_DURATION", payload: duration });
             dispatch({ type: "SET_IS_PLAYING", payload: true });
-            playerRef.current.setVolume(volume * 200);
           }}
           onReady={onPlayerReady}
         />
