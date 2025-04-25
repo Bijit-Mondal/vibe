@@ -86,7 +86,6 @@ function PLayerCoverComp() {
           }}
           onEnd={(event: any) => {
             emitMessage("songEnded", "songEnded");
-            event.target?.playVideo();
           }}
           videoId={
             currentSong?.source === "youtube"

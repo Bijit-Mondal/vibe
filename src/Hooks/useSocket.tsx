@@ -331,6 +331,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       }
       if (data) {
         play(song);
+        setTimeout(() => {
+          playerRef.current?.playVideo();
+        }, 2000);
       }
     };
     const seekThrough = (data: any) => {
