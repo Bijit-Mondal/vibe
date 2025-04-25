@@ -65,6 +65,9 @@ function PLayerCoverComp() {
                 : currentSong?.downloadUrl?.at(-1)?.url || ""
               : "demo"
           }
+          onPause={() => {
+            dispatch({ type: "SET_IS_PLAYING", payload: false });
+          }}
           onPlay={() => {
             const duration = playerRef.current.getDuration();
             dispatch({ type: "SET_DURATION", payload: duration });
