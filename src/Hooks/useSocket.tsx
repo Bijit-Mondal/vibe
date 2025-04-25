@@ -70,6 +70,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     isPlaying,
     setProgress,
     playerRef,
+    dispatch,
   } = useAudio();
 
   // const hiddenTimeRef = useRef<number>(0);
@@ -268,10 +269,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       console.log("joined");
 
       seek(value?.progress || 0);
+      dispatch({ type: "SET_SEEK", payload: value?.progress || 0 });
       toast.dismiss("connecting");
       return () => clearTimeout(resetUrl);
     },
-    [seek, setUser, roomId]
+    [seek, setUser, roomId, dispatch]
   );
 
   useEffect(() => {

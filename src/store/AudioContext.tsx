@@ -66,6 +66,7 @@ interface State {
   currentDuration: number;
   currentVolume: number;
   background: boolean;
+  currentSeek: number;
 }
 
 const initialState: State = {
@@ -75,6 +76,7 @@ const initialState: State = {
   currentProgress: 0,
   currentDuration: 0,
   currentVolume: 1,
+  currentSeek: 0,
   background:
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("background") || "true")
@@ -88,7 +90,8 @@ type Action =
   | { type: "SET_PROGRESS"; payload: number }
   | { type: "SET_VOLUME"; payload: number }
   | { type: "SET_BACKGROUND"; payload: boolean }
-  | { type: "SET_DURATION"; payload: number };
+  | { type: "SET_DURATION"; payload: number }
+  | { type: "SET_SEEK"; payload: number };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -106,6 +109,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, background: action.payload };
     case "SET_DURATION":
       return { ...state, currentDuration: action.payload };
+    case "SET_SEEK":
+      return { ...state, currentSeek: action.payload };
     default:
       throw new Error(`Unhandled action type: ${action}`);
   }
@@ -183,7 +188,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           console.error("Error pausing YouTube player:", error);
         }
       } else {
-        return; // Return early if YouTube source to avoid audio play attempt
+        return;
       }
 
       audioRef.current
@@ -228,6 +233,11 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         try {
           //@ts-expect-error:demo
           playerRef.current.pauseVideo();
+          if (state.currentProgress) {
+            console.log("seeking to", state.currentProgress);
+            //@ts-expect-error:demo
+            playerRef.current.seekTo(state.currentProgress);
+          }
           dispatch({ type: "SET_IS_PLAYING", payload: false });
         } catch (error) {
           console.error("Error pausing YouTube player:", error);
@@ -242,13 +252,24 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
             dispatch({ type: "SET_IS_PLAYING", payload: true });
             //@ts-expect-error:demo
             playerRef.current.playVideo();
+            if (state.currentProgress) {
+              console.log("seeking to", state.currentProgress);
+              //@ts-expect-error:demo
+              playerRef.current.seekTo(state.currentProgress);
+            }
           } catch (error) {
             console.error("Error playing YouTube video:", error);
           }
         }
       }
     }
-  }, [state.isPlaying, state.currentSong, pause, resume]);
+  }, [
+    state.isPlaying,
+    state.currentSong,
+    pause,
+    resume,
+    state.currentProgress,
+  ]);
 
   // mute
   const mute = useCallback(() => {
@@ -299,9 +320,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
           console.error("Error seeking YouTube player:", error);
         }
       }
+      console.log("seeking to", value);
 
       dispatch({ type: "SET_PROGRESS", payload: value });
-      console.log("seeking");
+
       audioRef.current.currentTime = value;
     }
   }, []);

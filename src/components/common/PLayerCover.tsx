@@ -42,11 +42,13 @@ function PLayerCoverComp() {
       const videoId = getVideoId();
       if (videoId) {
         try {
-          console.log("[YouTube] Loading video with ID:", videoId);
+          console.log("state.currentSeek", state.currentSeek);
           if (state.isPlaying) {
-            event.target.loadVideoById(videoId, state.currentProgress);
+            console.log("[YouTube] Loading video with ID:", videoId);
+            event.target.loadVideoById(videoId, state.currentSeek);
           } else {
-            event.target.cueVideoById(videoId, state.currentProgress);
+            console.log("[YouTube] Cueing video with ID:", videoId);
+            event.target.cueVideoById(videoId, state.currentSeek);
           }
 
           console.log("[YouTube] Attempting to play video");
