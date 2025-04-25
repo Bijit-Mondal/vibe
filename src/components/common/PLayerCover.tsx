@@ -77,11 +77,7 @@ function PLayerCoverComp() {
       >
         (
         <YouTube
-          opts={{
-            playerVars: {
-              autoplay: 1,
-            },
-          }}
+         
           onEnd={() => {
             emitMessage("songEnded", "songEnded");
           }}
