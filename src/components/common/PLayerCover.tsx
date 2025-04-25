@@ -33,7 +33,7 @@ function PLayerCoverComp() {
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
     if (currentSong?.source === "youtube") {
-      event.target?.loadVideoById(getVideoId(), state.currentProgress);
+      event.target?.loadVideoById(getVideoId());
       event.target?.playVideo();
       event.target?.seekTo(state.currentProgress, true);
       const storedVolume = Number(localStorage.getItem("volume")) || 1;
