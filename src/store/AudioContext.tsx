@@ -152,6 +152,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         playerRef.current?.loadVideoById(getVideoId(song));
         //@ts-expect-error:expect error
         playerRef.current.seekTo(state.currentProgress, true);
+        const storedVolume = Number(localStorage.getItem("volume")) || 1
+        playerRef.current?.setVolume(storedVolume);
+
         console.log("loading and playing youtube");
       }
       if (audioRef.current) {
