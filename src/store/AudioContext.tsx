@@ -149,6 +149,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       playerRef.current?.loadVideoById(getVideoId(song)).  then(() => {
         //@ts-expect-error:expect error
         playerRef.current?.playVideo();
+        console.log("loading and playing youtube");
       });
       return;
     }
