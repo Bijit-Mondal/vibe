@@ -33,8 +33,10 @@ function PLayerCoverComp() {
   };
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
-    event.target.loadVideoById(getVideoId(), state.currentProgress);
-    event.target.seekTo(state.currentProgress, true);
+    event.target?.loadVideoById(getVideoId(), state.currentProgress);
+    event.target?.seekTo(state.currentProgress, true);
+    const storedVolume = Number(localStorage.getItem("volume")) || 1
+    event.target?.setVolume(storedVolume);
     console.log(event.target);
   };
 
