@@ -145,7 +145,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     dispatch({ type: "SET_CURRENT_SONG", payload: song });
     if (song.source == "youtube" && playerRef.current) {
       console.log("playing youtube");
+      console.log(playerRef.current);
       //@ts-expect-error:expect error
+      
       playerRef.current?.loadVideoById(getVideoId(song)).  then(() => {
         //@ts-expect-error:expect error
         playerRef.current?.playVideo();
