@@ -33,10 +33,13 @@ function PLayerCoverComp() {
   };
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
-    event.target?.loadVideoById(getVideoId(), state.currentProgress);
-    event.target?.seekTo(state.currentProgress, true);
-    const storedVolume = Number(localStorage.getItem("volume")) || 1
-    event.target?.setVolume(storedVolume);
+    if (currentSong?.source === "youtube") {
+      event.target?.loadVideoById(getVideoId(), state.currentProgress);
+      event.target?.playVideo();
+      event.target?.seekTo(state.currentProgress, true);
+      const storedVolume = Number(localStorage.getItem("volume")) || 1;
+      event.target?.setVolume(storedVolume * 200);
+    }
     console.log(event.target);
   };
 
