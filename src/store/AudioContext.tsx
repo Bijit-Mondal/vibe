@@ -155,6 +155,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         const storedVolume = Number(localStorage.getItem("volume")) || 1;
         //@ts-expect-error:expect error
         playerRef.current?.setVolume(storedVolume * 200);
+        //@ts-expect-error:expect error
+        playerRef.current?.playVideo();
 
         console.log("loading and playing youtube");
       }

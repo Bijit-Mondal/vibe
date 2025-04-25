@@ -7,8 +7,7 @@ import UpvotedBy from "./UpvotedBy";
 import YouTube from "react-youtube";
 import { decrypt } from "tanmayo7lock";
 function PLayerCoverComp() {
-  const { user, showVideo, setShowAddDragOptions, emitMessage } =
-    useUserContext();
+  const { user, setShowAddDragOptions, emitMessage } = useUserContext();
   const { currentSong, state, dispatch, playerRef } = useAudio();
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
@@ -107,7 +106,6 @@ function PLayerCoverComp() {
           <div className=" relative">
             <Image
               draggable="false"
-              style={{ opacity: showVideo ? 0 : 1, aspectRatio: "1 / 1" }}
               priority
               title={
                 currentSong?.name
