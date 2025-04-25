@@ -81,6 +81,7 @@ function PLayerCoverComp() {
          
           onEnd={() => {
             emitMessage("songEnded", "songEnded");
+            playerRef.current?.playVideo();
           }}
           videoId={
             currentSong?.source === "youtube"
