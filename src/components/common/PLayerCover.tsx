@@ -44,17 +44,9 @@ function PLayerCoverComp() {
 
   return (
     <>
-      <div
-        style={{ aspectRatio: "1 / 1", opacity: 0 }}
-        className=" -z-10 absolute"
-      >
+      <div style={{ aspectRatio: "1 / 1" }} className=" -z-10 absolute">
         (
         <YouTube
-          opts={{
-            playerVars: {
-              playsinline: 1,
-            },
-          }}
           onEnd={() => {
             emitMessage("songEnded", "songEnded");
           }}
