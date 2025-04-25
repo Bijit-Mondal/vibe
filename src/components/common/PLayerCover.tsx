@@ -82,6 +82,7 @@ function PLayerCoverComp() {
           opts={{
             playerVars: {
               autoplay: 1,
+              playsinline: 1,
             },
           }}
           onEnd={(event: any) => {
