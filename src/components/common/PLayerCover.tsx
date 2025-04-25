@@ -51,47 +51,42 @@ function PLayerCoverComp() {
     }
   };
 
-  // Safe video ID check
-  const videoId = getVideoId();
-
   return (
     <>
       <div className="-z-10 opacity-0 aspect-square absolute">
-        {videoId && (
-          <YouTube
-            videoId={videoId}
-            onEnd={() => {
-              console.log("emited ended");
-              emitMessage("songEnded", "songEnded");
-            }}
-            opts={{
-              playerVars: {
-                origin:
-                  typeof window !== "undefined" ? window.location.origin : "",
-                autoplay: 0,
-                controls: 0,
-                disablekb: 1,
-                modestbranding: 1,
-                rel: 0,
-              },
-            }}
-            onPause={() => {
-              dispatch({ type: "SET_IS_PLAYING", payload: false });
-            }}
-            onPlay={() => {
-              if (playerRef.current) {
-                try {
-                  const duration = playerRef.current.getDuration();
-                  dispatch({ type: "SET_DURATION", payload: duration });
-                } catch (error) {
-                  console.error("Error getting duration:", error);
-                }
-                dispatch({ type: "SET_IS_PLAYING", payload: true });
+        <YouTube
+          // videoId={getVideoId()}
+          onEnd={() => {
+            console.log("emited ended");
+            emitMessage("songEnded", "songEnded");
+          }}
+          opts={{
+            playerVars: {
+              origin:
+                typeof window !== "undefined" ? window.location.origin : "",
+              autoplay: 0,
+              controls: 0,
+              disablekb: 1,
+              modestbranding: 1,
+              rel: 0,
+            },
+          }}
+          onPause={() => {
+            dispatch({ type: "SET_IS_PLAYING", payload: false });
+          }}
+          onPlay={() => {
+            if (playerRef.current) {
+              try {
+                const duration = playerRef.current.getDuration();
+                dispatch({ type: "SET_DURATION", payload: duration });
+              } catch (error) {
+                console.error("Error getting duration:", error);
               }
-            }}
-            onReady={onPlayerReady}
-          />
-        )}
+              dispatch({ type: "SET_IS_PLAYING", payload: true });
+            }
+          }}
+          onReady={onPlayerReady}
+        />
       </div>
 
       <div
