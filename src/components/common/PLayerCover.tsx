@@ -33,7 +33,7 @@ function PLayerCoverComp() {
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
     if (currentSong?.source === "youtube") {
-      event.target?.loadVideoById(getVideoId());
+      event.target?.loadVideoById(getVideoId(), state.currentProgress);
       event.target?.playVideo();
       event.target?.seekTo(state.currentProgress, true);
       const storedVolume = Number(localStorage.getItem("volume")) || 1;
@@ -44,7 +44,7 @@ function PLayerCoverComp() {
 
   return (
     <>
-      <div style={{ aspectRatio: "1 / 1" }} className=" -z-10 absolute">
+      <div className=" -z-10 absolute">
         (
         <YouTube
           onEnd={() => {

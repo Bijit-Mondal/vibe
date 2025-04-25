@@ -149,7 +149,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         console.log(playerRef.current);
         //@ts-expect-error:expect error
 
-        playerRef.current?.loadVideoById(getVideoId(song));
+        playerRef.current?.loadVideoById(
+          getVideoId(song),
+          state.currentProgress
+        );
         //@ts-expect-error:expect error
         playerRef.current?.playVideo();
 
