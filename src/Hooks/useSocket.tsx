@@ -307,7 +307,6 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
   //   }
   // }, [updateListeners, UpdateQueue]);
 
-
   useEffect(() => {
     const currentSocket = socketRef.current;
     const handleSeekable = (value: boolean) => {
@@ -328,7 +327,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
           //   ? "http://localhost:7777/stream"
           process.env.STREAM_URL || ""
         );
-   
+
         return;
       }
       if (data) {
@@ -336,7 +335,9 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       }
     };
     const seekThrough = (data: any) => {
-      playerRef?.current?.seekTo(seek);
+      if (playerRef.current) {
+        playerRef.current.seekTo(seek);
+      }
       seek(data);
     };
     currentSocket.on("connect", onConnect);

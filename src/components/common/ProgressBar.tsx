@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 function ProgressBar({ className }: { className?: string }) {
   const { audioRef, videoRef, backgroundVideoRef, dispatch, state, playerRef } =
     useAudio();
+  const { user, socketRef } = useUserContext();
   // const [currentProgress, setAudioProgress] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
   useEffect(() => {
@@ -17,13 +18,13 @@ function ProgressBar({ className }: { className?: string }) {
         const time = playerRef.current.getCurrentTime();
 
         setProgress(time);
+        socketRef.current.emit("progress", time);
       }
     }, 1300);
 
     return () => clearInterval(interval);
-  }, [setProgress, playerRef, state.currentSong, state.isPlaying]);
+  }, [setProgress, playerRef, state.currentSong, state.isPlaying, socketRef]);
 
-  const { user, socketRef } = useUserContext();
   const seek = useCallback(
     (value: number) => {
       if (playerRef.current) {

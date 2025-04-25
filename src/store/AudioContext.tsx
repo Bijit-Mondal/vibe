@@ -139,89 +139,61 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       return "";
     }
   };
-  
+
   // play
-  const play = useCallback(async (song: searchResults) => {
-    dispatch({ type: "SET_CURRENT_SONG", payload: song });
-    if (song.source == "youtube" && playerRef.current) {
-      console.log("playing youtube");
-      console.log(playerRef.current);
-      //@ts-expect-error:expect error
-      
-      playerRef.current?.loadVideoById(getVideoId(song)).  then(() => {
+  const play = useCallback(
+    async (song: searchResults) => {
+      dispatch({ type: "SET_CURRENT_SONG", payload: song });
+      if (song.source == "youtube" && playerRef.current) {
+        console.log("playing youtube");
+        console.log(playerRef.current);
         //@ts-expect-error:expect error
-        playerRef.current?.playVideo();
+
+        playerRef.current?.loadVideoById(getVideoId(song));
+        //@ts-expect-error:expect error
+        playerRef.current.seekTo(state.currentProgress, true);
         console.log("loading and playing youtube");
-      });
-      return;
-    }
-    if (audioRef.current) {
-      if (backgroundVideoRef.current) {
-        backgroundVideoRef.current.src = "";
       }
-      if (videoRef.current) {
-        videoRef.current.src = "";
+      if (audioRef.current) {
+        audioRef.current.src = "";
+        const currentVideoUrl = getURL(song);
+
+        audioRef.current.src = currentVideoUrl;
+        if (song.source !== "youtube") {
+          //@ts-expect-error:expect error
+          playerRef.current?.pauseVideo();
+        } else {
+          return;
+        }
+
+        audioRef.current
+          .play()
+          .then(async () => {
+            // Reset skip count on successful play
+            if (
+              audioRef.current &&
+              Math.floor(audioRef.current?.currentTime) >=
+                Math.floor(audioRef.current.duration * 0.3)
+            ) {
+              lastEmittedTime.current !== Math.pow(2, 53);
+            }
+            lastEmittedTime.current = 0;
+            skipCountRef.current = 0;
+            if (videoRef.current) {
+              videoRef.current?.play();
+            }
+            if (backgroundVideoRef.current) {
+              backgroundVideoRef.current?.play();
+            }
+            dispatch({ type: "SET_IS_PLAYING", payload: true });
+          })
+          .catch(async (e) => {
+            console.error("Error playing audio", e.message);
+          });
       }
-      audioRef.current.src = "";
-      const currentVideoUrl = getURL(song);
-
-      audioRef.current.src = currentVideoUrl;
-
-      audioRef.current
-        .play()
-        .then(async () => {
-          // Reset skip count on successful play
-          if (
-            audioRef.current &&
-            Math.floor(audioRef.current?.currentTime) >=
-              Math.floor(audioRef.current.duration * 0.3)
-          ) {
-            lastEmittedTime.current !== Math.pow(2, 53);
-          }
-          lastEmittedTime.current = 0;
-          skipCountRef.current = 0;
-          if (videoRef.current) {
-            videoRef.current?.play();
-          }
-          if (backgroundVideoRef.current) {
-            backgroundVideoRef.current?.play();
-          }
-          dispatch({ type: "SET_IS_PLAYING", payload: true });
-        })
-        .catch(async (e) => {
-          // if (e.message.startsWith("Failed to load because no supported")) {
-          //   skipCountRef.current += 1;
-          //   if (skipCountRef.current >= 3) {
-          //     await api.post(
-          //       `${process.env.SOCKET_URI}/api/feedback`,
-          //       encryptObjectValues({
-          //         xhr: "yt down fuck",
-          //         log: "on kr lwde",
-          //         nxt: "no room id",
-          //       }),
-          //       {
-          //         showErrorToast: false,
-          //       }
-          //     );
-          //     toast.error(
-          //       window.navigator.userAgent.includes("Electron")
-          //         ? "Open youtube on browser and try again"
-          //         : "Maximum skip limit reached.",
-          //       {
-          //         style: { background: "#e94625" },
-          //       }
-          //     );
-          //   } else {
-          //     emitMessage("songEnded", "songEnded");
-          //     toast.error("Song not available due to high request Skipping", {
-          //       style: { background: "#e94625" },
-          //     });
-          //   }
-          // }
-          console.error("Error playing audio", e.message);
-        });
-    }
-  }, []);
+    },
+    [state.currentProgress]
+  );
 
   // pause
   const pause = useCallback(() => {
@@ -318,6 +290,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
         playerRef.current.seekTo(value, true);
       }
 
+      dispatch({ type: "SET_PROGRESS", payload: value });
       audioRef.current.currentTime = value;
     }
   }, []);
