@@ -84,7 +84,7 @@ function PLayerCoverComp() {
               playsinline: 1,
             },
           }}
-          onEnd={(event: any) => {
+          onEnd={() => {
             emitMessage("songEnded", "songEnded");
           }}
           videoId={
