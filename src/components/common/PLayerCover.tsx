@@ -84,9 +84,9 @@ function PLayerCoverComp() {
               autoplay: 1,
             },
           }}
-          onEnd={() => {
+          onEnd={(event: any) => {
             emitMessage("songEnded", "songEnded");
-            playerRef.current?.playVideo();
+            event.target?.playVideo();
           }}
           videoId={
             currentSong?.source === "youtube"
