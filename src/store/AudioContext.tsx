@@ -127,7 +127,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     [state.currentDuration]
   );
   const volume = useMemo(() => state.currentVolume, [state.currentVolume]);
-  const skipCountRef = useRef(0); // Ref to track skipped songs
+
   const { user, isAdminOnline, socketRef, emitMessage } = useUserContext();
   const lastEmittedTime = useRef(0);
 
@@ -170,6 +170,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
     // Continue with audio handling
     if (audioRef.current) {
+      console.log("setting audio src");
       audioRef.current.src = "";
       const currentVideoUrl = getURL(song);
 
@@ -188,22 +189,6 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current
         .play()
         .then(async () => {
-          // Reset skip count on successful play
-          if (
-            audioRef.current &&
-            Math.floor(audioRef.current?.currentTime) >=
-              Math.floor(audioRef.current.duration * 0.3)
-          ) {
-            lastEmittedTime.current = Math.pow(2, 53);
-          }
-          lastEmittedTime.current = 0;
-          skipCountRef.current = 0;
-          if (videoRef.current) {
-            videoRef.current?.play();
-          }
-          if (backgroundVideoRef.current) {
-            backgroundVideoRef.current?.play();
-          }
           dispatch({ type: "SET_IS_PLAYING", payload: true });
         })
         .catch(async (e) => {
@@ -316,6 +301,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
 
       dispatch({ type: "SET_PROGRESS", payload: value });
+      console.log("seeking");
       audioRef.current.currentTime = value;
     }
   }, []);

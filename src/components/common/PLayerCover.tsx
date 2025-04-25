@@ -8,7 +8,7 @@ import YouTube from "react-youtube";
 import { decrypt } from "tanmayo7lock";
 function PLayerCoverComp() {
   const { user, setShowAddDragOptions, emitMessage } = useUserContext();
-  const { currentSong, dispatch, playerRef } = useAudio();
+  const { currentSong, dispatch, playerRef, state } = useAudio();
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (currentSong) {
@@ -26,6 +26,7 @@ function PLayerCoverComp() {
     try {
       if (!currentSong?.downloadUrl?.at(-1)?.url) return "";
       const data = decrypt(currentSong.downloadUrl.at(-1)?.url || "");
+      console.log("[YouTube] Decrypted video ID:", data);
       return data || "";
     } catch (error) {
       console.error("Error decrypting video ID:", error);
@@ -34,20 +35,37 @@ function PLayerCoverComp() {
   };
 
   const onPlayerReady = (event: any) => {
+    console.log("[YouTube] Player ready event triggered");
     playerRef.current = event.target;
     if (currentSong?.source === "youtube") {
+      console.log("[YouTube] Current song is from YouTube source");
       const videoId = getVideoId();
       if (videoId) {
         try {
-          event.target.loadVideoById(videoId);
+          console.log("[YouTube] Loading video with ID:", videoId);
+          if (state.isPlaying) {
+            event.target.loadVideoById(videoId, state.currentProgress);
+          } else {
+            event.target.cueVideoById(videoId, state.currentProgress);
+          }
+
+          console.log("[YouTube] Attempting to play video");
           event.target.playVideo();
 
           const storedVolume = Number(localStorage.getItem("volume")) || 1;
+          console.log("[YouTube] Setting volume to:", storedVolume * 200);
           event.target.setVolume(storedVolume * 200);
         } catch (error) {
           console.error("YouTube player error:", error);
         }
+      } else {
+        console.warn("[YouTube] No video ID available to load");
       }
+    } else {
+      console.log(
+        "[YouTube] Current song is not from YouTube source:",
+        currentSong?.source
+      );
     }
   };
 
@@ -57,7 +75,9 @@ function PLayerCoverComp() {
         <YouTube
           // videoId={getVideoId()}
           onEnd={() => {
-            console.log("emited ended");
+            console.log(
+              "[YouTube] Video playback ended, emitting songEnded event"
+            );
             emitMessage("songEnded", "songEnded");
           }}
           opts={{
@@ -72,16 +92,20 @@ function PLayerCoverComp() {
             },
           }}
           onPause={() => {
+            console.log("[YouTube] Video paused");
             dispatch({ type: "SET_IS_PLAYING", payload: false });
           }}
           onPlay={() => {
+            console.log("[YouTube] Video started playing");
             if (playerRef.current) {
               try {
                 const duration = playerRef.current.getDuration();
+                console.log("[YouTube] Video duration:", duration);
                 dispatch({ type: "SET_DURATION", payload: duration });
               } catch (error) {
                 console.error("Error getting duration:", error);
               }
+              console.log("[YouTube] Playing YouTube video, updating state");
               dispatch({ type: "SET_IS_PLAYING", payload: true });
             }
           }}

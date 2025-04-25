@@ -265,47 +265,14 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       const resetUrl = setTimeout(() => {
         window.history.replaceState(null, "", `/v?room=${roomId}`);
       }, 40000);
+      console.log("joined");
+
       seek(value?.progress || 0);
       toast.dismiss("connecting");
       return () => clearTimeout(resetUrl);
     },
     [seek, setUser, roomId]
   );
-
-  // const handleVisibilityChange = useCallback(async () => {
-  //   if (!window.location.pathname.startsWith("/v")) return;
-  //   if (document.hidden) {
-  //     const startTime = Date.now();
-  //     timerRef.current = window.setInterval(() => {
-  //       hiddenTimeRef.current = Date.now() - startTime;
-  //       // console.log(hiddenTimeRef.current);
-  //       if (
-  //         hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT &&
-  //         isActive.current
-  //       ) {
-  //         isActive.current = false;
-  //       }
-  //     }, 1000);
-  //   } else {
-  //     if (timerRef.current) {
-  //       clearInterval(timerRef.current);
-  //       timerRef.current = null;
-  //     }
-
-  //     const wasAwayForTooLong = hiddenTimeRef.current > BACKGROUND_APP_TIMEOUT;
-
-  //     isActive.current = true;
-  //     if (wasAwayForTooLong && necessaryFetchRef.current) {
-  //       await updateListeners();
-  //       await UpdateQueue();
-  //       await delay(200);
-  //       necessaryFetchRef.current = false;
-  //       hiddenTimeRef.current = 0;
-  //       return;
-  //     }
-  //     hiddenTimeRef.current = 0;
-  //   }
-  // }, [updateListeners, UpdateQueue]);
 
   useEffect(() => {
     const currentSocket = socketRef.current;
@@ -315,22 +282,33 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
 
     const handlePlay = (data: any) => {
       const song = decrypt(data) as searchResults;
-      if (!song) return;
+      if (!song) {
+        console.log("[AutoPlay] No song data received");
+        return;
+      }
 
-      if (!isPlaying && audioRef.current && audioRef.current?.src) {
+      console.log("[AutoPlay] Received play event:");
+
+      if (!isPlaying) {
+        console.log(
+          "[AutoPlay] Setting current song with existing audio element"
+        );
         setCurrentSong(song);
         setProgress(0);
 
-        audioRef.current.src = getURL(song).replace(
-          process.env.VIDEO_STREAM_URI || "",
-          // window.navigator.userAgent.includes("Electron")
-          //   ? "http://localhost:7777/stream"
-          process.env.STREAM_URL || ""
-        );
-
+        if (audioRef.current) {
+          audioRef.current.src = getURL(song).replace(
+            process.env.VIDEO_STREAM_URI || "",
+            // window.navigator.userAgent.includes("Electron")
+            //   ? "http://localhost:7777/stream"
+            process.env.STREAM_URL || ""
+          );
+          console.log("[AutoPlay] New audio source set:", audioRef.current.src);
+        }
         return;
       }
       if (data) {
+        console.log("[AutoPlay] Calling play() function for song");
         play(song);
       }
     };
