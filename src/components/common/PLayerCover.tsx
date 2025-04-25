@@ -78,7 +78,7 @@ function PLayerCoverComp() {
       >
         (
         <YouTube
-          ref={playerRef}
+          
           opts={{
             playerVars: {
               autoplay: 1,
