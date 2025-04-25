@@ -8,7 +8,7 @@ import YouTube from "react-youtube";
 import { decrypt } from "tanmayo7lock";
 function PLayerCoverComp() {
   const { user, setShowAddDragOptions, emitMessage } = useUserContext();
-  const { currentSong, state, dispatch, playerRef } = useAudio();
+  const { currentSong, dispatch, playerRef } = useAudio();
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (currentSong) {
@@ -24,50 +24,74 @@ function PLayerCoverComp() {
 
   const getVideoId = () => {
     try {
-      const data = decrypt(currentSong?.downloadUrl?.at(-1)?.url || "");
-      return data;
+      if (!currentSong?.downloadUrl?.at(-1)?.url) return "";
+      const data = decrypt(currentSong.downloadUrl.at(-1)?.url || "");
+      return data || "";
     } catch (error) {
+      console.error("Error decrypting video ID:", error);
       return "";
     }
   };
+
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
     if (currentSong?.source === "youtube") {
-      event.target?.loadVideoById(getVideoId(), state.currentProgress);
-      event.target?.playVideo();
-      event.target?.seekTo(state.currentProgress, true);
-      const storedVolume = Number(localStorage.getItem("volume")) || 1;
-      event.target?.setVolume(storedVolume * 200);
+      const videoId = getVideoId();
+      if (videoId) {
+        try {
+          event.target.loadVideoById(videoId);
+          event.target.playVideo();
+
+          const storedVolume = Number(localStorage.getItem("volume")) || 1;
+          event.target.setVolume(storedVolume * 200);
+        } catch (error) {
+          console.error("YouTube player error:", error);
+        }
+      }
     }
-    console.log(event.target);
   };
+
+  // Safe video ID check
+  const videoId = getVideoId();
 
   return (
     <>
-      <div className=" -z- opacity-0 aspect-square absolute">
-        (
-        <YouTube
-          onEnd={() => {
-            console.log("emited ended");
-            emitMessage("songEnded", "songEnded");
-          }}
-          videoId={
-            currentSong?.source === "youtube"
-              ? currentSong?.downloadUrl.at(-1)?.url?.length !== 11
-                ? getVideoId()
-                : currentSong?.downloadUrl?.at(-1)?.url || ""
-              : "demo"
-          }
-          onPause={() => {
-            dispatch({ type: "SET_IS_PLAYING", payload: false });
-          }}
-          onPlay={() => {
-            const duration = playerRef.current.getDuration();
-            dispatch({ type: "SET_DURATION", payload: duration });
-            dispatch({ type: "SET_IS_PLAYING", payload: true });
-          }}
-          onReady={onPlayerReady}
-        />
+      <div className="-z-10 opacity-0 aspect-square absolute">
+        {videoId && (
+          <YouTube
+            videoId={videoId}
+            onEnd={() => {
+              console.log("emited ended");
+              emitMessage("songEnded", "songEnded");
+            }}
+            opts={{
+              playerVars: {
+                origin:
+                  typeof window !== "undefined" ? window.location.origin : "",
+                autoplay: 0,
+                controls: 0,
+                disablekb: 1,
+                modestbranding: 1,
+                rel: 0,
+              },
+            }}
+            onPause={() => {
+              dispatch({ type: "SET_IS_PLAYING", payload: false });
+            }}
+            onPlay={() => {
+              if (playerRef.current) {
+                try {
+                  const duration = playerRef.current.getDuration();
+                  dispatch({ type: "SET_DURATION", payload: duration });
+                } catch (error) {
+                  console.error("Error getting duration:", error);
+                }
+                dispatch({ type: "SET_IS_PLAYING", payload: true });
+              }
+            }}
+            onReady={onPlayerReady}
+          />
+        )}
       </div>
 
       <div
@@ -94,7 +118,7 @@ function PLayerCoverComp() {
             width={300}
             className="cover aspect-square h-full object-cover  w-full"
             src={
-              currentSong?.image[currentSong.image.length - 1].url ||
+              currentSong?.image?.[currentSong.image.length - 1]?.url ||
               "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg"
             }
           />
@@ -117,7 +141,7 @@ function PLayerCoverComp() {
               width={300}
               className="cover z-10  aspect-square h-full object-cover  w-full"
               src={
-                currentSong?.image[currentSong.image.length - 1].url ||
+                currentSong?.image?.[currentSong.image.length - 1]?.url ||
                 "https://us-east-1.tixte.net/uploads/tanmay111-files.tixte.co/d61488c1ddafe4606fe57013728a7e84.jpg"
               }
             />

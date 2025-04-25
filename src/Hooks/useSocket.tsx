@@ -327,7 +327,8 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
           //   ? "http://localhost:7777/stream"
           process.env.STREAM_URL || ""
         );
-
+        playerRef.current.loadVideoById(song.downloadUrl.at(-1)?.url || "");
+        playerRef.current.playVideo();
         return;
       }
       if (data) {

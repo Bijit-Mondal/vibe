@@ -141,69 +141,76 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   };
 
   // play
-  const play = useCallback(
-    async (song: searchResults) => {
-      dispatch({ type: "SET_CURRENT_SONG", payload: song });
-      if (song.source == "youtube" && playerRef.current) {
-        console.log("playing youtube");
-        console.log(playerRef.current);
-        //@ts-expect-error:expect error
+  const play = useCallback(async (song: searchResults) => {
+    dispatch({ type: "SET_CURRENT_SONG", payload: song });
+    if (song.source == "youtube" && playerRef.current) {
+      console.log("playing youtube");
+      console.log(playerRef.current);
 
-        playerRef.current?.loadVideoById(
-          getVideoId(song),
-          state.currentProgress
-        );
-        //@ts-expect-error:expect error
-        playerRef.current?.playVideo();
-
-        //@ts-expect-error:expect error
-        playerRef.current.seekTo(state.currentProgress, true);
-        const storedVolume = Number(localStorage.getItem("volume")) || 1;
-        //@ts-expect-error:expect error
-        playerRef.current?.setVolume(storedVolume * 200);
-
-        console.log("loading and playing youtube");
-      }
-      if (audioRef.current) {
-        audioRef.current.src = "";
-        const currentVideoUrl = getURL(song);
-
-        audioRef.current.src = currentVideoUrl;
-        if (song.source !== "youtube") {
+      try {
+        const videoId = getVideoId(song);
+        if (videoId) {
           //@ts-expect-error:expect error
-          playerRef.current?.pauseVideo();
-        } else {
-          return;
-        }
+          playerRef.current?.loadVideoById(videoId);
+          //@ts-expect-error:expect error
+          playerRef.current?.playVideo();
 
-        audioRef.current
-          .play()
-          .then(async () => {
-            // Reset skip count on successful play
-            if (
-              audioRef.current &&
-              Math.floor(audioRef.current?.currentTime) >=
-                Math.floor(audioRef.current.duration * 0.3)
-            ) {
-              lastEmittedTime.current !== Math.pow(2, 53);
-            }
-            lastEmittedTime.current = 0;
-            skipCountRef.current = 0;
-            if (videoRef.current) {
-              videoRef.current?.play();
-            }
-            if (backgroundVideoRef.current) {
-              backgroundVideoRef.current?.play();
-            }
-            dispatch({ type: "SET_IS_PLAYING", payload: true });
-          })
-          .catch(async (e) => {
-            console.error("Error playing audio", e.message);
-          });
+          const storedVolume = Number(localStorage.getItem("volume")) || 1;
+          //@ts-expect-error:expect error
+          playerRef.current?.setVolume(storedVolume * 200);
+
+          console.log("loading and playing youtube");
+        } else {
+          console.error("Invalid or missing video ID");
+        }
+      } catch (error) {
+        console.error("Error playing YouTube video:", error);
       }
-    },
-    [state.currentProgress]
-  );
+    }
+
+    // Continue with audio handling
+    if (audioRef.current) {
+      audioRef.current.src = "";
+      const currentVideoUrl = getURL(song);
+
+      audioRef.current.src = currentVideoUrl;
+      if (song.source !== "youtube") {
+        try {
+          //@ts-expect-error:expect error
+          if (playerRef.current) playerRef.current?.pauseVideo();
+        } catch (error) {
+          console.error("Error pausing YouTube player:", error);
+        }
+      } else {
+        return; // Return early if YouTube source to avoid audio play attempt
+      }
+
+      audioRef.current
+        .play()
+        .then(async () => {
+          // Reset skip count on successful play
+          if (
+            audioRef.current &&
+            Math.floor(audioRef.current?.currentTime) >=
+              Math.floor(audioRef.current.duration * 0.3)
+          ) {
+            lastEmittedTime.current = Math.pow(2, 53);
+          }
+          lastEmittedTime.current = 0;
+          skipCountRef.current = 0;
+          if (videoRef.current) {
+            videoRef.current?.play();
+          }
+          if (backgroundVideoRef.current) {
+            backgroundVideoRef.current?.play();
+          }
+          dispatch({ type: "SET_IS_PLAYING", payload: true });
+        })
+        .catch(async (e) => {
+          console.error("Error playing audio", e.message);
+        });
+    }
+  }, []);
 
   // pause
   const pause = useCallback(() => {
@@ -232,22 +239,26 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // toggle play/pause
   const togglePlayPause = useCallback(() => {
     if (state.isPlaying) {
-      if (playerRef.current) {
-        if (state.currentSong?.source == "youtube") {
+      if (playerRef.current && state.currentSong?.source == "youtube") {
+        try {
           //@ts-expect-error:demo
           playerRef.current.pauseVideo();
           dispatch({ type: "SET_IS_PLAYING", payload: false });
+        } catch (error) {
+          console.error("Error pausing YouTube player:", error);
         }
       }
       pause();
     } else {
       if (state.currentSong) {
         resume();
-        if (playerRef.current) {
-          if (state.currentSong?.source == "youtube") {
+        if (playerRef.current && state.currentSong?.source == "youtube") {
+          try {
             dispatch({ type: "SET_IS_PLAYING", payload: true });
             //@ts-expect-error:demo
             playerRef.current.playVideo();
+          } catch (error) {
+            console.error("Error playing YouTube video:", error);
           }
         }
       }
@@ -296,8 +307,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       }
 
       if (playerRef.current) {
-        //@ts-expect-error:demo
-        playerRef.current.seekTo(value, true);
+        try {
+          //@ts-expect-error:demo
+          playerRef.current.seekTo(value, true);
+        } catch (error) {
+          console.error("Error seeking YouTube player:", error);
+        }
       }
 
       dispatch({ type: "SET_PROGRESS", payload: value });
