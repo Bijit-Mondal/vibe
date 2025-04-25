@@ -48,6 +48,7 @@ function PLayerCoverComp() {
 
   const onPlayerReady = (event: any) => {
     playerRef.current = event.target;
+    event.target?.playVideo();
   };
   // useEffect(() => {
   //   if (!playerRef.current || !playerRef.current.getDuration()) return;
