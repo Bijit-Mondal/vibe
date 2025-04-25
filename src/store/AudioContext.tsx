@@ -13,6 +13,7 @@ import React, {
 } from "react";
 import { useUserContext } from "./userStore";
 import getURL from "@/utils/utils";
+import { decrypt } from "@/utils/lock";
 // import { toast } from "sonner";
 // import { encryptObjectValues } from "@/utils/utils";
 
@@ -130,13 +131,22 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const { user, isAdminOnline, socketRef, emitMessage } = useUserContext();
   const lastEmittedTime = useRef(0);
 
+  const getVideoId = (song: searchResults) => {
+    try {
+      const data = decrypt(song?.downloadUrl?.at(-1)?.url || "");
+      return data;
+    } catch (error) {
+      return "";
+    }
+  };
+  
   // play
   const play = useCallback(async (song: searchResults) => {
     dispatch({ type: "SET_CURRENT_SONG", payload: song });
     if (song.source == "youtube" && playerRef.current) {
       console.log("playing youtube");
       //@ts-expect-error:expect error
-      playerRef.current?.loadVideoById(song.downloadUrl[0].url).  then(() => {
+      playerRef.current?.loadVideoById(getVideoId(song)).  then(() => {
         //@ts-expect-error:expect error
         playerRef.current?.playVideo();
       });
