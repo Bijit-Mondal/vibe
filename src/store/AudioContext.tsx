@@ -133,7 +133,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   // play
   const play = useCallback(async (song: searchResults) => {
     dispatch({ type: "SET_CURRENT_SONG", payload: song });
-    if (song.source == "youtube") {
+    if (song.source == "youtube" && playerRef.current) {
       playerRef.current.playVideo();
       return
     }
