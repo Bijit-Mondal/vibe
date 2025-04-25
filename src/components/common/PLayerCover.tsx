@@ -44,10 +44,11 @@ function PLayerCoverComp() {
 
   return (
     <>
-      <div className=" -z-10 absolute">
+      <div className=" -z- opacity-0 aspect-square absolute">
         (
         <YouTube
           onEnd={() => {
+            console.log("emited ended");
             emitMessage("songEnded", "songEnded");
           }}
           videoId={
