@@ -53,6 +53,20 @@ function Footer() {
             />
           </Link>
         </span>
+         <span>
+          <Link href="https://www.instagram.com/fixing_x/" target="_blank">
+            <Image
+              title="Annieeeee11"
+              src={
+                "https://avatars.githubusercontent.com/u/145839789?v=4"
+              }
+              alt="logo"
+              height={45}
+              className=" size-8 border-2 border-white max-md:size-7 object-cover rounded-full"
+              width={45}
+            />
+          </Link>
+        </span>
       </div>
       <div className="flex md:hidden  text-xl md:text-2xl  items-center gap-2">
         <Link href="https://www.instagram.com/fixing_x/" target="_blank">
