@@ -54,7 +54,7 @@ function Footer() {
           </Link>
         </span>
          <span>
-          <Link href="https://www.instagram.com/fixing_x/" target="_blank">
+          <Link href="https://github.com/Annieeeee11" target="_blank">
             <Image
               title="Annieeeee11"
               src={
