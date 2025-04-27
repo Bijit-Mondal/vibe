@@ -306,7 +306,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
             process.env.STREAM_URL || ""
           );
           console.log("[AutoPlay] New audio source set:", audioRef.current.src);
- playerRef.current?.loadVideoById(song?.downloadUrl?.at(-1)?.url || "");
+ // playerRef.current?.loadVideoById(song?.downloadUrl?.at(-1)?.url || "");
         }
         return;
       }
